@@ -44,4 +44,106 @@ class Fotografie {
 
 
 
+
+    /**
+     * Get id
+     *
+     * @return integer
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set ort
+     *
+     * @param \AppBundle\Entity\Ort $ort
+     *
+     * @return Fotografie
+     */
+    public function setOrt(\AppBundle\Entity\Ort $ort = null)
+    {
+        $this->ort = $ort;
+
+        return $this;
+    }
+
+    /**
+     * Get ort
+     *
+     * @return \AppBundle\Entity\Ort
+     */
+    public function getOrt()
+    {
+        return $this->ort;
+    }
+
+    /**
+     * Add erzeuger
+     *
+     * @param \AppBundle\Entity\Erzeuger $erzeuger
+     *
+     * @return Fotografie
+     */
+    public function addErzeuger(\AppBundle\Entity\Erzeuger $erzeuger)
+    {
+        $this->erzeuger[] = $erzeuger;
+
+        return $this;
+    }
+
+    /**
+     * Remove erzeuger
+     *
+     * @param \AppBundle\Entity\Erzeuger $erzeuger
+     */
+    public function removeErzeuger(\AppBundle\Entity\Erzeuger $erzeuger)
+    {
+        $this->erzeuger->removeElement($erzeuger);
+    }
+
+    /**
+     * Get erzeuger
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getErzeuger()
+    {
+        return $this->erzeuger;
+    }
+
+    /**
+     * Add archivierungen
+     *
+     * @param \AppBundle\Entity\Archivierung $archivierungen
+     *
+     * @return Fotografie
+     */
+    public function addArchivierungen(\AppBundle\Entity\Archivierung $archivierungen)
+    {
+        $this->archivierungen[] = $archivierungen;
+
+        return $this;
+    }
+
+    /**
+     * Remove archivierungen
+     *
+     * @param \AppBundle\Entity\Archivierung $archivierungen
+     */
+    public function removeArchivierungen(\AppBundle\Entity\Archivierung $archivierungen)
+    {
+        $this->archivierungen->removeElement($archivierungen);
+    }
+
+    /**
+     * Get archivierungen
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getArchivierungen()
+    {
+        return $this->archivierungen;
+    }
 }
