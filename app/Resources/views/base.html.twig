@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Thonet-Archiv{% endblock %}</title>
+    <meta name="robots" content="index, nofollow">
+    <meta name="keywords" content="Thonet, Archiv, Möbel, Design, Düsseldorf">
+    <meta name="description" lang="de" content="Privates Onlinearchiv des Möbeldesigners Thonet. Archivinhaber Lilo Schäfer.">
+    <link href="{{ asset('assets/css/bootstrap.min.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('assets/css/style.css') }}" rel="stylesheet" type="text/css" />
+    {% block stylesheets %}{% endblock %}
+
+    <!-- favicons -->
+
+
+</head>
+<body class="{% block bodyclass %}{% endblock %}">
+
+
+<h1>TEEEEESSSSSSTTTTTTTTTT!!!!!</h1>
+
+
+
+{#
+<div class="header container-fluid">
+    <div class="container">
+        {% block header %}
+            {% if is_granted("IS_AUTHENTICATED_FULLY") %}
+                <div class="pull-left">Angemeldet als: {{ app.user.username }}</div>
+                <div class="pull-right"><a href="{{ path('_logout') }}">Logout</a></div>
+            {% else %}
+                <div class="pull-right"><a href="{{ path('_login') }}">Login</a></div>
+            {% endif %}
+        {% endblock %}
+    </div>
+</div>
+
+
+{% block top %}
+    <div class="top container-fluid">
+        <form method="get" name="form" id="form" action="{{ path('_suche') }}" class="container form-horizontal">
+            <input type="hidden" id="hdn-collapse" name="form[hdncollapse]" value="collapsed">
+
+            <div class="row">
+                <div class="col-sm-2">
+                    <a class="hompage" href="{{ path('_default') }}">DoMaS</a>
+                </div>
+
+                {% if is_granted("IS_AUTHENTICATED_FULLY") %}
+                    <div class="col-sm-8 suchcontainer">
+                        <div class="col-sm-8 nopadding">
+                            <input id="form_freitext" name="form[freitext]" title="Suchbegriff" class="form-control" type="text" value="" placeholder="Archivierungen durchsuchen">
+                        </div>
+                        <div class="col-sm-4 nopadding suchbutton">
+                            <button type="submit" class="btn btn-red" name="form[submittop]"><span class="glyphicon glyphicon-search"></span></button>
+                        </div>
+                    </div>
+                {% endif %}
+
+            </div>
+        </form>
+    </div>
+{% endblock %}
+
+#}
+
+
+<div class="body container">
+    {% block body %}{% endblock %}
+</div>
+
+<div class="footer container">
+    {% block footer %}{% endblock %}
+</div>
+
+<script src="{{ asset('assets/js/jquery-3.3.1.min.js') }}"></script>
+<script src="{{ asset('assets/js/bootstrap.min.js') }}"></script>
+<script src="{{ asset('assets/js/scripts.js') }}"></script>
+{% block javascripts %}{% endblock %}
+</body>
+</html>
