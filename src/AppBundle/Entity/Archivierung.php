@@ -34,7 +34,7 @@ class Archivierung
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=100)
+     * @ORM\Column(type="string", length=100, unique=true, nullable=false)
      */
     private $dateiname;
 
@@ -57,62 +57,62 @@ class Archivierung
     ///// ASSOZIATIONEN:
 
     /**
-     * @ORM\ManyToOne(targetEntity="Breite", inversedBy="archivierungen")
+     * @ORM\ManyToOne(targetEntity="Breite", inversedBy="archivierungen", cascade={"persist"})
      * @ORM\JoinColumn(name="breite_id", referencedColumnName="id")
      */
     private $breite;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Hoehe", inversedBy="archivierungen")
+     * @ORM\ManyToOne(targetEntity="Hoehe", inversedBy="archivierungen", cascade={"persist"})
      * @ORM\JoinColumn(name="hoehe_id", referencedColumnName="id")
      */
     private $hoehe;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Herkunftsarchiv", inversedBy="archivierungen")
+     * @ORM\ManyToOne(targetEntity="Herkunftsarchiv", inversedBy="archivierungen", cascade={"persist"})
      * @ORM\JoinColumn(name="herkunftsarchiv_id", referencedColumnName="id")
      */
     private $herkunftsarchiv;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Firma", inversedBy="archivierungen")
+     * @ORM\ManyToOne(targetEntity="Firma", inversedBy="archivierungen", cascade={"persist"})
      * @ORM\JoinColumn(name="firma_id", referencedColumnName="id")
      */
     private $firma;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Ort", inversedBy="archivierungen")
+     * @ORM\ManyToOne(targetEntity="Ort", inversedBy="archivierungen", cascade={"persist"})
      * @ORM\JoinColumn(name="ort_id", referencedColumnName="id")
      */
     private $entstehungsort;
 
 
     /**
-     * @ORM\ManyToMany(targetEntity="Kategorie", inversedBy="archivierungen")
+     * @ORM\ManyToMany(targetEntity="Kategorie", inversedBy="archivierungen", cascade={"persist"})
      * @ORM\JoinTable(name="archivierung_kategorie")
      */
     private $kategorien;
 
     /**
-     * @ORM\ManyToMany(targetEntity="Farbe", inversedBy="archivierungen")
+     * @ORM\ManyToMany(targetEntity="Farbe", inversedBy="archivierungen", cascade={"persist"})
      * @ORM\JoinTable(name="archivierung_farbe")
      */
     private $farben;
 
     /**
-     * @ORM\ManyToMany(targetEntity="Schrift", inversedBy="archivierungen")
+     * @ORM\ManyToMany(targetEntity="Schrift", inversedBy="archivierungen", cascade={"persist"})
      * @ORM\JoinTable(name="archivierung_schrift")
      */
     private $schriften;
 
     /**
-     * @ORM\ManyToMany(targetEntity="Hinweis", inversedBy="archivierungen")
+     * @ORM\ManyToMany(targetEntity="Hinweis", inversedBy="archivierungen", cascade={"persist"})
      * @ORM\JoinTable(name="archivierung_hinweis")
      */
     private $hinweise;
 
     /**
-     * @ORM\ManyToMany(targetEntity="Jahr", inversedBy="archivierungen")
+     * @ORM\ManyToMany(targetEntity="Jahr", inversedBy="archivierungen", cascade={"persist"})
      * @ORM\JoinTable(name="archivierung_jahr")
      */
     private $jahre;

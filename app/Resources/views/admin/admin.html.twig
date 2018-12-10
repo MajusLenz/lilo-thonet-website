@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <a class="logout-btn" href="{{ path('logout') }}">logout</a>
+
+    <h1>Administrator-Bereich:</h1>
+    <section class="upload-csv">
+        <p>CSV-Datei + ZIP-Datei mit zugehörigen Bilddateien hochladen um neue Archivierungen zu erstellen</p>
+
+        <form target="{{ path('admin_upload') }}">
+            CSV: <input type="file" name="csv">
+            ZIP: <input type="file" name="pics">
+            <button type="submit">Hochladen</button>
+        </form>
+    </section>
+
+{% endblock %}
