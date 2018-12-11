@@ -95,7 +95,7 @@ class TestController extends Controller
 
 
         $entstehungsort = $em->getRepository('AppBundle:Ort')->findOneBy(
-            array('stadt' => 'Teststadt', 'land' => 'Testland')
+            array('stadt' => "Teststadt", 'land' => 'Testland')
         );
         if($entstehungsort === null) {
             $entstehungsort = new Entity\Ort();
@@ -182,7 +182,7 @@ class TestController extends Controller
             $minJahr = $jahre[0];
             $maxJahr = $jahre[1];
         }
-        else{ throw new Exception("Format von Jahr ungültig: $jahrString");}
+        else{ throw new Exception("Format von Jahr ungültig: $jahrString"); }
 
         for ($i = $minJahr; $i <= $maxJahr; $i++) {
             $jahr = $em->getRepository('AppBundle:Jahr')->findOneByWert($i);
@@ -197,6 +197,9 @@ class TestController extends Controller
 
 
         ///////////// TODO    $gestaltungen
+
+
+        //für jeden ort in gestaltungen mache....
 
 
 
