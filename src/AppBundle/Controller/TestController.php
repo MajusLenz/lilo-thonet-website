@@ -32,18 +32,14 @@ class TestController extends Controller
         $archivierung = new Entity\Archivierung();
 
         // Einfache Attribute
-        if($em->getRepository('AppBundle:Archivierung')->findOneByDateiname("dateiname.jpg") === null) {
-            $archivierung->setDateiname("dateiname.jpg");
+        if($em->getRepository('AppBundle:Archivierung')->findOneByDateiname("dateiname3.jpg") === null) {
+            $archivierung->setDateiname("dateiname3.jpg");
         }
         else{
             throw new Exception("Dateiname schon belegt!");
         }
 
-        $archivierung->setTitel("titel");
-
-        $archivierung->setDateinameAlt("dateinameAlt.jpg");
-
-        $dateiHash = md5("dateiname.jpg");
+        $dateiHash = md5("dateiname3.jpg");
         if($em->getRepository('AppBundle:Archivierung')->findOneByDateiHash($dateiHash) === null) {
             $archivierung->setDateiHash($dateiHash);
         }
@@ -51,122 +47,70 @@ class TestController extends Controller
             throw new Exception("Dateihash schon belegt!");
         }
 
+        $archivierung->setDateinameAlt("dateinameAlt3.jpg");
 
-        // ASSOZIATIONEN M2O:
+        $archivierung->setArchivierungsArt("grafik");
 
-        $breite = $em->getRepository('AppBundle:Breite')->findOneByWert(300);
-        if($breite === null) {
-            $breite = new Entity\Breite();
-            $breite->setWert(300);
-        }
-        $archivierung->setBreite($breite);
-        //$breite->addArchivierungen($archivierung);
-        //$em->persist($breite);
+        // ASSOZIATIONEN:
 
-
-        $hoehe = $em->getRepository('AppBundle:Hoehe')->findOneByWert(300);
-        if($hoehe === null) {
-            $hoehe = new Entity\Hoehe();
-            $hoehe->setWert(300);
-        }
-        $archivierung->setHoehe($hoehe);
-        //$hoehe->addArchivierungen($archivierung);
-        //$em->persist($hoehe);
-
-
-        $herkunftsarchiv = $em->getRepository('AppBundle:Herkunftsarchiv')->findOneByName("Testarchiv");
-        if($herkunftsarchiv === null) {
-            $herkunftsarchiv = new Entity\Herkunftsarchiv();
-            $herkunftsarchiv->setName("Testarchiv");
-        }
-        $archivierung->setHerkunftsarchiv($herkunftsarchiv);
-        //$herkunftsarchiv->addArchivierungen($archivierung);
-        //$em->persist($herkunftsarchiv);
-
-
-        $firma = $em->getRepository('AppBundle:Firma')->findOneByName("Testfirma");
-        if($firma === null) {
-            $firma = new Entity\Firma();
-            $firma->setName("Testfirma");
-        }
-        $archivierung->setFirma($firma);
-        //$firma->addArchivierungen($archivierung);
-        //$em->persist($firma);
-
-
-        $entstehungsort = $em->getRepository('AppBundle:Ort')->findOneBy(
-            array('stadt' => "Teststadt", 'land' => 'Testland')
+        //Infos:
+        $infosArray = array(
+            array("Titel", "Titel1"),
+            array("Titel", "Titel2"),
+            array("Auftraggeber", "Auftraggeber1"),
+            array("Auftraggeber", "Auftraggeber2"),
+            array("Objektkategorie", "Objektkategorie1"),
+            array("Objektkategorie", "Objektkategorie2"),
+            array("Gestaltung", "Gestaltung1"),
+            array("Gestaltung", "Gestaltung2"),
+            array("Fotografie", "Fotografie1"),
+            array("Fotografie", "Fotografie2"),
+            array("Druck", "Druck1"),
+            array("Druck", "Druck2"),
+            array("Autor", "Autor1"),
+            array("Autor", "Autor2"),
+            array("Maße", "Maße1"),
+            array("Maße", "Maße2"),
+            array("Umfang", "Umfang1"),
+            array("Umfang", "Umfang2"),
+            array("Material", "Material1"),
+            array("Material", "Material2"),
+            array("Produktionsverfahren", "Produktionsverfahren1"),
+            array("Produktionsverfahren", "Produktionsverfahren2"),
+            array("Sprache", "Sprache1"),
+            array("Sprache", "Sprache2"),
+            array("Schrift", "Schrift1"),
+            array("Schrift", "Schrift2"),
+            array("Farbe", "Farbe1"),
+            array("Farbe", "Farbe2"),
+            array("Bilddarstellung", "Bilddarstellung1"),
+            array("Bilddarstellung", "Bilddarstellung2"),
+            array("Hinweis", "Hinweis1"),
+            array("Hinweis", "Hinweis2"),
+            array("Produktkategorie", "Produktkategorie1"),
+            array("Produktkategorie", "Produktkategorie2"),
+            array("Text", "Text1"),
+            array("Text", "Text2"),
+            array("Ereignisse", "Ereignisse1"),
+            array("Ereignisse", "Ereignisse2"),
+            array("Archiv", "Archiv1"),
+            array("Archiv", "Archiv2"),
         );
-        if($entstehungsort === null) {
-            $entstehungsort = new Entity\Ort();
-            $entstehungsort->setStadt("Teststadt");
-            $entstehungsort->setLand("Testland");
-        }
-        $archivierung->setEntstehungsort($entstehungsort);
-        //$entstehungsort->addArchivierungen($archivierung);
-        $em->persist($entstehungsort);
 
-        $em->flush(); // Ort persistieren, da nach ihm im weiteren gesucht werden könnte.
+        foreach ($infosArray as $infosEintrag) {
+            $infoName = $infosEintrag[0];
+            $infoWert = $infosEintrag[1];
+            $info = $em->getRepository('AppBundle:Information')->findOneBy(array('name' => $infoName, 'wert' => $infoWert));
 
-
-        // ASSOZIATIONEN M2M:
-
-        $kategorieNamen = array("Testkategorie1", "Testkategorie2");
-
-        foreach ($kategorieNamen as $kategorieName) {
-            $kategorie = $em->getRepository('AppBundle:Kategorie')->findOneByName($kategorieName);
-            if($kategorie === null) {
-                $kategorie = new Entity\Kategorie();
-                $kategorie->setName($kategorieName);
+            if($info === null) {
+                $info = new Entity\Information();
+                $info->setName($infoName);
+                $info->setWert($infoWert);
             }
-            $archivierung->addKategorien($kategorie);
-            //$kategorie->addArchivierungen($archivierung);
-            //$em->persist($kategorie);
+            $archivierung->addInfo($info);
         }
 
-
-        $farbeNamen = array("Testfarbe1", "Testfarbe2");
-
-        foreach ($farbeNamen as $farbeName) {
-            $farbe = $em->getRepository('AppBundle:Farbe')->findOneByName($farbeName);
-            if($farbe === null) {
-                $farbe = new Entity\Farbe();
-                $farbe->setName($farbeName);
-            }
-            $archivierung->addFarben($farbe);
-            //$farbe->addArchivierungen($archivierung);
-            //$em->persist($farbe);
-        }
-
-
-        $schriftNamen = array("Testschrift1", "Testschrift2");
-
-        foreach ($schriftNamen as $schriftName) {
-            $schrift = $em->getRepository('AppBundle:Schrift')->findOneByName($schriftName);
-            if($schrift === null) {
-                $schrift = new Entity\Schrift();
-                $schrift->setName($schriftName);
-            }
-            $archivierung->addSchriften($schrift);
-            //$schrift->addArchivierungen($archivierung);
-            //$em->persist($schrift);
-        }
-
-
-        $hinweisNamen = array("Achtung Hässlich!", "supi schön <3");
-
-        foreach ($hinweisNamen as $hinweisName) {
-            $hinweis = $em->getRepository('AppBundle:Hinweis')->findOneByName($hinweisName);
-            if($hinweis === null) {
-                $hinweis = new Entity\Hinweis();
-                $hinweis->setName($hinweisName);
-            }
-            $archivierung->addHinweise($hinweis);
-            //$hinweis->addArchivierungen($archivierung);
-            //$em->persist($hinweis);
-        }
-
-
+        //Jahre:
         $jahrString = "1997-2001";
         $jahre = explode("-", $jahrString); // String splitten
 
@@ -191,27 +135,21 @@ class TestController extends Controller
                 $jahr->setWert($i);
             }
             $archivierung->addJahre($jahr);
-            //$jahr->addArchivierungen($archivierung);
-            //$em->persist($jahr);
         }
 
 
-        ///////////// TODO    $gestaltungen
-
-
-        //für jeden ort in gestaltungen mache....
-
-
-
-
-
-
-
-
-
         // Referenzen:
+        $referenzDateien = array("dateiname.jpg","dateiname2.jpg");
+        foreach ($referenzDateien as $referenzDatei) {
+            $referenz = $em->getRepository('AppBundle:Archivierung')->findOneByDateiname($referenzDatei);
 
-
+            if($referenz === null) {
+                throw new Exception("Archivierung mit Dateiname $referenz nicht gefunden!");
+            }
+            else{
+                $archivierung->addReferenzen($referenz);
+            }
+        }
 
 
         //Persistieren:

@@ -8,13 +8,14 @@ use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="fotografie")
+ * @ORM\Table(name="information")
  */
-class Fotografie {
+class Information
+{
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->archivierungen = new ArrayCollection();
-        $this->erzeuger = new ArrayCollection();
     }
 
 
@@ -26,22 +27,19 @@ class Fotografie {
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Ort", inversedBy="fotografien")
-     * @ORM\JoinColumn(name="ort_id", referencedColumnName="id")
+     * @ORM\Column(type="string", nullable=false)
      */
-    private $ort;
+    private $name;
 
     /**
-     * @ORM\ManyToMany(targetEntity="Erzeuger", inversedBy="fotografien")
-     * @ORM\JoinTable(name="fotografie_erzeuger")
+     * @ORM\Column(type="string", nullable=false)
      */
-    private $erzeuger;
+    private $wert;
 
     /**
-     * @ORM\ManyToMany(targetEntity="Archivierung", mappedBy="fotografien")
+     * @ORM\ManyToMany(targetEntity="Archivierung", mappedBy="infos")
      */
     private $archivierungen;
-
 
 
 
@@ -56,61 +54,51 @@ class Fotografie {
     }
 
     /**
-     * Set ort
+     * Set name
      *
-     * @param \AppBundle\Entity\Ort $ort
+     * @param string $name
      *
-     * @return Fotografie
+     * @return Information
      */
-    public function setOrt(\AppBundle\Entity\Ort $ort = null)
+    public function setName($name)
     {
-        $this->ort = $ort;
+        $this->name = $name;
 
         return $this;
     }
 
     /**
-     * Get ort
+     * Get name
      *
-     * @return \AppBundle\Entity\Ort
+     * @return string
      */
-    public function getOrt()
+    public function getName()
     {
-        return $this->ort;
+        return $this->name;
     }
 
     /**
-     * Add erzeuger
+     * Set wert
      *
-     * @param \AppBundle\Entity\Erzeuger $erzeuger
+     * @param string $wert
      *
-     * @return Fotografie
+     * @return Information
      */
-    public function addErzeuger(\AppBundle\Entity\Erzeuger $erzeuger)
+    public function setWert($wert)
     {
-        $this->erzeuger[] = $erzeuger;
+        $this->wert = $wert;
 
         return $this;
     }
 
     /**
-     * Remove erzeuger
+     * Get wert
      *
-     * @param \AppBundle\Entity\Erzeuger $erzeuger
+     * @return string
      */
-    public function removeErzeuger(\AppBundle\Entity\Erzeuger $erzeuger)
+    public function getWert()
     {
-        $this->erzeuger->removeElement($erzeuger);
-    }
-
-    /**
-     * Get erzeuger
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getErzeuger()
-    {
-        return $this->erzeuger;
+        return $this->wert;
     }
 
     /**
@@ -118,7 +106,7 @@ class Fotografie {
      *
      * @param \AppBundle\Entity\Archivierung $archivierungen
      *
-     * @return Fotografie
+     * @return Information
      */
     public function addArchivierungen(\AppBundle\Entity\Archivierung $archivierungen)
     {

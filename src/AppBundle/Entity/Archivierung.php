@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 
@@ -15,14 +16,8 @@ class Archivierung
 
     public function __construct()
     {
-        $this->kategorien = new ArrayCollection();
-        $this->jahre = new ArrayCollection();
-        $this->hinweise = new ArrayCollection();
-        $this->schriften = new ArrayCollection();
-        $this->farben = new ArrayCollection();
-        $this->gestaltungen = new ArrayCollection();
-        $this->drucke = new ArrayCollection();
-        $this->fotografien = new ArrayCollection();
+        $this->erstelldatum = new DateTime("now");
+        $this->infos = new ArrayCollection();
     }
 
 
@@ -34,14 +29,14 @@ class Archivierung
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=100, unique=true, nullable=false)
+     * @ORM\Column(type="datetime", nullable=false)
      */
-    private $dateiname;
+    private $erstelldatum;
 
     /**
-     * @ORM\Column(type="string", length=100)
+     * @ORM\Column(type="string", unique=true, nullable=false)
      */
-    private $titel;
+    private $dateiname;
 
     /**
      * @ORM\Column(type="string", length=100)
@@ -49,91 +44,29 @@ class Archivierung
     private $dateinameAlt;
 
     /**
-     * @ORM\Column(type="string", length=100, unique=true, nullable=false)
+     * @ORM\Column(type="string", unique=true, nullable=false)
      */
     private $dateiHash;
+
+    /**
+     * @ORM\Column(type="string", nullable=false)
+     */
+    private $archivierungsArt;      // Grafik, Moebel, etc.
 
 
     ///// ASSOZIATIONEN:
 
     /**
-     * @ORM\ManyToOne(targetEntity="Breite", inversedBy="archivierungen", cascade={"persist"})
-     * @ORM\JoinColumn(name="breite_id", referencedColumnName="id")
+     * @ORM\ManyToMany(targetEntity="Information", inversedBy="archivierungen", cascade={"persist"})
+     * @ORM\JoinTable(name="archivierung_information")
      */
-    private $breite;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="Hoehe", inversedBy="archivierungen", cascade={"persist"})
-     * @ORM\JoinColumn(name="hoehe_id", referencedColumnName="id")
-     */
-    private $hoehe;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="Herkunftsarchiv", inversedBy="archivierungen", cascade={"persist"})
-     * @ORM\JoinColumn(name="herkunftsarchiv_id", referencedColumnName="id")
-     */
-    private $herkunftsarchiv;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="Firma", inversedBy="archivierungen", cascade={"persist"})
-     * @ORM\JoinColumn(name="firma_id", referencedColumnName="id")
-     */
-    private $firma;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="Ort", inversedBy="archivierungen", cascade={"persist"})
-     * @ORM\JoinColumn(name="ort_id", referencedColumnName="id")
-     */
-    private $entstehungsort;
-
-
-    /**
-     * @ORM\ManyToMany(targetEntity="Kategorie", inversedBy="archivierungen", cascade={"persist"})
-     * @ORM\JoinTable(name="archivierung_kategorie")
-     */
-    private $kategorien;
-
-    /**
-     * @ORM\ManyToMany(targetEntity="Farbe", inversedBy="archivierungen", cascade={"persist"})
-     * @ORM\JoinTable(name="archivierung_farbe")
-     */
-    private $farben;
-
-    /**
-     * @ORM\ManyToMany(targetEntity="Schrift", inversedBy="archivierungen", cascade={"persist"})
-     * @ORM\JoinTable(name="archivierung_schrift")
-     */
-    private $schriften;
-
-    /**
-     * @ORM\ManyToMany(targetEntity="Hinweis", inversedBy="archivierungen", cascade={"persist"})
-     * @ORM\JoinTable(name="archivierung_hinweis")
-     */
-    private $hinweise;
+    private $infos;
 
     /**
      * @ORM\ManyToMany(targetEntity="Jahr", inversedBy="archivierungen", cascade={"persist"})
      * @ORM\JoinTable(name="archivierung_jahr")
      */
     private $jahre;
-
-    /**
-     * @ORM\ManyToMany(targetEntity="Gestaltung", inversedBy="archivierungen")
-     * @ORM\JoinTable(name="archivierung_gestaltung")
-     */
-    private $gestaltungen;
-
-    /**
-     * @ORM\ManyToMany(targetEntity="Druck", inversedBy="archivierungen")
-     * @ORM\JoinTable(name="archivierung_druck")
-     */
-    private $drucke;
-
-    /**
-     * @ORM\ManyToMany(targetEntity="Fotografie", inversedBy="archivierungen")
-     * @ORM\JoinTable(name="archivierung_fotografie")
-     */
-    private $fotografien;
 
 
     ///// VERKNUEPFUNG AUF ANDERE ARCHIVIERUNGEN:
@@ -156,6 +89,7 @@ class Archivierung
     ///// GETTER & SETTER:
 
 
+
     /**
      * Get id
      *
@@ -164,6 +98,30 @@ class Archivierung
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * Set erstelldatum
+     *
+     * @param \DateTime $erstelldatum
+     *
+     * @return Archivierung
+     */
+    public function setErstelldatum($erstelldatum)
+    {
+        $this->erstelldatum = $erstelldatum;
+
+        return $this;
+    }
+
+    /**
+     * Get erstelldatum
+     *
+     * @return \DateTime
+     */
+    public function getErstelldatum()
+    {
+        return $this->erstelldatum;
     }
 
     /**
@@ -188,30 +146,6 @@ class Archivierung
     public function getDateiname()
     {
         return $this->dateiname;
-    }
-
-    /**
-     * Set titel
-     *
-     * @param string $titel
-     *
-     * @return Archivierung
-     */
-    public function setTitel($titel)
-    {
-        $this->titel = $titel;
-
-        return $this;
-    }
-
-    /**
-     * Get titel
-     *
-     * @return string
-     */
-    public function getTitel()
-    {
-        return $this->titel;
     }
 
     /**
@@ -263,259 +197,61 @@ class Archivierung
     }
 
     /**
-     * Set breite
+     * Set archivierungsArt
      *
-     * @param \AppBundle\Entity\Breite $breite
+     * @param string $archivierungsArt
      *
      * @return Archivierung
      */
-    public function setBreite(\AppBundle\Entity\Breite $breite = null)
+    public function setArchivierungsArt($archivierungsArt)
     {
-        $this->breite = $breite;
+        $this->archivierungsArt = $archivierungsArt;
 
         return $this;
     }
 
     /**
-     * Get breite
+     * Get archivierungsArt
      *
-     * @return \AppBundle\Entity\Breite
+     * @return string
      */
-    public function getBreite()
+    public function getArchivierungsArt()
     {
-        return $this->breite;
+        return $this->archivierungsArt;
     }
 
     /**
-     * Set hoehe
+     * Add info
      *
-     * @param \AppBundle\Entity\Hoehe $hoehe
+     * @param \AppBundle\Entity\Information $info
      *
      * @return Archivierung
      */
-    public function setHoehe(\AppBundle\Entity\Hoehe $hoehe = null)
+    public function addInfo(\AppBundle\Entity\Information $info)
     {
-        $this->hoehe = $hoehe;
+        $this->infos[] = $info;
 
         return $this;
     }
 
     /**
-     * Get hoehe
+     * Remove info
      *
-     * @return \AppBundle\Entity\Hoehe
+     * @param \AppBundle\Entity\Information $info
      */
-    public function getHoehe()
+    public function removeInfo(\AppBundle\Entity\Information $info)
     {
-        return $this->hoehe;
+        $this->infos->removeElement($info);
     }
 
     /**
-     * Set herkunftsarchiv
-     *
-     * @param \AppBundle\Entity\Herkunftsarchiv $herkunftsarchiv
-     *
-     * @return Archivierung
-     */
-    public function setHerkunftsarchiv(\AppBundle\Entity\Herkunftsarchiv $herkunftsarchiv = null)
-    {
-        $this->herkunftsarchiv = $herkunftsarchiv;
-
-        return $this;
-    }
-
-    /**
-     * Get herkunftsarchiv
-     *
-     * @return \AppBundle\Entity\Herkunftsarchiv
-     */
-    public function getHerkunftsarchiv()
-    {
-        return $this->herkunftsarchiv;
-    }
-
-    /**
-     * Set firma
-     *
-     * @param \AppBundle\Entity\Firma $firma
-     *
-     * @return Archivierung
-     */
-    public function setFirma(\AppBundle\Entity\Firma $firma = null)
-    {
-        $this->firma = $firma;
-
-        return $this;
-    }
-
-    /**
-     * Get firma
-     *
-     * @return \AppBundle\Entity\Firma
-     */
-    public function getFirma()
-    {
-        return $this->firma;
-    }
-
-    /**
-     * Set entstehungsort
-     *
-     * @param \AppBundle\Entity\Ort $entstehungsort
-     *
-     * @return Archivierung
-     */
-    public function setEntstehungsort(\AppBundle\Entity\Ort $entstehungsort = null)
-    {
-        $this->entstehungsort = $entstehungsort;
-
-        return $this;
-    }
-
-    /**
-     * Get entstehungsort
-     *
-     * @return \AppBundle\Entity\Ort
-     */
-    public function getEntstehungsort()
-    {
-        return $this->entstehungsort;
-    }
-
-    /**
-     * Add kategorien
-     *
-     * @param \AppBundle\Entity\Kategorie $kategorien
-     *
-     * @return Archivierung
-     */
-    public function addKategorien(\AppBundle\Entity\Kategorie $kategorien)
-    {
-        $this->kategorien[] = $kategorien;
-
-        return $this;
-    }
-
-    /**
-     * Remove kategorien
-     *
-     * @param \AppBundle\Entity\Kategorie $kategorien
-     */
-    public function removeKategorien(\AppBundle\Entity\Kategorie $kategorien)
-    {
-        $this->kategorien->removeElement($kategorien);
-    }
-
-    /**
-     * Get kategorien
+     * Get infos
      *
      * @return \Doctrine\Common\Collections\Collection
      */
-    public function getKategorien()
+    public function getInfos()
     {
-        return $this->kategorien;
-    }
-
-    /**
-     * Add farben
-     *
-     * @param \AppBundle\Entity\Farbe $farben
-     *
-     * @return Archivierung
-     */
-    public function addFarben(\AppBundle\Entity\Farbe $farben)
-    {
-        $this->farben[] = $farben;
-
-        return $this;
-    }
-
-    /**
-     * Remove farben
-     *
-     * @param \AppBundle\Entity\Farbe $farben
-     */
-    public function removeFarben(\AppBundle\Entity\Farbe $farben)
-    {
-        $this->farben->removeElement($farben);
-    }
-
-    /**
-     * Get farben
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getFarben()
-    {
-        return $this->farben;
-    }
-
-    /**
-     * Add schriften
-     *
-     * @param \AppBundle\Entity\Schrift $schriften
-     *
-     * @return Archivierung
-     */
-    public function addSchriften(\AppBundle\Entity\Schrift $schriften)
-    {
-        $this->schriften[] = $schriften;
-
-        return $this;
-    }
-
-    /**
-     * Remove schriften
-     *
-     * @param \AppBundle\Entity\Schrift $schriften
-     */
-    public function removeSchriften(\AppBundle\Entity\Schrift $schriften)
-    {
-        $this->schriften->removeElement($schriften);
-    }
-
-    /**
-     * Get schriften
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getSchriften()
-    {
-        return $this->schriften;
-    }
-
-    /**
-     * Add hinweise
-     *
-     * @param \AppBundle\Entity\Hinweis $hinweise
-     *
-     * @return Archivierung
-     */
-    public function addHinweise(\AppBundle\Entity\Hinweis $hinweise)
-    {
-        $this->hinweise[] = $hinweise;
-
-        return $this;
-    }
-
-    /**
-     * Remove hinweise
-     *
-     * @param \AppBundle\Entity\Hinweis $hinweise
-     */
-    public function removeHinweise(\AppBundle\Entity\Hinweis $hinweise)
-    {
-        $this->hinweise->removeElement($hinweise);
-    }
-
-    /**
-     * Get hinweise
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getHinweise()
-    {
-        return $this->hinweise;
+        return $this->infos;
     }
 
     /**
@@ -550,108 +286,6 @@ class Archivierung
     public function getJahre()
     {
         return $this->jahre;
-    }
-
-    /**
-     * Add gestaltungen
-     *
-     * @param \AppBundle\Entity\Gestaltung $gestaltungen
-     *
-     * @return Archivierung
-     */
-    public function addGestaltungen(\AppBundle\Entity\Gestaltung $gestaltungen)
-    {
-        $this->gestaltungen[] = $gestaltungen;
-
-        return $this;
-    }
-
-    /**
-     * Remove gestaltungen
-     *
-     * @param \AppBundle\Entity\Gestaltung $gestaltungen
-     */
-    public function removeGestaltungen(\AppBundle\Entity\Gestaltung $gestaltungen)
-    {
-        $this->gestaltungen->removeElement($gestaltungen);
-    }
-
-    /**
-     * Get gestaltungen
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getGestaltungen()
-    {
-        return $this->gestaltungen;
-    }
-
-    /**
-     * Add drucke
-     *
-     * @param \AppBundle\Entity\Druck $drucke
-     *
-     * @return Archivierung
-     */
-    public function addDrucke(\AppBundle\Entity\Druck $drucke)
-    {
-        $this->drucke[] = $drucke;
-
-        return $this;
-    }
-
-    /**
-     * Remove drucke
-     *
-     * @param \AppBundle\Entity\Druck $drucke
-     */
-    public function removeDrucke(\AppBundle\Entity\Druck $drucke)
-    {
-        $this->drucke->removeElement($drucke);
-    }
-
-    /**
-     * Get drucke
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getDrucke()
-    {
-        return $this->drucke;
-    }
-
-    /**
-     * Add fotografien
-     *
-     * @param \AppBundle\Entity\Fotografie $fotografien
-     *
-     * @return Archivierung
-     */
-    public function addFotografien(\AppBundle\Entity\Fotografie $fotografien)
-    {
-        $this->fotografien[] = $fotografien;
-
-        return $this;
-    }
-
-    /**
-     * Remove fotografien
-     *
-     * @param \AppBundle\Entity\Fotografie $fotografien
-     */
-    public function removeFotografien(\AppBundle\Entity\Fotografie $fotografien)
-    {
-        $this->fotografien->removeElement($fotografien);
-    }
-
-    /**
-     * Get fotografien
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getFotografien()
-    {
-        return $this->fotografien;
     }
 
     /**
