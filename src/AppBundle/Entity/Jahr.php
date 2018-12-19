@@ -13,8 +13,9 @@ use Doctrine\Common\Collections\ArrayCollection;
 class Jahr
 {
 
-    public function __construct()
+    public function __construct($jahreszahl)
     {
+        $this->wert = $jahreszahl;
         $this->archivierungen = new ArrayCollection();
     }
 

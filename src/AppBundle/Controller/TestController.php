@@ -16,6 +16,9 @@ class TestController extends Controller
      */
     public function indexAction(Request $request)
     {
+
+        $em = $this->getDoctrine()->getManager();
+
         // replace this example code with whatever you need
         return $this->render('test/test.html.twig', [
             'base_dir' => realpath($this->getParameter('kernel.root_dir').'/..'),

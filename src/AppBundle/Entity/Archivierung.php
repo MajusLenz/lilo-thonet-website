@@ -16,10 +16,14 @@ class Archivierung
 
     public function __construct()
     {
-        $this->erstelldatum = new DateTime("now");
+        $now = new DateTime("now");
+        $this->erstelldatum = $now;
+        $this->letzteBearbeitung = $now;
         $this->infos = new ArrayCollection();
+        $this->jahre = new ArrayCollection();
+        $this->referenzen = new ArrayCollection();
+        $this->referenziertVon = new ArrayCollection();
     }
-
 
     /**
      * @ORM\Column(type="integer")
@@ -32,6 +36,11 @@ class Archivierung
      * @ORM\Column(type="datetime", nullable=false)
      */
     private $erstelldatum;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=false)
+     */
+    private $letzteBearbeitung;
 
     /**
      * @ORM\Column(type="string", unique=true, nullable=false)
@@ -89,7 +98,6 @@ class Archivierung
     ///// GETTER & SETTER:
 
 
-
     /**
      * Get id
      *
@@ -122,6 +130,30 @@ class Archivierung
     public function getErstelldatum()
     {
         return $this->erstelldatum;
+    }
+
+    /**
+     * Set letzteBearbeitung
+     *
+     * @param \DateTime $letzteBearbeitung
+     *
+     * @return Archivierung
+     */
+    public function setLetzteBearbeitung($letzteBearbeitung)
+    {
+        $this->letzteBearbeitung = $letzteBearbeitung;
+
+        return $this;
+    }
+
+    /**
+     * Get letzteBearbeitung
+     *
+     * @return \DateTime
+     */
+    public function getLetzteBearbeitung()
+    {
+        return $this->letzteBearbeitung;
     }
 
     /**
@@ -229,6 +261,7 @@ class Archivierung
      */
     public function addInfo(\AppBundle\Entity\Information $info)
     {
+        $this->removeInfo($info);
         $this->infos[] = $info;
 
         return $this;
@@ -263,6 +296,7 @@ class Archivierung
      */
     public function addJahre(\AppBundle\Entity\Jahr $jahre)
     {
+        $this->removeJahre($jahre);
         $this->jahre[] = $jahre;
 
         return $this;
@@ -331,6 +365,7 @@ class Archivierung
      */
     public function addReferenzen(\AppBundle\Entity\Archivierung $referenzen)
     {
+        $this->removeReferenzen($referenzen);
         $this->referenzen[] = $referenzen;
 
         return $this;

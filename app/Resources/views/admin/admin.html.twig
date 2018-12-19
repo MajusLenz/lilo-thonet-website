@@ -2,17 +2,20 @@
 
 {% block body %}
 
-    <a class="logout-btn" href="{{ path('logout') }}">logout</a>
+    <a class="logout-btn" href="{{ path('logout') }}" style="float: right;">logout</a>
 
+    <br/>
     <h1>Administrator-Bereich:</h1>
     <section class="upload-csv">
-        <p>CSV-Datei + ZIP-Datei mit zugehörigen Bilddateien hochladen um neue Archivierungen zu erstellen</p>
 
-        <form target="{{ path('admin_upload') }}">
-            CSV: <input type="file" name="csv">
-            ZIP: <input type="file" name="pics">
-            <button type="submit">Hochladen</button>
-        </form>
+        {{ form_start(form) }}
+        {{ form_label(form.csv) }}
+        <br/>
+        {{ form_errors(form.csv) }}
+        {{ form_widget(form.csv) }}
+        <br/><br/>
+        {{ form_row(form.save) }}
+        {{ form_end(form) }}
     </section>
 
 {% endblock %}
