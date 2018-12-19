@@ -278,6 +278,25 @@ class Archivierung
     }
 
     /**
+     * Remove all infos
+     * @param $infoName string -> Kategorie der Information. Beispiel: "Titel". --- Wenn $infoName leer, dann lösche alle Infos.
+     */
+    public function removeAllInfos($infoName)
+    {
+        $allInfos = $this->getInfos();
+
+        if(!$infoName)
+            foreach ($allInfos as $info) {
+                $this->removeInfo($info);
+            }
+        else
+            foreach ($allInfos as $info) {
+                if($info->getName() === $infoName)
+                    $this->removeInfo($info);
+            }
+    }
+
+    /**
      * Get infos
      *
      * @return \Doctrine\Common\Collections\Collection
@@ -310,6 +329,18 @@ class Archivierung
     public function removeJahre(\AppBundle\Entity\Jahr $jahre)
     {
         $this->jahre->removeElement($jahre);
+    }
+
+    /**
+     * Remove all jahre
+     */
+    public function removeAllJahre()
+    {
+        $allJahre = $this->getJahre();
+
+        foreach ($allJahre as $jahr) {
+            $this->removeJahre($jahr);
+        }
     }
 
     /**

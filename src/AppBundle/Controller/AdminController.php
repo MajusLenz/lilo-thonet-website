@@ -6,6 +6,7 @@ use AppBundle\Entity\Archivierung;
 use AppBundle\Entity\ArchivierungsUpload;
 use AppBundle\Entity\Information;
 use AppBundle\Entity\Jahr;
+use DateTime;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
@@ -41,6 +42,8 @@ class AdminController extends Controller
             // Jede Zeile der Tabelle bearbeiten
             foreach($data as $rowCount => $row) {
                 $zeilenNr = $rowCount + 2;
+                $isEdit = false;
+                $delete = "DELETE";
 
                 $archivierungsID = trim($row["Archivierungs-ID"]);
                 unset($row["Archivierungs-ID"]);
@@ -60,7 +63,10 @@ class AdminController extends Controller
                         $em->detach($archivierung);
                         continue; // gesamte Zeile überspringen
                     }
+                    $archivierung->setLetzteBearbeitung(new DateTime("now"));
+                    $isEdit = true;
                 }
+
                 //oder neue archivierung erstellen
                 else{
                     $archivierung = new Archivierung();
@@ -71,92 +77,145 @@ class AdminController extends Controller
                 $dateiname = trim($row["Dateiname"]);
                 unset($row["Dateiname"]);
 
-                // Fehler wenn Dateiname nicht vorhanden
-                if(empty($dateiname)) {
-                    array_push(
-                        $errorList,
-                        "Zeile $zeilenNr: Pflichtfeld 'Dateiname' ist leer! Zeile übersprungen!"
-                    );
+                // Dateinamen für neue Archivierung
+                if($isEdit === false) {
 
-                    $em->detach($archivierung);
-                    continue; // gesamte Zeile überspringen
+                    // Fehler wenn Dateiname nicht vorhanden
+                    if(empty($dateiname)) {
+                        array_push(
+                            $errorList,
+                            "Zeile $zeilenNr: Pflichtfeld 'Dateiname' ist leer! Zeile übersprungen!"
+                        );
+
+                        $em->detach($archivierung);
+                        continue; // gesamte Zeile überspringen
+                    }
+
+                    // Fehler wenn Dateiname nicht einzigartig
+                    $doppelgaenger = $em->getRepository('AppBundle:Archivierung')->findOneByDateiname($dateiname);
+                    if($doppelgaenger !== null){
+                        array_push(
+                            $errorList,
+                            "Zeile $zeilenNr: Dateiname '" . $dateiname
+                            . "' ist bereits in der Datenbank enthalten! Zeile übersprungen!"
+                        );
+
+                        $em->detach($archivierung);
+                        continue; // gesamte Zeile überspringen
+                    }
+
+                    $archivierung->setDateiname($dateiname);
                 }
 
-                // Fehler wenn Dateiname nicht einzigartig
-                $doppelgaenger = $em->getRepository('AppBundle:Archivierung')->findOneByDateiname($dateiname);
-                if($doppelgaenger !== null){
-                    array_push(
-                        $errorList,
-                        "Zeile $zeilenNr: Dateiname '" . $dateiname
-                        . "' ist bereits in der Datenbank enthalten! Zeile übersprungen!"
-                    );
+                // vorhanden Dateinamen bearbeiten
+                else{
+                    // wenn was drin steht
+                    if( !empty($dateiname) ) {
 
-                    $em->detach($archivierung);
-                    continue; // gesamte Zeile überspringen
+                        // Fehler wenn Dateiname nicht einzigartig
+                        $doppelgaenger = $em->getRepository('AppBundle:Archivierung')->findOneByDateiname($dateiname);
+                        if ($doppelgaenger !== null) {
+                            array_push(
+                                $errorList,
+                                "Zeile $zeilenNr: Dateiname '" . $dateiname
+                                . "' ist bereits in der Datenbank enthalten! Zeile übersprungen!"
+                            );
+
+                            $em->detach($archivierung);
+                            continue; // gesamte Zeile überspringen
+                        }
+
+                        $archivierung->setDateiname($dateiname);
+                    }
                 }
-
-                $archivierung->setDateiname($dateiname);
 
 
                 $dateinameAlt = trim($row["Dateiname (alt)"]);
                 unset($row["Dateiname (alt)"]);
 
-                if($dateinameAlt)
-                    $archivierung->setDateinameAlt($dateinameAlt);
+                if($dateinameAlt) {
+                    // DateinamenAlt für neue Archivierung
+                    if($isEdit === false) {
+                        $archivierung->setDateinameAlt($dateinameAlt);
+                    }
+                    // vorhanden DateinamenAlt bearbeiten
+                    else{
+                        if($dateinameAlt === $delete) {
+                            $archivierung->setDateinameAlt(null);
+                        }
+                        else{
+                            $archivierung->setDateinameAlt($dateinameAlt);
+                        }
+                    }
+                }
 
 
                 $jahre = trim($row["Jahr"]);
                 unset($row["Jahr"]);
 
                 if($jahre) {
-                    $minJahr = 0;
-                    $maxJahr = 0;
-                    $jahreArray = explode("-", $jahre);
 
-                    // Fehler wenn Jahre in falschem Format angegeben
-                    if (count($jahreArray) > 2) {
-                        array_push(
-                            $errorList,
-                            "Zeile $zeilenNr: Jahr " . $jahre
-                            . " hat das falsche Format! Erlaubt: ZAHL oder ZAHL-ZAHL. Zeile übersprungen!"
-                        );
-
-                        $em->detach($archivierung);
-                        continue; // gesamte Zeile überspringen
+                    // Bei Bearbeitung erst ALLE Jahre entfernen
+                    if($isEdit) {
+                        $archivierung->removeAllJahre();
                     }
 
-                    if (count($jahre) === 1) {
-                        $minJahr = trim($jahre[0]);
-                        $maxJahr = $minJahr;
-                    } elseif (count($jahre) === 2) {
-                        $minJahr = trim($jahre[0]);
-                        $maxJahr = trim($jahre[1]);
+                    // wenn nur gelöscht werden sollte
+                    if($isEdit && $jahre === $delete) {
+                        // fertig
                     }
 
-                    if($minJahr > $maxJahr) {
-                        $temp = $maxJahr;
-                        $maxJahr = $minJahr;
-                        $minJahr = $temp;
-                    }
+                    // ansonsten noch neue jahre hinzufügen
+                    else {
+                        $minJahr = 0;
+                        $maxJahr = 0;
+                        $jahreArray = explode("-", $jahre);
 
-                    // Fehler wenn eines der Jahre keine Zahl ist
-                    if (!is_numeric($minJahr) || !is_numeric($maxJahr)) {
-                        array_push(
-                            $errorList,
-                            "Zeile $zeilenNr: Jahr " . $jahre
-                            . " enthält eine ungültiige Zahl! Erlaubt sind nur glatte Jahreszahlen. Zeile übersprungen!"
-                        );
+                        // Fehler wenn Jahre in falschem Format angegeben
+                        if (count($jahreArray) > 2) {
+                            array_push(
+                                $errorList,
+                                "Zeile $zeilenNr: Jahr " . $jahre
+                                . " hat das falsche Format! Erlaubt: ZAHL oder ZAHL-ZAHL. Zeile übersprungen!"
+                            );
 
-                        $em->detach($archivierung);
-                        continue; // gesamte Zeile überspringen
-                    }
-
-                    for ($i = $minJahr; $i <= $maxJahr; $i++) {
-                        $jahrObjekt = $em->getRepository('AppBundle:Jahr')->findOneByWert($i);
-                        if ($jahrObjekt === null) {
-                            $jahrObjekt = new Jahr(intval($i));
+                            $em->detach($archivierung);
+                            continue; // gesamte Zeile überspringen
                         }
-                        $archivierung->addJahre($jahrObjekt);
+
+                        if (count($jahre) === 1) {
+                            $minJahr = trim($jahre[0]);
+                            $maxJahr = $minJahr;
+                        } elseif (count($jahre) === 2) {
+                            $minJahr = trim($jahre[0]);
+                            $maxJahr = trim($jahre[1]);
+                        }
+
+                        if ($minJahr > $maxJahr) {
+                            $temp = $maxJahr;
+                            $maxJahr = $minJahr;
+                            $minJahr = $temp;
+                        }
+
+                        // Fehler wenn eines der Jahre keine Zahl ist
+                        if (!is_numeric($minJahr) || !is_numeric($maxJahr)) {
+                            array_push(
+                                $errorList,
+                                "Zeile $zeilenNr: Jahr " . $jahre
+                                . " enthält eine ungültiige Zahl! Erlaubt sind nur glatte Jahreszahlen. Zeile übersprungen!"
+                            );
+
+                            $em->detach($archivierung);
+                            continue; // gesamte Zeile überspringen
+                        }
+
+                        for ($i = $minJahr; $i <= $maxJahr; $i++) {
+                            $jahrObjekt = $em->getRepository('AppBundle:Jahr')->findOneByWert($i);
+                            if ($jahrObjekt === null) {
+                                $jahrObjekt = new Jahr(intval($i));
+                            }
+                            $archivierung->addJahre($jahrObjekt);
+                        }
                     }
                 }
 
@@ -164,27 +223,41 @@ class AdminController extends Controller
                 unset($row["Verknuepfte Objekte"]);
 
                 if($referenzen) {
-                    $referenzenArray = explode(";", $referenzen);
 
-                    foreach ($referenzenArray as $referenzString) {
+                    // Bei Bearbeitung erst ALLE Referenzen entfernen
+                    if($isEdit) {
+                        $archivierung->removeAllReferenzen();
+                    }
 
-                        $referenzString = trim($referenzString);
-                        if ($referenzString) {
-                            $referenzArchivierung = $em->getRepository('AppBundle:Archivierung')->findOneByDateiname($referenzString);
+                    // wenn nur gelöscht werden sollte
+                    if($isEdit && $referenzen === $delete) {
+                        // fertig
+                    }
 
-                            // Fehler wenn Referenz in Datenbank nicht existiert
-                            if($referenzArchivierung === null) {
-                                array_push(
-                                    $errorList,
-                                    "Zeile $zeilenNr: Verknüpfung auf Dateiname " . $referenzString
-                                    . " nicht möglich, da keine Archivierung mit diesem Dateinamen gefunden wurde. Zeile übersprungen!"
-                                );
+                    // ansonsten noch neue Referenzen hinzufügen
+                    else {
+                        $referenzenArray = explode(";", $referenzen);
 
-                                $em->detach($archivierung);
-                                continue 2; // gesamte Zeile überspringen
+                        foreach ($referenzenArray as $referenzString) {
+
+                            $referenzString = trim($referenzString);
+                            if ($referenzString) {
+                                $referenzArchivierung = $em->getRepository('AppBundle:Archivierung')->findOneByDateiname($referenzString);
+
+                                // Fehler wenn Referenz in Datenbank nicht existiert
+                                if ($referenzArchivierung === null) {
+                                    array_push(
+                                        $errorList,
+                                        "Zeile $zeilenNr: Verknüpfung auf Dateiname " . $referenzString
+                                        . " nicht möglich, da keine Archivierung mit diesem Dateinamen gefunden wurde. Zeile übersprungen!"
+                                    );
+
+                                    $em->detach($archivierung);
+                                    continue 2; // gesamte Zeile überspringen
+                                }
+
+                                $archivierung->addReferenzen($referenzArchivierung);
                             }
-
-                            $archivierung->addReferenzen($referenzArchivierung);
                         }
                     }
                 }
@@ -195,20 +268,34 @@ class AdminController extends Controller
                     $valuesString = trim($values);
 
                     if($keyString && $valuesString) {
-                        $valuesArray = explode(";", $valuesString);
 
-                        foreach ($valuesArray as $value) {
-                            $value = trim($value);
+                        // Bei Bearbeitung erst ALLE Infos dieser Info-Kategorie entfernen
+                        if($isEdit) {
+                            $archivierung->removeAllInfos($keyString);
+                        }
 
-                            if($value) {
-                                $info = $em->getRepository('AppBundle:Information')->findOneBy(array('name' => $keyString, 'wert' => $value));
+                        // wenn nur gelöscht werden sollte
+                        if($isEdit && $valuesString === $delete) {
+                            // fertig
+                        }
 
-                                if ($info === null) {
-                                    $info = new Information();
-                                    $info->setName($keyString);
-                                    $info->setWert($value);
+                        // ansonsten noch neue Infos hinzufügen
+                        else {
+                            $valuesArray = explode(";", $valuesString);
+
+                            foreach ($valuesArray as $value) {
+                                $value = trim($value);
+
+                                if ($value) {
+                                    $info = $em->getRepository('AppBundle:Information')->findOneBy(array('name' => $keyString, 'wert' => $value));
+
+                                    if ($info === null) {
+                                        $info = new Information();
+                                        $info->setName($keyString);
+                                        $info->setWert($value);
+                                    }
+                                    $archivierung->addInfo($info);
                                 }
-                                $archivierung->addInfo($info);
                             }
                         }
                     }

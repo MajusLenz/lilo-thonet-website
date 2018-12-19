@@ -18,6 +18,7 @@ class TestController extends Controller
     {
 
         $em = $this->getDoctrine()->getManager();
+        $test = $em->getRepository('AppBundle:Archivierung')->find(2);
 
         // replace this example code with whatever you need
         return $this->render('test/test.html.twig', [
