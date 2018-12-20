@@ -50,6 +50,16 @@ class AdminController extends Controller
 
                 //bestehende Archivierung bearbeiten
                 if($archivierungsID) {
+                    if( !is_numeric($archivierungsID) ) {
+                        array_push(
+                            $errorList,
+                            "Zeile $zeilenNr: Bearbeiten der Archivierung nicht möglich. ArchivierungID "
+                            . $archivierungsID . " ist keine Zahl! Zeile übersprungen!"
+                        );
+
+                        continue; // gesamte Zeile überspringen
+                    }
+
                     $archivierung = $em->getRepository('AppBundle:Archivierung')->find($archivierungsID);
 
                     // Fehler wenn Archivierungs-ID zu keiner Archivierung führt
@@ -74,7 +84,7 @@ class AdminController extends Controller
                 }
 
 
-                $dateiname = trim($row["Dateiname"]);
+                $dateiname = trim(utf8_encode($row["Dateiname"]));
                 unset($row["Dateiname"]);
 
                 // Dateinamen für neue Archivierung
@@ -130,7 +140,7 @@ class AdminController extends Controller
                 }
 
 
-                $dateinameAlt = trim($row["Dateiname (alt)"]);
+                $dateinameAlt = trim(utf8_encode($row["Dateiname (alt)"]));
                 unset($row["Dateiname (alt)"]);
 
                 if($dateinameAlt) {
@@ -219,7 +229,7 @@ class AdminController extends Controller
                     }
                 }
 
-                $referenzen = trim($row["Verknuepfte Objekte"]);
+                $referenzen = trim(utf8_encode($row["Verknuepfte Objekte"]));
                 unset($row["Verknuepfte Objekte"]);
 
                 if($referenzen) {
@@ -264,8 +274,8 @@ class AdminController extends Controller
 
                 // Alle weiteren Attribute werden in der Entity "Information" gespeichert:
                 foreach($row as $key => $values) {
-                    $keyString = trim($key);
-                    $valuesString = trim($values);
+                    $keyString = trim(utf8_encode($key));
+                    $valuesString = trim(utf8_encode($values));
 
                     if($keyString && $valuesString) {
 
@@ -311,7 +321,7 @@ class AdminController extends Controller
                 $em->flush();
             }
 
-            return $this->redirect($this->generateUrl('admin_upload_result', array('errorlist' => $errorList)));
+            //return $this->redirect($this->generateUrl('admin_upload_result', array('errorlist' => $errorList)));
         }
 
         return $this->render('admin/admin.html.twig', array(
