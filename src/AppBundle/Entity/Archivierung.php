@@ -413,6 +413,18 @@ class Archivierung
     }
 
     /**
+     * Remove all jahre
+     */
+    public function removeAllReferenzen()
+    {
+        $allReferenzen = $this->getReferenzen();
+
+        foreach ($allReferenzen as $referenzen) {
+            $this->removeReferenzen($referenzen);
+        }
+    }
+
+    /**
      * Get referenzen
      *
      * @return \Doctrine\Common\Collections\Collection

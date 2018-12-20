@@ -87,6 +87,18 @@ class AdminController extends Controller
                 $dateiname = trim(utf8_encode($row["Dateiname"]));
                 unset($row["Dateiname"]);
 
+                // Fehler wenn Dateiname == DELETE
+                if($dateiname === $delete) {
+                    array_push(
+                        $errorList,
+                        "Zeile $zeilenNr: Pflichtfeld 'Dateiname' darf nicht durch $delete gelöscht werden, "
+                        . "da es nie leer sein darf! Zeile übersprungen!"
+                    );
+
+                    $em->detach($archivierung);
+                    continue; // gesamte Zeile überspringen
+                }
+
                 // Dateinamen für neue Archivierung
                 if($isEdit === false) {
 
@@ -160,7 +172,7 @@ class AdminController extends Controller
                 }
 
 
-                $jahre = trim($row["Jahr"]);
+                $jahre = trim(utf8_encode($row["Jahr"]));
                 unset($row["Jahr"]);
 
                 if($jahre) {
@@ -179,7 +191,7 @@ class AdminController extends Controller
                     else {
                         $minJahr = 0;
                         $maxJahr = 0;
-                        $jahreArray = explode("-", $jahre);
+                        $jahreArray = explode(";", $jahre);
 
                         // Fehler wenn Jahre in falschem Format angegeben
                         if (count($jahreArray) > 2) {
@@ -193,14 +205,18 @@ class AdminController extends Controller
                             continue; // gesamte Zeile überspringen
                         }
 
-                        if (count($jahre) === 1) {
-                            $minJahr = trim($jahre[0]);
+                        // ein Jahr
+                        if (count($jahreArray) === 1) {
+                            $minJahr = trim($jahreArray[0]);
                             $maxJahr = $minJahr;
-                        } elseif (count($jahre) === 2) {
-                            $minJahr = trim($jahre[0]);
-                            $maxJahr = trim($jahre[1]);
+                        }
+                        // mehrere Jahre
+                        elseif (count($jahreArray) === 2) {
+                            $minJahr = trim($jahreArray[0]);
+                            $maxJahr = trim($jahreArray[1]);
                         }
 
+                        // min und max tauschen falls falschherum
                         if ($minJahr > $maxJahr) {
                             $temp = $maxJahr;
                             $maxJahr = $minJahr;
@@ -321,7 +337,7 @@ class AdminController extends Controller
                 $em->flush();
             }
 
-            //return $this->redirect($this->generateUrl('admin_upload_result', array('errorlist' => $errorList)));
+            return $this->redirect($this->generateUrl('admin_upload_result', array('errorlist' => $errorList)));
         }
 
         return $this->render('admin/admin.html.twig', array(
@@ -338,7 +354,7 @@ class AdminController extends Controller
     {
         $errorList = $request->query->get('errorlist');
         if(empty($errorList)) {
-            $errorList = array("Es gab keine Fehler. Alles wurde erfolgreich hochgeladen!");
+            $errorList = array("Es gab keine Fehler. Alles wurde erfolgreich hochgeladen bzw. bearbeitet!");
         }
         return $this->render('admin/upload_result.html.twig', array("errorList" => $errorList));
     }
