@@ -332,53 +332,99 @@ class AdminController extends Controller
                     }
                 }
 
-                $finder = new Finder();
-                $finder->files()->in($neueBilderOrdner)->name($dateiname);
-                $anzahlBilder = $finder->count();
+                // wenn im Dateinamen was drin steht, neue Bilder speichern:
+                if(!empty($dateiname)) {
 
-                // Fehler wenn nicht alle Bilder gefunden werden können
-                if($anzahlBilder !== 3) {
-                    array_push(
-                        $errorList,
-                        "Zeile $zeilenNr: Es können nicht alle 3 passenden Bilder zu " . $dateiname
-                        . " in den Unterverzeichnissen von neue_bilder gefuden werden. Zeile übersprungen!"
-                    );
+                    $finder = new Finder();
+                    $finder->files()->in($neueBilderOrdner)->name($dateiname);
+                    $anzahlBilder = $finder->count();
 
-                    $em->detach($archivierung);
-                    continue; // gesamte Zeile überspringen
+                    // Fehler wenn nicht alle drei neuen Bilder gefunden werden können
+                    if ($anzahlBilder !== 3) {
+                        array_push(
+                            $errorList,
+                            "Zeile $zeilenNr: Es können nicht alle 3 passenden Bilder zu " . $dateiname
+                            . " in den Unterverzeichnissen vom Ordner 'neue_bilder' gefuden werden. Zeile übersprungen!"
+                        );
+
+                        $em->detach($archivierung);
+                        continue; // gesamte Zeile überspringen
+                    }
+
+                    // Wenn Bearbeitung, dann erst alle alten Bilder der Archivierung löschen
+                    if ($isEdit) {
+                        $dateiHashAlt = $archivierung->getDateiHash();
+                        $ersteZweiBuchstabenAlt = substr($dateiHashAlt, 0, 2);
+                        $hashPfadAlt = $gespeicherteBilderOrdner . "/" . $ersteZweiBuchstabenAlt;
+                        $hashRestAlt = substr($dateiHashAlt, 2);
+
+                        $pfadKomplettAlt = $hashPfadAlt . "/" . $hashRestAlt;
+                        try {
+                            $fs->remove(array($pfadKomplettAlt . "_g.png", $pfadKomplettAlt . "_m.png", $pfadKomplettAlt . "_k.png"));
+                        } catch (IOExceptionInterface $exception) {
+                            array_push(
+                                $errorList,
+                                "Zeile $zeilenNr: Es ist ein unerwarteter Fehler beim Bearbeiten der Archivierung mit dem Dateinamen " . $dateiname
+                                . " aufgetreten: Das Löschen der alten Bilddateien ist fehlgeschlagen. Zeile übersprungen! --- " . $exception->getPath()
+                            );
+
+                            $em->detach($archivierung);
+                            continue; // gesamte Zeile überspringen
+                        }
+                    }
+
+                    // Neue Bilder speichern
+                    $dateiHash = md5($dateiname);
+                    $ersteZweiBuchstaben = substr($dateiHash, 0, 2);
+                    $hashPfad = $gespeicherteBilderOrdner . "/" . $ersteZweiBuchstaben;
+                    $hashRest = substr($dateiHash, 2);
+
+                    foreach ($finder as $bild) {
+
+                        if ($fs->exists($hashPfad) === false) {
+                            try {
+                                $fs->mkdir($hashPfad);
+                            } catch (IOExceptionInterface $exception) {
+                                array_push(
+                                    $errorList,
+                                    "Zeile $zeilenNr: Es ist ein unerwarteter Fehler bei Erstellen des Ordners " . $hashPfad
+                                    . " aufgetreten. Zeile übersprungen! --- " . $exception->getPath()
+                                );
+
+                                $em->detach($archivierung);
+                                continue 2; // gesamte Zeile überspringen
+                            }
+                        }
+
+                        $bildGroesse = $bild->getRelativePath();
+                        $bildPfad = $bild->getRealPath();
+                        $groesseEndung = "_FEHLER";
+
+                        if ($bildGroesse === "bilddateien_gross") {
+                            $groesseEndung = "_g";
+                        } elseif ($bildGroesse === "bilddateien_mittel") {
+                            $groesseEndung = "_m";
+                        } elseif ($bildGroesse === "bilddateien_klein") {
+                            $groesseEndung = "_k";
+                        }
+
+                        try {
+                            $fs->copy($bildPfad, $hashPfad . "/" . $hashRest . $groesseEndung . ".png", true);
+                        } catch (IOExceptionInterface $exception) {
+                            array_push(
+                                $errorList,
+                                "Zeile $zeilenNr: Es ist ein unerwarteter Fehler bei Erstellen der Datei "
+                                . $bildPfad, $hashPfad . "/" . $hashRest . $groesseEndung . ".png"
+                                . " aufgetreten. Zeile übersprungen! --- " . $exception->getPath()
+                            );
+
+                            $em->detach($archivierung);
+                            continue 2; // gesamte Zeile überspringen
+                        }
+                    }
+
+                    $archivierung->setDateiHash($dateiHash);
                 }
-
-                $dateiHash = md5($dateiname);
-                $ersteZweiBuchstaben = substr($dateiHash, 0, 2);
-                $hashPfad = $gespeicherteBilderOrdner . "/" . $ersteZweiBuchstaben;
-                $hashRest = substr($dateiHash, 2);
-
-                foreach ($finder as $bild) {
-
-                    if( $fs->exists($hashPfad) === false ) {
-                        $fs->mkdir($hashPfad);
-                    }
-
-                    $bildGroesse = $bild->getRelativePath();
-                    $bildPfad = $bild->getRealPath();
-
-                    if($bildGroesse === "bilddateien_gross") {
-
-                        $fs->copy($bildPfad, $hashPfad . "/" . $hashRest . "_g.png", true);
-                    }
-
-                    elseif($bildGroesse === "bilddateien_mittel") {
-
-                        $fs->copy($bildPfad, $hashPfad . "/" . $hashRest . "_m.png", true);
-                    }
-
-                    elseif($bildGroesse === "bilddateien_klein") {
-
-                        $fs->copy($bildPfad, $hashPfad . "/" . $hashRest . "_k.png", true);
-                    }
-                }
-
-                $archivierung->setDateiHash($dateiHash);
 
                 // Archivierung speichern
                 $em->persist($archivierung);
