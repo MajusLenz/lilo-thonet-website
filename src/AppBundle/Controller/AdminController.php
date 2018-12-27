@@ -13,6 +13,9 @@ use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Finder\Finder;
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 
 class AdminController extends Controller
 {
@@ -32,7 +35,10 @@ class AdminController extends Controller
 
         if ($form->isSubmitted() && $form->isValid()) {
 
+            $fs = new Filesystem();
             $em = $this->getDoctrine()->getManager();
+            $neueBilderOrdner = $this->getParameter('neue_bilder_ordner');
+            $gespeicherteBilderOrdner = $this->getParameter('gespeicherte_bilder_ordner');
 
             $file = $upload->getCsv();
             $errorList = array();
@@ -70,7 +76,6 @@ class AdminController extends Controller
                             . $archivierungsID . " nicht gefunden! Zeile übersprungen!"
                         );
 
-                        $em->detach($archivierung);
                         continue; // gesamte Zeile überspringen
                     }
                     $archivierung->setLetzteBearbeitung(new DateTime("now"));
@@ -327,12 +332,55 @@ class AdminController extends Controller
                     }
                 }
 
+                $finder = new Finder();
+                $finder->files()->in($neueBilderOrdner)->name($dateiname);
+                $anzahlBilder = $finder->count();
+
+                // Fehler wenn nicht alle Bilder gefunden werden können
+                if($anzahlBilder !== 3) {
+                    array_push(
+                        $errorList,
+                        "Zeile $zeilenNr: Es können nicht alle 3 passenden Bilder zu " . $dateiname
+                        . " in den Unterverzeichnissen von neue_bilder gefuden werden. Zeile übersprungen!"
+                    );
+
+                    $em->detach($archivierung);
+                    continue; // gesamte Zeile überspringen
+                }
+
                 $dateiHash = md5($dateiname);
-                ///////////////////////////////////
-                // TODO Logik für Bilder einfügen
-                ///////////////////////////////////
+                $ersteZweiBuchstaben = substr($dateiHash, 0, 2);
+                $hashPfad = $gespeicherteBilderOrdner . "/" . $ersteZweiBuchstaben;
+                $hashRest = substr($dateiHash, 2);
+
+                foreach ($finder as $bild) {
+
+                    if( $fs->exists($hashPfad) === false ) {
+                        $fs->mkdir($hashPfad);
+                    }
+
+                    $bildGroesse = $bild->getRelativePath();
+                    $bildPfad = $bild->getRealPath();
+
+                    if($bildGroesse === "bilddateien_gross") {
+
+                        $fs->copy($bildPfad, $hashPfad . "/" . $hashRest . "_g.png", true);
+                    }
+
+                    elseif($bildGroesse === "bilddateien_mittel") {
+
+                        $fs->copy($bildPfad, $hashPfad . "/" . $hashRest . "_m.png", true);
+                    }
+
+                    elseif($bildGroesse === "bilddateien_klein") {
+
+                        $fs->copy($bildPfad, $hashPfad . "/" . $hashRest . "_k.png", true);
+                    }
+                }
+
                 $archivierung->setDateiHash($dateiHash);
 
+                // Archivierung speichern
                 $em->persist($archivierung);
                 $em->flush();
             }
