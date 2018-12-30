@@ -279,15 +279,17 @@ class AdminController extends Controller
                                 if ($referenzArchivierung === null) {
                                     array_push(
                                         $errorList,
-                                        "Zeile $zeilenNr: Verknüpfung auf Dateiname " . $referenzString
-                                        . " nicht möglich, da keine Archivierung mit diesem Dateinamen gefunden wurde. Zeile übersprungen!"
+                                        "Zeile $zeilenNr: [[[Warnung]]] Verknüpfung auf Dateiname " . $referenzString
+                                        . " nicht möglich, da keine Archivierung mit diesem Dateinamen gefunden wurde."
+                                        . " gesamte Zeile NICHT übersprungen, da die referenzierte Archivierung zum Zeitpunkt des Erstellens eventuell einfach noch nicht existiert hat."
                                     );
 
-                                    $em->detach($archivierung);
-                                    continue 2; // gesamte Zeile überspringen
+                                    //$em->detach($archivierung);
+                                    //continue 2; // gesamte Zeile überspringen
                                 }
 
-                                $archivierung->addReferenzen($referenzArchivierung);
+                                else
+                                    $archivierung->addReferenzen($referenzArchivierung);
                             }
                         }
                     }
@@ -318,7 +320,10 @@ class AdminController extends Controller
                                 $value = trim($value);
 
                                 if ($value) {
-                                    $info = $em->getRepository('AppBundle:Information')->findOneBy(array('name' => $keyString, 'wert' => $value));
+                                    $info = $em->getRepository('AppBundle:Information')->findOneBy(array(
+                                        'name' => $keyString,
+                                        'wert' => $value)
+                                    );
 
                                     if ($info === null) {
                                         $info = new Information();
@@ -400,11 +405,11 @@ class AdminController extends Controller
                         $bildPfad = $bild->getRealPath();
                         $groesseEndung = "_FEHLER";
 
-                        if ($bildGroesse === "bilddateien_gross") {
+                        if ($bildGroesse === "Archiv_gross") {
                             $groesseEndung = "_g";
-                        } elseif ($bildGroesse === "bilddateien_mittel") {
+                        } elseif ($bildGroesse === "Archiv_mittel") {
                             $groesseEndung = "_m";
-                        } elseif ($bildGroesse === "bilddateien_klein") {
+                        } elseif ($bildGroesse === "Archiv_klein") {
                             $groesseEndung = "_k";
                         }
 
@@ -431,7 +436,8 @@ class AdminController extends Controller
                 $em->flush();
             }
 
-            return $this->redirect($this->generateUrl('admin_upload_result', array('errorlist' => $errorList)));
+            //return $this->redirect($this->generateUrl('admin_upload_result', array('errorlist' => $errorList)));
+            return $this->uploadAction($request, $errorList);
         }
 
         return $this->render('admin/admin.html.twig', array(
@@ -442,11 +448,10 @@ class AdminController extends Controller
 
 
     /**
-     * @Route("/admin/upload_result", name="admin_upload_result")
+     * ////Route("/admin/upload_result", name="admin_upload_result")
      */
-    public function uploadAction(Request $request)
+    public function uploadAction(Request $request, $errorList)
     {
-        $errorList = $request->query->get('errorlist');
         if(empty($errorList)) {
             $errorList = array("Es gab keine Fehler. Alles wurde erfolgreich hochgeladen bzw. bearbeitet!");
         }

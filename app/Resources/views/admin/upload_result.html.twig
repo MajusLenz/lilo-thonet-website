@@ -13,12 +13,14 @@
     <h2>Error-Liste:</h2>
     <p>
         {% for error in errorList %}
-            {{ error }}<br/>
+            {{ error }}
+            <br/><br/>
         {% endfor %}
     </p>
     <br/><br/>
 
     <a href="{{ path('admin') }}">Zurück zur Uploadseite</a>
 
+    <br/><br/>
 
 {% endblock %}
