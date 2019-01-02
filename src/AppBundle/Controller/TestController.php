@@ -27,7 +27,7 @@ class TestController extends Controller
     }
 
     /**
-     * @Route("/newArchivierung", name="new_Archivierung")
+     * ///////////////////// Route("/newArchivierung", name="new_Archivierung")
      */
     public function newArchivierungAction(Request $request)
     {

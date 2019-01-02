@@ -4,3 +4,19 @@
 body {
     background: #FFFFFF;
 }
+
+hr{
+    border-color: black;
+}
+
+.top{
+    padding: 1.6rem;
+    padding-top: 1.6rem;
+}
+
+.top .hamburger{
+    float: right;
+    padding: 0;
+    padding-top: 0.7rem;
+}
+

@@ -436,8 +436,7 @@ class AdminController extends Controller
                 $em->flush();
             }
 
-            //return $this->redirect($this->generateUrl('admin_upload_result', array('errorlist' => $errorList)));
-            return $this->uploadAction($request, $errorList);
+            return $this->uploadForward($request, $errorList);
         }
 
         return $this->render('admin/admin.html.twig', array(
@@ -448,9 +447,9 @@ class AdminController extends Controller
 
 
     /**
-     * ////Route("/admin/upload_result", name="admin_upload_result")
+     * generiert View nach hochladen einer csv-datei.
      */
-    public function uploadAction(Request $request, $errorList)
+    public function uploadForward(Request $request, $errorList)
     {
         if(empty($errorList)) {
             $errorList = array("Es gab keine Fehler. Alles wurde erfolgreich hochgeladen bzw. bearbeitet!");

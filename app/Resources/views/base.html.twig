@@ -5,10 +5,10 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% block title %}Thonet-Archiv{% endblock %}</title>
-    <meta name="robots" content="index, nofollow">
-    <meta name="keywords" content="Thonet, Archiv, Möbel, Design, Düsseldorf">
-    <meta name="description" lang="de" content="Privates Onlinearchiv des Möbeldesigners Thonet. Archivinhaber Lilo Schäfer.">
+    <meta name="keywords" content="Thonet, Archiv, Möbel, Design, Düsseldorf, Lilo Schäfer">
+    <meta name="description" lang="de" content="Privates Onlinearchiv des Möbeldesigners Thonet.">
     <link href="{{ asset('assets/css/bootstrap.min.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('assets/css/hamburgers.min.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('assets/css/style.css') }}" rel="stylesheet" type="text/css" />
     {% block stylesheets %}{% endblock %}
 
@@ -33,39 +33,32 @@
         {% endblock %}
     </div>
 </div>
-
+#}
 
 {% block top %}
     <div class="top container-fluid">
-        <form method="get" name="form" id="form" action="{{ path('_suche') }}" class="container form-horizontal">
-            <input type="hidden" id="hdn-collapse" name="form[hdncollapse]" value="collapsed">
-
-            <div class="row">
-                <div class="col-sm-2">
-                    <a class="hompage" href="{{ path('_default') }}">DoMaS</a>
-                </div>
-
-                {% if is_granted("IS_AUTHENTICATED_FULLY") %}
-                    <div class="col-sm-8 suchcontainer">
-                        <div class="col-sm-8 nopadding">
-                            <input id="form_freitext" name="form[freitext]" title="Suchbegriff" class="form-control" type="text" value="" placeholder="Archivierungen durchsuchen">
-                        </div>
-                        <div class="col-sm-4 nopadding suchbutton">
-                            <button type="submit" class="btn btn-red" name="form[submittop]"><span class="glyphicon glyphicon-search"></span></button>
-                        </div>
-                    </div>
-                {% endif %}
-
+        <div class="row">
+            <div class="col-9">
+                <a class="homepage-button" href="{{ path('_default') }}">Die&nbsp;Marke&nbsp;Thonet<br/>Grafik&nbsp;Archiv</a>
             </div>
-        </form>
+            <div class="col-3">
+                <div class="hamburger hamburger--squeeze">
+                    <div class="hamburger-box">
+                        <div class="hamburger-inner"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr/>
     </div>
 {% endblock %}
 
-#}
 
 
 <div class="body container">
-    {% block body %}{% endblock %}
+    {% block body %}
+
+    {% endblock %}
 </div>
 
 <div class="footer container">
