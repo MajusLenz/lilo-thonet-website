@@ -10,15 +10,45 @@
     <link href="{{ asset('assets/css/bootstrap.min.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('assets/css/hamburgers.min.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('assets/css/style.css') }}" rel="stylesheet" type="text/css" />
+
+    <style> /* TEST */
+        .TEST{
+            background-color: red;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 10px;
+            height: 10px;
+        }
+        @media (max-width: 992px) {
+            .TEST{
+                background-color: orange;
+            }
+        }
+        @media (max-width: 768px) {
+            .TEST{
+                background-color: yellow;
+            }
+        }
+        @media (max-width: 576px) {
+            .TEST{
+                background-color: green;
+            }
+        }
+    </style>
+
     {% block stylesheets %}{% endblock %}
 
     <!-- favicons -->
 
-
 </head>
+
+
 <body class="{% block bodyclass %}{% endblock %}">
 
     <div class="inhalt">
+
+        <div class="TEST"></div>
 
         {#
         <div class="header container-fluid">
@@ -61,9 +91,40 @@
                         </button>
                     </div>
                 </div>
-
                 <hr/>
             </div>
+
+            <!-- copy whole haeder because first real header is display:fixed
+
+            <div class="top container-fluid" style="visibility: hidden!important;">
+                <div class="row">
+                    <div class="col-9">
+                        <a class="homepage-button" href="{{ path('_index') }}">
+                            <img
+                                    alt="Die&nbsp;Marke&nbsp;Thonet<br/>Grafik&nbsp;Archiv"
+                                    src="{{ asset('assets/images/Archiv_Symbole_Mobil_Grafik_Archiv.svg') }}"
+                            />
+                        </a>
+                    </div>
+                    <div class="col-3">
+                        <button class="burger-button burger-button-open img-button">
+                            <img
+                                    alt="Menü öffnen"
+                                    src="{{ asset('assets/images/Archiv_Symbole_Mobil_Menue.svg') }}"
+                            />
+                        </button>
+                        <button class="burger-button burger-button-close img-button" style="display: none;">
+                            <img
+                                    alt="Menü schließen"
+                                    src="{{ asset('assets/images/Archiv_Symbole_Mobil_Menue_schliessen.svg') }}"
+                            />
+                        </button>
+                    </div>
+                </div>
+                <hr/>
+            </div>
+            -->
+
         {% endblock %}
 
 

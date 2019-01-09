@@ -8,7 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="jahr")
+ * @ORM\Table(name="Jahr")
  */
 class Jahr
 {

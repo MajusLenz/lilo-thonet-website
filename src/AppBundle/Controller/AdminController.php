@@ -24,6 +24,14 @@ class AdminController extends Controller
      */
     public function adminAction(Request $request)
     {
+
+        $this
+            ->get('doctrine')
+            ->getConnection()
+            ->getConfiguration()
+            ->setSQLLogger(new \Doctrine\DBAL\Logging\EchoSQLLogger());
+
+
         $upload = new ArchivierungsUpload();
 
         $form = $this->createFormBuilder($upload)
@@ -249,7 +257,6 @@ class AdminController extends Controller
                         }
                     }
                 }
-                
 
                 // Alle weiteren Attribute werden in der Entity "Information" gespeichert:
                 foreach($row as $key => $values) {

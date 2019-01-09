@@ -3,10 +3,36 @@
 {% block body %}
     <div>
 
+        <section class="detail">
+            <div class="detail-pic">
+                <img src="{{ asset('assets/images/archivierungen/' ~ archivierung.links["mittel"]) }}" alt="" />
+            </div>
+            <div class="detail-text">
+                blabla
+            </div>
+            <div class="detail-verknuepfteobjekte">
+                {% for vObjekt in verknuepfteObjekte %}
+
+                    <a href="{{ asset('assets/images/archivierungen/' ~ vObjekt.links["klein"]) }}"
+                       class="">
+                        <img class="" alt=""
+                             src="{{ asset('assets/images/archivierungen/' ~ vObjekt.links["klein"]) }}"
+                             width="200px"
+                        />
+                    </a>
+
+                {% endfor %}
+            </div>
+        </section>
+
+
+
+        {#
+
         <section class="lazy-loading grid images-overview">
             <div class="grid-sizer" style="display: none;"></div>
 
-            {#
+
             <img class="lazy rightclick-alert"
                  src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=="
                  data-src="{{ asset('assets/images/a.png') }}"
@@ -22,7 +48,7 @@
             <br>
             <br>
 
-            #}
+
 
             {% for archivierung in archivierungen %}
 
@@ -36,6 +62,7 @@
 
             {% endfor %}
         </section>
+        #}
 
 
 

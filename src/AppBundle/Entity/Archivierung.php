@@ -9,7 +9,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="archivierung")
+ * @ORM\Table(name="Archivierung")
  */
 class Archivierung
 {
@@ -63,15 +63,22 @@ class Archivierung
 
     ///// ASSOZIATIONEN:
 
+    /*/**
+     * @ORM\ManyToMany(targetEntity="Information", cascade={"persist"}, inversedBy="archivierung")
+     * @ORM\JoinTable(name="Archivierung_Information",
+     *      joinColumns={@ORM\JoinColumn(name="information_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="archivierung_id", referencedColumnName="id")}
+     * )
+     */
     /**
      * @ORM\ManyToMany(targetEntity="Information", inversedBy="archivierungen", cascade={"persist"})
-     * @ORM\JoinTable(name="archivierung_information")
+     * @ORM\JoinTable(name="Archivierung_Information")
      */
     private $infos;
 
     /**
      * @ORM\ManyToMany(targetEntity="Jahr", inversedBy="archivierungen", cascade={"persist"})
-     * @ORM\JoinTable(name="archivierung_jahr")
+     * @ORM\JoinTable(name="Archivierung_Jahr")
      */
     private $jahre;
 
@@ -264,27 +271,34 @@ class Archivierung
      */
     public function removeAllInfos($infoName)
     {
-        $allInfos = $this->getInfos();
+        $allInfos = $this->getInfos($infoName);
 
-        if(!$infoName)
-            foreach ($allInfos as $info) {
-                $this->removeInfo($info);
-            }
-        else
-            foreach ($allInfos as $info) {
-                if($info->getName() === $infoName)
-                    $this->removeInfo($info);
-            }
+        foreach ($allInfos as $info) {
+            $this->removeInfo($info);
+        }
     }
 
     /**
-     * Get infos
+     * get infos
      *
+     * @param $infoName
      * @return \Doctrine\Common\Collections\Collection
      */
-    public function getInfos()
+    public function getInfos($infoName)
     {
-        return $this->infos;
+        if(!$infoName)
+            return $this->infos;
+
+        else{
+            $return = array();
+
+            foreach ($this->infos as $info) {
+                if($info->getName() === $infoName)
+                    $return[] = $info;
+            }
+
+            return $return;
+        }
     }
 
     /**
