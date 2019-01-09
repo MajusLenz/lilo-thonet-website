@@ -18,57 +18,73 @@
 </head>
 <body class="{% block bodyclass %}{% endblock %}">
 
+    <div class="inhalt">
 
-
-{#
-<div class="header container-fluid">
-    <div class="container">
-        {% block header %}
-            {% if is_granted("IS_AUTHENTICATED_FULLY") %}
-                <div class="pull-left">Angemeldet als: {{ app.user.username }}</div>
-                <div class="pull-right"><a href="{{ path('_logout') }}">Logout</a></div>
-            {% else %}
-                <div class="pull-right"><a href="{{ path('_login') }}">Login</a></div>
-            {% endif %}
-        {% endblock %}
-    </div>
-</div>
-#}
-
-{% block top %}
-    <div class="top container-fluid">
-        <div class="row">
-            <div class="col-9">
-                <a class="homepage-button" href="{{ path('_default') }}">Die&nbsp;Marke&nbsp;Thonet<br/>Grafik&nbsp;Archiv</a>
-            </div>
-            <div class="col-3">
-                <div class="hamburger hamburger--squeeze">
-                    <div class="hamburger-box">
-                        <div class="hamburger-inner"></div>
-                    </div>
-                </div>
+        {#
+        <div class="header container-fluid">
+            <div class="container">
+                {% block header %}
+                    {% if is_granted("IS_AUTHENTICATED_FULLY") %}
+                        <div class="pull-left">Angemeldet als: {{ app.user.username }}</div>
+                        <div class="pull-right"><a href="{{ path('_logout') }}">Logout</a></div>
+                    {% else %}
+                        <div class="pull-right"><a href="{{ path('_login') }}">Login</a></div>
+                    {% endif %}
+                {% endblock %}
             </div>
         </div>
-        <hr/>
+        #}
+
+        {% block top %}
+            <div class="top container-fluid">
+                <div class="row">
+                    <div class="col-9">
+                        <a class="homepage-button" href="{{ path('_index') }}">
+                            <img
+                                    alt="Die&nbsp;Marke&nbsp;Thonet<br/>Grafik&nbsp;Archiv"
+                                    src="{{ asset('assets/images/Archiv_Symbole_Mobil_Grafik_Archiv.svg') }}"
+                            />
+                        </a>
+                    </div>
+                    <div class="col-3">
+                        <button class="burger-button burger-button-open img-button">
+                            <img
+                                alt="Menü öffnen"
+                                src="{{ asset('assets/images/Archiv_Symbole_Mobil_Menue.svg') }}"
+                            />
+                        </button>
+                        <button class="burger-button burger-button-close img-button" style="display: none;">
+                            <img
+                                alt="Menü schließen"
+                                src="{{ asset('assets/images/Archiv_Symbole_Mobil_Menue_schliessen.svg') }}"
+                            />
+                        </button>
+                    </div>
+                </div>
+
+                <hr/>
+            </div>
+        {% endblock %}
+
+
+
+        <div class="body container-fluid">
+            {% block body %}
+
+            {% endblock %}
+        </div>
+
+        <div class="footer container-fluid">
+            {% block footer %}{% endblock %}
+        </div>
+
+        <script src="{{ asset('assets/js/jquery-3.3.1.min.js') }}"></script>
+        <script src="{{ asset('assets/js/bootstrap.min.js') }}"></script>
+        <script src="{{ asset('assets/js/jquery.lazy.min.js') }}"></script>
+        <script src="{{ asset('assets/js/masonry.pkgd.min.js') }}"></script>
+        <script src="{{ asset('assets/js/scripts.js') }}"></script>
+        {% block javascripts %}{% endblock %}
+
     </div>
-{% endblock %}
-
-
-
-<div class="body container">
-    {% block body %}
-
-    {% endblock %}
-</div>
-
-<div class="footer container">
-    {% block footer %}{% endblock %}
-</div>
-
-<script src="{{ asset('assets/js/jquery-3.3.1.min.js') }}"></script>
-<script src="{{ asset('assets/js/bootstrap.min.js') }}"></script>
-<script src="{{ asset('assets/js/jquery.lazy.min.js') }}"></script>
-<script src="{{ asset('assets/js/scripts.js') }}"></script>
-{% block javascripts %}{% endblock %}
 </body>
 </html>

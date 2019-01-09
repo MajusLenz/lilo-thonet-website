@@ -21,8 +21,6 @@ class Archivierung
         $this->letzteBearbeitung = $now;
         $this->infos = new ArrayCollection();
         $this->jahre = new ArrayCollection();
-        $this->referenzen = new ArrayCollection();
-        $this->referenziertVon = new ArrayCollection();
     }
 
     /**
@@ -76,23 +74,6 @@ class Archivierung
      * @ORM\JoinTable(name="archivierung_jahr")
      */
     private $jahre;
-
-
-    ///// VERKNUEPFUNG AUF ANDERE ARCHIVIERUNGEN:
-
-    /**
-     * @ORM\ManyToMany(targetEntity="Archivierung", mappedBy="referenzen")
-     */
-    private $referenziertVon;
-
-    /**
-     * @ORM\ManyToMany(targetEntity="Archivierung", inversedBy="referenziertVon")
-     * @ORM\JoinTable(name="referenz",
-     *      joinColumns={@ORM\JoinColumn(name="von_id", referencedColumnName="id")},
-     *      inverseJoinColumns={@ORM\JoinColumn(name="auf_id", referencedColumnName="id")}
-     *      )
-     */
-    private $referenzen;
 
 
     ///// GETTER & SETTER:
@@ -351,86 +332,5 @@ class Archivierung
     public function getJahre()
     {
         return $this->jahre;
-    }
-
-    /**
-     * Add referenziertVon
-     *
-     * @param \AppBundle\Entity\Archivierung $referenziertVon
-     *
-     * @return Archivierung
-     */
-    public function addReferenziertVon(\AppBundle\Entity\Archivierung $referenziertVon)
-    {
-        $this->referenziertVon[] = $referenziertVon;
-
-        return $this;
-    }
-
-    /**
-     * Remove referenziertVon
-     *
-     * @param \AppBundle\Entity\Archivierung $referenziertVon
-     */
-    public function removeReferenziertVon(\AppBundle\Entity\Archivierung $referenziertVon)
-    {
-        $this->referenziertVon->removeElement($referenziertVon);
-    }
-
-    /**
-     * Get referenziertVon
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getReferenziertVon()
-    {
-        return $this->referenziertVon;
-    }
-
-    /**
-     * Add referenzen
-     *
-     * @param \AppBundle\Entity\Archivierung $referenzen
-     *
-     * @return Archivierung
-     */
-    public function addReferenzen(\AppBundle\Entity\Archivierung $referenzen)
-    {
-        $this->removeReferenzen($referenzen);
-        $this->referenzen[] = $referenzen;
-
-        return $this;
-    }
-
-    /**
-     * Remove referenzen
-     *
-     * @param \AppBundle\Entity\Archivierung $referenzen
-     */
-    public function removeReferenzen(\AppBundle\Entity\Archivierung $referenzen)
-    {
-        $this->referenzen->removeElement($referenzen);
-    }
-
-    /**
-     * Remove all jahre
-     */
-    public function removeAllReferenzen()
-    {
-        $allReferenzen = $this->getReferenzen();
-
-        foreach ($allReferenzen as $referenzen) {
-            $this->removeReferenzen($referenzen);
-        }
-    }
-
-    /**
-     * Get referenzen
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getReferenzen()
-    {
-        return $this->referenzen;
     }
 }

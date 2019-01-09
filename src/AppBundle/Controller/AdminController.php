@@ -249,51 +249,7 @@ class AdminController extends Controller
                         }
                     }
                 }
-
-                $referenzen = trim(utf8_encode($row["Verknuepfte Objekte"]));
-                unset($row["Verknuepfte Objekte"]);
-
-                if($referenzen) {
-
-                    // Bei Bearbeitung erst ALLE Referenzen entfernen
-                    if($isEdit) {
-                        $archivierung->removeAllReferenzen();
-                    }
-
-                    // wenn nur gelöscht werden sollte
-                    if($isEdit && $referenzen === $delete) {
-                        // fertig
-                    }
-
-                    // ansonsten noch neue Referenzen hinzufügen
-                    else {
-                        $referenzenArray = explode(";", $referenzen);
-
-                        foreach ($referenzenArray as $referenzString) {
-
-                            $referenzString = trim($referenzString);
-                            if ($referenzString) {
-                                $referenzArchivierung = $em->getRepository('AppBundle:Archivierung')->findOneByDateiname($referenzString);
-
-                                // Fehler wenn Referenz in Datenbank nicht existiert
-                                if ($referenzArchivierung === null) {
-                                    array_push(
-                                        $errorList,
-                                        "Zeile $zeilenNr: [[[Warnung]]] Verknüpfung auf Dateiname " . $referenzString
-                                        . " nicht möglich, da keine Archivierung mit diesem Dateinamen gefunden wurde."
-                                        . " gesamte Zeile NICHT übersprungen, da die referenzierte Archivierung zum Zeitpunkt des Erstellens eventuell einfach noch nicht existiert hat."
-                                    );
-
-                                    //$em->detach($archivierung);
-                                    //continue 2; // gesamte Zeile überspringen
-                                }
-
-                                else
-                                    $archivierung->addReferenzen($referenzArchivierung);
-                            }
-                        }
-                    }
-                }
+                
 
                 // Alle weiteren Attribute werden in der Entity "Information" gespeichert:
                 foreach($row as $key => $values) {

@@ -8,6 +8,7 @@ use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use AppBundle\Entity;
+use AppBundle\Helper\HashHelper;
 
 class TestController extends Controller
 {
@@ -18,11 +19,20 @@ class TestController extends Controller
     {
 
         $em = $this->getDoctrine()->getManager();
-        $test = $em->getRepository('AppBundle:Archivierung')->find(2);
+        $archivierungen = $em->getRepository('AppBundle:Archivierung')->findBy(array(), array('erstelldatum' => 'ASC'));
+
+        foreach($archivierungen as $key => $archivierung) {
+            $dateiHash = $archivierung->getDateiHash();
+
+            $links = HashHelper::dateiHashToURL($dateiHash);
+            $archivierungen[$key]->links = $links;
+        }
+
 
         // replace this example code with whatever you need
         return $this->render('test/test.html.twig', [
             'base_dir' => realpath($this->getParameter('kernel.root_dir').'/..'),
+            "archivierungen" => $archivierungen
         ]);
     }
 
