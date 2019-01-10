@@ -4,16 +4,171 @@
     <div>
 
         <section class="detail">
-            <div class="detail-pic">
+            <div class="detail-image">
                 <img src="{{ asset('assets/images/archivierungen/' ~ archivierung.links["mittel"]) }}" alt="" />
             </div>
             <div class="detail-text">
-                blabla
+                <button>STERN</button>
+                <p class="detail-text-block">
+                    <span class="detail-text-label">Jahr:</span> {{ archivierung.jahrString }}<br/>
+
+                    <span class="detail-text-label">Titel:</span>
+                    {% if archivierung.infosArray["Titel"] is defined %}
+                        {{ archivierung.infosArray["Titel"] }}<br/>
+                    {% else %}
+                        <br/>
+                    {% endif %}
+
+                    <span class="detail-text-label">Auftraggeber:</span>
+                    {% if archivierung.infosArray["Auftraggeber"] is defined %}
+                        {{ archivierung.infosArray["Auftraggeber"] }}<br/>
+                    {% else %}
+                        <br/>
+                    {% endif %}
+
+                    <span class="detail-text-label">Objektkategorie:</span>
+                    {% if archivierung.infosArray["Objektkategorie"] is defined %}
+                        {{ archivierung.infosArray["Objektkategorie"] }}<br/>
+                    {% else %}
+                        <br/>
+                    {% endif %}
+                </p>
+
+                <p class="detail-text-block">
+                    <span class="detail-text-label">Gestaltung:</span>
+                    {% if archivierung.infosArray["Gestaltung"] is defined %}
+                        {{ archivierung.infosArray["Gestaltung"] }}<br/>
+                    {% else %}
+                        <br/>
+                    {% endif %}
+
+                    <span class="detail-text-label">Fotografie:</span>
+                    {% if archivierung.infosArray["Fotografie"] is defined %}
+                        {{ archivierung.infosArray["Fotografie"] }}<br/>
+                    {% else %}
+                        <br/>
+                    {% endif %}
+
+                    <span class="detail-text-label">Druckerei:</span>
+                    {% if archivierung.infosArray["Druckerei"] is defined %}
+                        {{ archivierung.infosArray["Druckerei"] }}<br/>
+                    {% else %}
+                        <br/>
+                    {% endif %}
+
+                    <span class="detail-text-label">Autor:</span>
+                    {% if archivierung.infosArray["Autor"] is defined %}
+                        {{ archivierung.infosArray["Autor"] }}<br/>
+                    {% else %}
+                        <br/>
+                    {% endif %}
+                </p>
+
+                <p class="detail-text-block">
+                    <span class="detail-text-label">Maße:</span>
+                    {% if archivierung.infosArray["Masse"] is defined %}
+                        {{ archivierung.infosArray["Masse"] }}<br/>
+                    {% else %}
+                        <br/>
+                    {% endif %}
+
+                    <span class="detail-text-label">Umfang:</span>
+                    {% if archivierung.infosArray["Umfang"] is defined %}
+                        {{ archivierung.infosArray["Umfang"] }}<br/>
+                    {% else %}
+                        <br/>
+                    {% endif %}
+
+                    <span class="detail-text-label">Material:</span>
+                    {% if archivierung.infosArray["Material"] is defined %}
+                        {{ archivierung.infosArray["Material"] }}<br/>
+                    {% else %}
+                        <br/>
+                    {% endif %}
+
+                    <span class="detail-text-label">Produktionsverfahren:</span>
+                    {% if archivierung.infosArray["Produktionsverfahren"] is defined %}
+                        {{ archivierung.infosArray["Produktionsverfahren"] }}<br/>
+                    {% else %}
+                        <br/>
+                    {% endif %}
+
+                    <span class="detail-text-label">Sprache:</span>
+                    {% if archivierung.infosArray["Sprache"] is defined %}
+                        {{ archivierung.infosArray["Sprache"] }}<br/>
+                    {% else %}
+                        <br/>
+                    {% endif %}
+
+                    <span class="detail-text-label">Schrift:</span>
+                    {% if archivierung.infosArray["Schrift"] is defined %}
+                        {{ archivierung.infosArray["Schrift"] }}<br/>
+                    {% else %}
+                        <br/>
+                    {% endif %}
+
+                    <span class="detail-text-label">Farbe:</span>
+                    {% if archivierung.infosArray["Farbe"] is defined %}
+                        {{ archivierung.infosArray["Farbe"] }}<br/>
+                    {% else %}
+                        <br/>
+                    {% endif %}
+
+                    <span class="detail-text-label">Bilddarstellung:</span>
+                    {% if archivierung.infosArray["Bilddarstellung"] is defined %}
+                        {{ archivierung.infosArray["Bilddarstellung"] }}<br/>
+                    {% else %}
+                        <br/>
+                    {% endif %}
+                </p>
+
+                <p class="detail-text-block">
+                    <span class="detail-text-label">Hinweis:</span>
+                    {% if archivierung.infosArray["Hinweis"] is defined %}
+                        {{ archivierung.infosArray["Hinweis"] }}<br/>
+                    {% else %}
+                        <br/>
+                    {% endif %}
+
+                    <span class="detail-text-label">Produktkategorie:</span>
+                    {% if archivierung.infosArray["Produktkategorie"] is defined %}
+                        {{ archivierung.infosArray["Produktkategorie"] }}<br/>
+                    {% else %}
+                        <br/>
+                    {% endif %}
+
+                    <span class="detail-text-label">Text:</span>
+                    {% if archivierung.infosArray["Text"] is defined %}
+                        {{ archivierung.infosArray["Text"] }}<br/>
+                    {% else %}
+                        <br/>
+                    {% endif %}
+
+                    <span class="detail-text-label">Ereignisse:</span>
+                    {% if archivierung.infosArray["Ereignisse"] is defined %}
+                        {{ archivierung.infosArray["Ereignisse"] }}<br/>
+                    {% else %}
+                        <br/>
+                    {% endif %}
+                </p>
+
+                <p class="detail-text-block">
+                    <span class="detail-text-label">Archiv:</span>
+                    {% if archivierung.infosArray["Archiv"] is defined %}
+                        {{ archivierung.infosArray["Archiv"] }}<br/>
+                    {% else %}
+                        <br/>
+                    {% endif %}
+
+                    <span class="detail-text-label">Archivierung-ID:</span>
+                        {{ archivierung.id }}<br/>
+                </p>
+
             </div>
             <div class="detail-verknuepfteobjekte">
                 {% for vObjekt in verknuepfteObjekte %}
 
-                    <a href="{{ asset('assets/images/archivierungen/' ~ vObjekt.links["klein"]) }}"
+                    <a href="{{ url('_detail', {'slug': vObjekt.id}) }}"
                        class="">
                         <img class="" alt=""
                              src="{{ asset('assets/images/archivierungen/' ~ vObjekt.links["klein"]) }}"
@@ -25,6 +180,7 @@
             </div>
         </section>
 
+        {{ dump(archivierung) }}
 
 
         {#

@@ -21,11 +21,10 @@ class DefaultController extends Controller
         foreach($archivierungen as $key => $archivierung) {
             $dateiHash = $archivierung->getDateiHash();
 
-            $links = HashHelper::dateiHashToURL($dateiHash);
+            $links = HashHelper::dateiHashToURL($dateiHash);    // Pfade zu Bildern
             $archivierungen[$key]->links = $links;
         }
-
-
+        
         return $this->render('default/index.html.twig', [
             "archivierungen" => $archivierungen
         ]);

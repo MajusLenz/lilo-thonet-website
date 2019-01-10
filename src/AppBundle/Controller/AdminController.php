@@ -24,13 +24,13 @@ class AdminController extends Controller
      */
     public function adminAction(Request $request)
     {
-
-        $this
+        /*
+        $this   // SQL-DEBUGGER
             ->get('doctrine')
             ->getConnection()
             ->getConfiguration()
             ->setSQLLogger(new \Doctrine\DBAL\Logging\EchoSQLLogger());
-
+        */
 
         $upload = new ArchivierungsUpload();
 

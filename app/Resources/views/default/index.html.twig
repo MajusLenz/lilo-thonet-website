@@ -26,7 +26,7 @@
 
             {% for archivierung in archivierungen %}
 
-                <a href="{{ asset('assets/images/archivierungen/' ~ archivierung.links["klein"]) }}"
+                <a href="{{ url('_detail', {'slug': archivierung.id}) }}"
                    class="grid-item">
                     <img class="lazy" alt=""
                          src="{{ asset('assets/images/emptyPic.png') }}"
