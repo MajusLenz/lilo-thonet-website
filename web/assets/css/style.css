@@ -80,7 +80,7 @@ button::-moz-focus-inner {
     padding: 0;
 }
 
-/* general */
+/* generell */
 * {
     font-family: 'Circular Std Book', sans-serif;
 }
@@ -146,33 +146,63 @@ figure{
 }
 
 
-/* index */
-.images-overview{
-    margin: -5px;
-}
 
-.images-overview img {
-    height: auto;
-    max-height: 29vw;
-    max-width: 100%;
-}
+/* Mansory Grid: */
 
-.grid-sizer,
+/* --- Grid generell */
 .grid-item {
-    width: 32%;
-    margin: 5px;
 }
-.grid-item--height3,
-.grid-item--height2{
-    height:400px;
+.grid-item img{
+    max-width: 100%;
+    height: auto;
+    width:auto;
 }
+
+/* --- Grid klein */
+.grid-klein{
+    margin: 0;
+}
+.grid-item-klein{
+    width: 20%;
+    margin: 0;
+}
+.grid-item-klein img{
+    max-height: 20vw;
+}
+
+/* --- Grid mittel */
+
+
+/* --- Grid gross */
+.grid-gross{
+    margin: 0;
+}
+.grid-item-gross {
+    width: 33%;
+    margin: 0;
+}
+.grid-item-gross img{
+    max-height: 33vw;
+}
+
+
+
+/* index */
+
+
+
 
 
 /* Detail */
-.detail-image img {
+.detail-image-figure{
+    display: inline-block;
+    max-width: 50%;
+    max-height: 65vh;
+}
+.detail-image-img{
     height: auto;
     width: auto;
-    max-width: 50%;
+    max-width: 100%;
     max-height: 65vh;
 }
 
@@ -183,3 +213,9 @@ figure{
     font-family: 'Circular Std Book', sans-serif;
     font-style: italic;
 }
+
+.detail-verknuepfteobjekte hr{
+    border: 0;
+    border-top: 1px solid black;
+}
+

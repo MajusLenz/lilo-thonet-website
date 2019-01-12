@@ -3,8 +3,8 @@
 {% block body %}
     <div>
 
-        <section class="lazy-loading grid images-overview">
-            <div class="grid-sizer" style="display: none;"></div>
+        <section class="lazy-loading grid grid-gross images-overview">
+            <div class="grid-sizer grid-item-gross" style="display: none;"></div>
 
             {#
             <img class="lazy rightclick-alert"
@@ -27,7 +27,7 @@
             {% for archivierung in archivierungen %}
 
                 <a href="{{ url('_detail', {'slug': archivierung.id}) }}"
-                   class="grid-item">
+                   class="grid-item grid-item-gross">
                     <img class="lazy" alt=""
                          src="{{ asset('assets/images/emptyPic.png') }}"
                          data-src="{{ asset('assets/images/archivierungen/' ~ archivierung.links["klein"]) }}"

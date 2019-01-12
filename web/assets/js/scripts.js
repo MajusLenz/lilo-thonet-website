@@ -1,7 +1,7 @@
 $(function() {
 
     // Mansory Grid:
-    $grid = $('.grid').masonry({
+    var $grid = $('.grid').masonry({
         // options
         itemSelector: '.grid-item',
         columnWidth: '.grid-sizer',
@@ -14,7 +14,7 @@ $(function() {
         scrollDirection: 'vertical',
         effect: 'fadeIn',
         effectTime: 350,
-        threshold: 200,
+        threshold: 500,
         onError: function(element) {
             console.log('error loading ' + element.data('src'));
         },
@@ -27,8 +27,10 @@ $(function() {
 
 
     //Rechtsklick verbieten:
-    $(".rightclick-alert").on("contextmenu", function() {
+    $(".rightclick-alert").on("contextmenu", function(e) {
         alert("Diese Grafik ist kopiergeschützt! Wenn Sie etwas herunterladen möchten, kontaktieren Sie bitte den Administrator.");
+        e.stopPropagation();
+        return false;
     });
 
 
@@ -50,5 +52,11 @@ $(function() {
     });
 
 
+    // Image Zoom:
+    $('.detail-zoom').each(function() {
+        var $this = $(this);
+        var bigImage = $this.data("zoom-image");
+        $this.zoom({url: bigImage, magnify:0.5});
+    });
 
 });

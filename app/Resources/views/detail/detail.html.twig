@@ -4,8 +4,10 @@
     <div>
 
         <section class="detail">
-            <div class="detail-image">
-                <img src="{{ asset('assets/images/archivierungen/' ~ archivierung.links["mittel"]) }}" alt="" />
+            <div class="detail-image rightclick-alert">
+                <figure class="detail-image-figure detail-zoom" data-zoom-image="{{ asset('assets/images/archivierungen/' ~ archivierung.links["gross"]) }}">
+                    <img class="detail-image-img" src="{{ asset('assets/images/archivierungen/' ~ archivierung.links["mittel"]) }}" alt="" />
+                </figure>
             </div>
             <div class="detail-text">
                 <button>STERN</button>
@@ -166,21 +168,23 @@
 
             </div>
             <div class="detail-verknuepfteobjekte">
-                {% for vObjekt in verknuepfteObjekte %}
+                <hr>
+                <div class="grid grid-klein">
+                    <div class="grid-sizer grid-item-klein" style="display: none;"></div>
 
-                    <a href="{{ url('_detail', {'slug': vObjekt.id}) }}"
-                       class="">
-                        <img class="" alt=""
-                             src="{{ asset('assets/images/archivierungen/' ~ vObjekt.links["klein"]) }}"
-                             width="200px"
-                        />
-                    </a>
+                    {% for vObjekt in verknuepfteObjekte %}
 
-                {% endfor %}
+                        <a href="{{ url('_detail', {'slug': vObjekt.id}) }}"
+                           class="grid-item grid-item-klein">
+                            <img class="" alt=""
+                                 src="{{ asset('assets/images/archivierungen/' ~ vObjekt.links["klein"]) }}"
+                            />
+                        </a>
+
+                    {% endfor %}
+                </div>
             </div>
         </section>
-
-        {{ dump(archivierung) }}
 
 
         {#
