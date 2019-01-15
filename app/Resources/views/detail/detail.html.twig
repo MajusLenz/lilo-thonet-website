@@ -1,5 +1,17 @@
 {% extends 'base.html.twig' %}
 
+{% block title %}{{ parent() }}{% if archivierung.infosArray["Titel"] is defined %} | {{ archivierung.infosArray["Titel"] }}{% endif %}{% endblock %}
+
+{% block headerBalken2 %}
+    <h1 class="col-12 header-titel">
+        {% if archivierung.infosArray["Titel"] is defined %}
+            {{ archivierung.infosArray["Titel"] }}
+        {% else %}
+            Detailansicht
+        {% endif %}
+    </h1>
+{% endblock %}
+
 {% block body %}
     <div>
 

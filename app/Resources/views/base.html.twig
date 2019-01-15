@@ -66,8 +66,8 @@
         #}
 
         {% block top %}
-            <div class="top container-fluid">
-                <div class="row">
+            <div class="top container-fluid" id="top">
+                <div class="header-balken1 row">
                     <div class="col-9">
                         <a class="homepage-button" href="{{ path('_index') }}">
                             <img
@@ -90,6 +90,10 @@
                             />
                         </button>
                     </div>
+                </div>
+                <hr/>
+                <div class="row header-balken2">
+                    {% block headerBalken2 %}{% endblock %}
                 </div>
                 <hr/>
             </div>

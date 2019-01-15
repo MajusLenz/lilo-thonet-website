@@ -1,5 +1,7 @@
 {% extends 'base.html.twig' %}
 
+{% block title %}{{ parent() }} | Administratorbereich{% endblock %}
+
 {% block body %}
 
     <a class="logout-btn simple-a" href="{{ path('logout') }}" style="float: right;">logout</a>
