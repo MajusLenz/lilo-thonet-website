@@ -284,6 +284,13 @@ hr{
     padding-top: 30px;
 }
 
+.detail-star{
+    margin-bottom: 35px;
+}
+.detail-star .add-fav-button{
+    width: 25px;
+}
+
 
 
 

@@ -22,8 +22,12 @@
                     <img class="detail-image-img" src="{{ asset('assets/images/archivierungen/' ~ archivierung.links["mittel"]) }}" alt="" />
                 </figure>
             </div>
+            <div class="detail-star">
+                <button class="img-button add-fav-button">
+                    <img src="{{ asset('assets/images/Archiv_Symbole_Mobil_Auswahl_leer.svg') }}" alt="zu Favoriten hinzufügen">
+                </button>
+            </div>
             <div class="detail-text">
-                <button>STERN</button>
                 <p class="detail-text-block">
                     <span class="detail-text-label">Jahr:</span> {{ archivierung.jahrString }}<br/>
 

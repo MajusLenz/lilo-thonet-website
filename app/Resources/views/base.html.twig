@@ -97,9 +97,9 @@
             <hr/>
         </div>
 
-        <!-- copy whole header because first real header is display:fixed -->
+        <!-- gesamten header kopieren weil der erste "echte" header display:fixed hat, und somit den restlichen Content nicht vernünftig nach unten drücken kann! -->
 
-        <div class="top container-fluid" id="top" style="visibility: hidden!important; z-index: -999!important;">
+        <div class="top container-fluid" id="top" style="visibility: hidden!important; z-index: -9999!important;">
             <div class="header-balken1 row">
                 <div class="col-9">
                     <a class="homepage-button" href="{{ path('_index') }}">
@@ -171,7 +171,6 @@
         <script src="{{ asset('assets/js/jquery.lazy.min.js') }}"></script>
         <script src="{{ asset('assets/js/masonry.pkgd.min.js') }}"></script>
         <script src="{{ asset('assets/js/jquery.zoom.min.js') }}"></script>
-        <script src="{{ asset('assets/js/jquery.elevateZoom-3.0.8.min.js') }}"></script>
         <script src="{{ asset('assets/js/scripts.js') }}"></script>
         {% block javascripts %}{% endblock %}
 

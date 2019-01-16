@@ -54,7 +54,7 @@ $(function() {
     });
 
     var resizeBurgerMenu = function() {
-        var hoehe = $(".header-balken1, .header-balken1 + hr").outerHeight() +0.7;
+        var hoehe = $(".header-balken1, .header-balken1 + hr").outerHeight() +0.8;
         $burgerMenu.css("top", hoehe + "px");
     };
     resizeBurgerMenu();
@@ -67,7 +67,7 @@ $(function() {
     $sucheButton.on("click", function() {
         $sucheMenu.fadeToggle(350);
 
-        $("#testInput").focus();        // TODO
+        $("#testInput").focus();    // TODO
     });
 
     var resizeSucheMenu = function() {
