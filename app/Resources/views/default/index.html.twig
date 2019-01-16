@@ -3,9 +3,10 @@
 {% block title %}{{ parent() }} | Suche{% endblock %}
 
 {% block headerBalken2 %}
-    <h1 class="col-5 header-titel">
-        Suchfilter
-    </h1>
+    <div class="col-5">
+        <button class="img-button suchfilter-btn header-titel" href="#">Suchfilter</button>
+    </div>
+
     <div class="col-7 resize-buttons">
         <div>
             <button class="resize-btn-klein img-button inactive-btn" data-size="klein">
@@ -23,6 +24,17 @@
         </div>
     </div>
 {% endblock %}
+
+
+{% block overlays %}
+    <section id="suche-overlay" class="overlay" style="display: none;">
+        <div class="suche-overlay-filter">
+            FILTER!
+            <input type="text" id="testInput">
+        </div>
+    </section>
+{% endblock %}
+
 
 {% block body %}
     

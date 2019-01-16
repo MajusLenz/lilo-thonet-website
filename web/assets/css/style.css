@@ -119,22 +119,35 @@ figure{
     padding: 0;
 }
 
+hr{
+    padding: 0;
+    margin: 0;
+    border: 0;
+    border-top: 1px solid black;
+}
+
 
 .overlay{
     position: fixed;
     height: 101vh;
     width: 101vw;
     padding-left: 30px;
-    padding-top: 30px;
-    margin-top: 2px;
-    z-index: 999;
+    padding-top: 0;
+    margin-top: 0;
+    z-index: 888;
     right: 0;
     left: 0;
     background-color: white;
 }
 
 
+
 /* Burger Overlay: */
+#burger-overlay{
+    z-index: 999;
+    top: 111px;
+    padding-top: 30px;
+}
 #burger-overlay nav ul{
     list-style: none;
     padding: 0;
@@ -148,6 +161,10 @@ figure{
     background-color: white;
     padding-left: 30px;
     padding-right: 30px;
+}
+
+.top .header-balken1{
+    padding-bottom: 28px;
     padding-top: 30px;
 }
 
@@ -171,12 +188,9 @@ figure{
     margin-top: 11px;
 }
 
-.top hr{
-    border: 0;
-    border-top: 1px solid black;
-}
+
 .top .header-balken1 + hr{
-    margin-top: 28px;
+    margin-top: 0px;
     margin-bottom: 0;
 }
 
@@ -260,7 +274,15 @@ figure{
 
 
 /* index */
-
+.suchfilter-btn{
+    display: inline-block;
+}
+.suchfilter-btn:hover{
+    color: hotpink;
+}
+.suche-overlay-filter{
+    padding-top: 30px;
+}
 
 
 

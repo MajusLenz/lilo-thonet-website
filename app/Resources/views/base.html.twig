@@ -124,12 +124,16 @@
                     </button>
                 </div>
             </div>
-            <hr/>
             <div class="row header-balken2">
                 <h1 class="col-12 header-titel">ERROR!</h1>
             </div>
             <hr/>
         </div>
+
+    {% endblock %}
+
+
+    {% block overlays %}
 
     {% endblock %}
 
@@ -154,9 +158,13 @@
             {% endblock %}
         </div>
 
-        <div class="footer container-fluid">
-            {% block footer %}{% endblock %}
-        </div>
+
+        {% block footer %}
+            <footer class="footer container-fluid">
+
+            </footer>
+        {% endblock %}
+
 
         <script src="{{ asset('assets/js/jquery-3.3.1.min.js') }}"></script>
         <script src="{{ asset('assets/js/bootstrap.min.js') }}"></script>

@@ -17,7 +17,7 @@ $(function() {
         effectTime: 350,
         threshold: 500,
         onError: function(element) {
-            console.log('error loading ' + element.data('src'));
+            console.log('error loading: ' + element.data('src'));
         },
         afterLoad: function(element) {
             //$(element).css("top", "0px"); // Animation
@@ -53,8 +53,31 @@ $(function() {
         $burgerMenu.fadeOut(400);
     });
 
+    var resizeBurgerMenu = function() {
+        var hoehe = $(".header-balken1, .header-balken1 + hr").outerHeight() +0.7;
+        $burgerMenu.css("top", hoehe + "px");
+    };
+    resizeBurgerMenu();
 
-    // Image Zoom (Desktop):
+
+    // Suchfilter Menu:
+    var $sucheButton = $(".suchfilter-btn");
+    var $sucheMenu = $("#suche-overlay");
+
+    $sucheButton.on("click", function() {
+        $sucheMenu.fadeToggle(350);
+
+        $("#testInput").focus();        // TODO
+    });
+
+    var resizeSucheMenu = function() {
+        var hoehe = $(".top").outerHeight();
+        $sucheMenu.css("top", hoehe + "px");
+    };
+    resizeSucheMenu();
+
+
+    // Image Zoom (Desktop TODO):
     $('.detail-zoom').each(function() {
         var $this = $(this);
         var bigImage = $this.data("zoom-image");
