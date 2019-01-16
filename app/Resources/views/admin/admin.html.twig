@@ -2,12 +2,14 @@
 
 {% block title %}{{ parent() }} | Administratorbereich{% endblock %}
 
+{% block headerBalken2 %}
+    <h1 class="col-8 header-titel">Administratorbereich</h1>
+    <div class="col-4 logout-btn"><a class="simple-a" href="{{ path('logout') }}">logout</a></div>
+{% endblock %}
+
 {% block body %}
 
-    <a class="logout-btn simple-a" href="{{ path('logout') }}" style="float: right;">logout</a>
-
     <br/>
-    <h1>Administrator-Bereich:</h1>
     <section class="upload-csv">
 
         {{ form_start(form) }}

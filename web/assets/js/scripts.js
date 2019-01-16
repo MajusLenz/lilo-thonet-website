@@ -38,18 +38,19 @@ $(function() {
     // Hamburger Menu:
     var $burgerOpen = $(".burger-button-open");
     var $burgerClose = $(".burger-button-close");
+    var $burgerMenu = $("#burger-overlay");
 
     $burgerOpen.on("click", function() {
         $burgerOpen.fadeOut(0);
         $burgerClose.fadeIn(0);
 
-        // Menu anzeigen TODO
+        $burgerMenu.fadeIn(320);
     });
     $burgerClose.on("click", function() {
         $burgerClose.fadeOut(0);
         $burgerOpen.fadeIn(0);
 
-        // Menu ausblenden TODO
+        $burgerMenu.fadeOut(400);
     });
 
 

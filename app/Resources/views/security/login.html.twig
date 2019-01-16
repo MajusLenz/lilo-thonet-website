@@ -1,9 +1,14 @@
 {% extends 'base.html.twig' %}
 
+{% block title %}{{ parent() }} | Administrator-Login{% endblock %}
+
+{% block headerBalken2 %}
+    <h1 class="col-12 header-titel">Administratorbereich</h1>
+{% endblock %}
+
 {% block body %}
 
     <br/>
-    <h1>Administrator-Bereich:</h1>
 
     {% if error %}
         <div>{{ error.messageKey|trans(error.messageData, 'security') }}</div>

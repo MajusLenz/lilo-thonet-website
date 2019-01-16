@@ -46,94 +46,109 @@
 
 <body class="{% block bodyclass %}{% endblock %}">
 
-    <div class="inhalt">
 
-        <div class="TEST"></div>
+    <div class="TEST"></div>
 
-        {#
-        <div class="header container-fluid">
-            <div class="container">
-                {% block header %}
-                    {% if is_granted("IS_AUTHENTICATED_FULLY") %}
-                        <div class="pull-left">Angemeldet als: {{ app.user.username }}</div>
-                        <div class="pull-right"><a href="{{ path('_logout') }}">Logout</a></div>
-                    {% else %}
-                        <div class="pull-right"><a href="{{ path('_login') }}">Login</a></div>
-                    {% endif %}
-                {% endblock %}
-            </div>
+    {#
+    <div class="header container-fluid">
+        <div class="container">
+            {% block header %}
+                {% if is_granted("IS_AUTHENTICATED_FULLY") %}
+                    <div class="pull-left">Angemeldet als: {{ app.user.username }}</div>
+                    <div class="pull-right"><a href="{{ path('_logout') }}">Logout</a></div>
+                {% else %}
+                    <div class="pull-right"><a href="{{ path('_login') }}">Login</a></div>
+                {% endif %}
+            {% endblock %}
         </div>
-        #}
+    </div>
+    #}
 
-        {% block top %}
-            <div class="top container-fluid" id="top">
-                <div class="header-balken1 row">
-                    <div class="col-9">
-                        <a class="homepage-button" href="{{ path('_index') }}">
-                            <img
+    {% block top %}
+        <div class="top container-fluid" id="top" style="position:fixed; z-index: 777;">
+            <div class="header-balken1 row">
+                <div class="col-9">
+                    <a class="homepage-button" href="{{ path('_index') }}">
+                        <img
+                            alt="Die&nbsp;Marke&nbsp;Thonet<br/>Grafik&nbsp;Archiv"
+                            src="{{ asset('assets/images/Archiv_Symbole_Mobil_Grafik_Archiv.svg') }}"
+                        />
+                    </a>
+                </div>
+                <div class="col-3">
+                    <button class="burger-button burger-button-open img-button">
+                        <img
+                            alt="Menü öffnen"
+                            src="{{ asset('assets/images/Archiv_Symbole_Mobil_Menue.svg') }}"
+                        />
+                    </button>
+                    <button class="burger-button burger-button-close img-button" style="display: none;">
+                        <img
+                            alt="Menü schließen"
+                            src="{{ asset('assets/images/Archiv_Symbole_Mobil_Menue_schliessen.svg') }}"
+                        />
+                    </button>
+                </div>
+            </div>
+            <hr/>
+            <div class="row header-balken2">
+                {% block headerBalken2 %}{% endblock %}
+            </div>
+            <hr/>
+        </div>
+
+        <!-- copy whole header because first real header is display:fixed -->
+
+        <div class="top container-fluid" id="top" style="visibility: hidden!important; z-index: -999!important;">
+            <div class="header-balken1 row">
+                <div class="col-9">
+                    <a class="homepage-button" href="{{ path('_index') }}">
+                        <img
                                 alt="Die&nbsp;Marke&nbsp;Thonet<br/>Grafik&nbsp;Archiv"
                                 src="{{ asset('assets/images/Archiv_Symbole_Mobil_Grafik_Archiv.svg') }}"
-                            />
-                        </a>
-                    </div>
-                    <div class="col-3">
-                        <button class="burger-button burger-button-open img-button">
-                            <img
+                        />
+                    </a>
+                </div>
+                <div class="col-3">
+                    <button class="burger-button burger-button-open img-button">
+                        <img
                                 alt="Menü öffnen"
                                 src="{{ asset('assets/images/Archiv_Symbole_Mobil_Menue.svg') }}"
-                            />
-                        </button>
-                        <button class="burger-button burger-button-close img-button" style="display: none;">
-                            <img
+                        />
+                    </button>
+                    <button class="burger-button burger-button-close img-button" style="display: none;">
+                        <img
                                 alt="Menü schließen"
                                 src="{{ asset('assets/images/Archiv_Symbole_Mobil_Menue_schliessen.svg') }}"
-                            />
-                        </button>
-                    </div>
+                        />
+                    </button>
                 </div>
-                <hr/>
-                <div class="row header-balken2">
-                    {% block headerBalken2 %}{% endblock %}
-                </div>
-                <hr/>
             </div>
-
-            <!-- copy whole header because first real header is display:fixed
-
-            <div class="top container-fluid" style="visibility: hidden!important;">
-                <div class="row">
-                    <div class="col-9">
-                        <a class="homepage-button" href="{{ path('_index') }}">
-                            <img
-                                    alt="Die&nbsp;Marke&nbsp;Thonet<br/>Grafik&nbsp;Archiv"
-                                    src="{{ asset('assets/images/Archiv_Symbole_Mobil_Grafik_Archiv.svg') }}"
-                            />
-                        </a>
-                    </div>
-                    <div class="col-3">
-                        <button class="burger-button burger-button-open img-button">
-                            <img
-                                    alt="Menü öffnen"
-                                    src="{{ asset('assets/images/Archiv_Symbole_Mobil_Menue.svg') }}"
-                            />
-                        </button>
-                        <button class="burger-button burger-button-close img-button" style="display: none;">
-                            <img
-                                    alt="Menü schließen"
-                                    src="{{ asset('assets/images/Archiv_Symbole_Mobil_Menue_schliessen.svg') }}"
-                            />
-                        </button>
-                    </div>
-                </div>
-                <hr/>
+            <hr/>
+            <div class="row header-balken2">
+                <h1 class="col-12 header-titel">ERROR!</h1>
             </div>
-            -->
+            <hr/>
+        </div>
 
-        {% endblock %}
+    {% endblock %}
 
 
+    <section id="burger-overlay" class="overlay" style="display: none;">
+        <nav>
+            <ul>
+                <li><a href="{{ path('_dasProjekt') }}">Das Projekt</a></li>
+                <li><a href="{{ path('_arbeitenImKontext') }}">Arbeiten im Kontext</a></li>
+                <li><a href="#">Möbel-Archiv</a></li>
+                <li><a href="{{ path('_kontakt') }}">Kontakt</a></li>
+            </ul>
+        </nav>
+    </section>
+
+    <div class="inhalt">
 
         <div class="body container-fluid">
+
             {% block body %}
 
             {% endblock %}
