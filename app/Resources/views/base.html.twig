@@ -68,7 +68,7 @@
         <div class="top container-fluid" id="top" style="position:fixed; z-index: 777;">
             <div class="header-balken1 row">
                 <div class="col-9">
-                    <a class="homepage-button" href="{{ path('_index') }}">
+                    <a class="homepage-button" href="{{ path('_index') }}" title="Startseite">
                         <img
                             alt="Die&nbsp;Marke&nbsp;Thonet<br/>Grafik&nbsp;Archiv"
                             src="{{ asset('assets/images/Archiv_Symbole_Mobil_Grafik_Archiv.svg') }}"
@@ -76,13 +76,13 @@
                     </a>
                 </div>
                 <div class="col-3">
-                    <button class="burger-button burger-button-open img-button">
+                    <button class="burger-button burger-button-open img-button" title="Menü öffnen">
                         <img
                             alt="Menü öffnen"
                             src="{{ asset('assets/images/Archiv_Symbole_Mobil_Menue.svg') }}"
                         />
                     </button>
-                    <button class="burger-button burger-button-close img-button" style="display: none;">
+                    <button class="burger-button burger-button-close img-button" style="display: none;" title="Menü schließen">
                         <img
                             alt="Menü schließen"
                             src="{{ asset('assets/images/Archiv_Symbole_Mobil_Menue_schliessen.svg') }}"
@@ -161,7 +161,10 @@
 
         {% block footer %}
             <footer class="footer container-fluid">
-
+                <hr>
+                <a href="#" class="img-button nach-oben-button" title="nach oben scrollen">
+                    <img src="{{ asset('assets/images/Archiv_Symbole_Mobil_Suchfilter_Menue.svg') }}" alt="zurück nach oben"/>
+                </a>
             </footer>
         {% endblock %}
 

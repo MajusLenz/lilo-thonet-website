@@ -23,6 +23,9 @@ $(function() {
             //$(element).css("top", "0px"); // Animation
 
             $masoryGrid.masonry('layout');    // Masory Grid wieder richtig ausrichten
+        },
+        onFinishedAll: function() {
+            $(".footer").fadeIn();    // Footer erst einblenden wenn alle Bilder geladen wurden
         }
     });
 

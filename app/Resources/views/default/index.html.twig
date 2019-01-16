@@ -4,20 +4,20 @@
 
 {% block headerBalken2 %}
     <div class="col-5">
-        <button class="img-button suchfilter-btn header-titel" href="#">Suchfilter</button>
+        <button class="img-button suchfilter-btn header-titel" href="#" title="Suchfilter anzeigen/ausblenden">Suchfilter</button>
     </div>
 
     <div class="col-7 resize-buttons">
         <div>
-            <button class="resize-btn-klein img-button inactive-btn" data-size="klein">
+            <button class="resize-btn-klein img-button inactive-btn" data-size="klein" title="kleiner Zoom">
                 <img class="active-btn" src="{{ asset('assets/images/Archiv_Symbole_Mobil_Groessenasicht_klein_leer.svg') }}" alt="kleine Ansicht"/>
                 <img class="inactive-btn" src="{{ asset('assets/images/Archiv_Symbole_Mobil_Groessenasicht_klein_voll.svg') }}" alt="kleine Ansicht"/>
             </button>
-            <button class="resize-btn-mittel img-button inactive-btn" data-size="mittel">
+            <button class="resize-btn-mittel img-button inactive-btn" data-size="mittel" title="mittelgroßer Zoom">
                 <img class="active-btn" src="{{ asset('assets/images/Archiv_Symbole_Mobil_Groessenasicht_mittel_leer.svg') }}" alt="mittelgroße Ansicht"/>
                 <img class="inactive-btn" src="{{ asset('assets/images/Archiv_Symbole_Mobil_Groessenasicht_mittel_voll.svg') }}" alt="mittelgroße Ansicht"/>
             </button>
-            <button class="resize-btn-gross img-button active-btn" data-size="gross">
+            <button class="resize-btn-gross img-button active-btn" data-size="gross" title="großer Zoom">
                 <img class="active-btn" src="{{ asset('assets/images/Archiv_Symbole_Mobil_Groessenasicht_gross_leer.svg') }}" alt="große Ansicht"/>
                 <img class="inactive-btn" src="{{ asset('assets/images/Archiv_Symbole_Mobil_Groessenasicht_gross_voll.svg') }}" alt="große Ansicht"/>
             </button>

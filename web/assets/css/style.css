@@ -51,8 +51,9 @@
     width: auto;
     overflow: visible;
     cursor: pointer;
-
     background: transparent;
+
+    text-decoration: underline;
 
     /* inherit font & color from ancestor */
     color: inherit;
@@ -108,6 +109,7 @@ body {
 div.inhalt{
     margin: 0;
     padding: 30px;
+    padding-bottom: 0;
 }
 
 .container-fluid{
@@ -276,6 +278,7 @@ hr{
 /* index */
 .suchfilter-btn{
     display: inline-block;
+    text-decoration: none;
 }
 .suchfilter-btn:hover{
     color: hotpink;
@@ -284,12 +287,6 @@ hr{
     padding-top: 30px;
 }
 
-.detail-star{
-    margin-bottom: 35px;
-}
-.detail-star .add-fav-button{
-    width: 25px;
-}
 
 
 
@@ -307,6 +304,13 @@ hr{
     max-height: 65vh;
 }
 
+.detail-star{
+    margin-bottom: 35px;
+}
+.detail-star .add-fav-button{
+    width: 25px;
+}
+
 .detail-text{
     line-height: 1.2;
 }
@@ -321,7 +325,6 @@ hr{
 }
 
 
-
 /* Adminbereich: */
 .logout-btn{
     margin-top: 15px;
@@ -329,3 +332,24 @@ hr{
 .logout-btn a{
     float: right;
 }
+
+
+/* Footer: */
+.footer{
+    display: none;
+    bottom: 0;
+    background-color: white;
+}
+.footer .nach-oben-button{
+    width: 27px;
+    display: block;
+    margin: auto;
+    margin-top: 10px;
+    margin-bottom: 15px;
+}
+
+
+
+
+
+

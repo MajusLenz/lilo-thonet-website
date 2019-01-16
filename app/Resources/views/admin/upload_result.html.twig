@@ -4,7 +4,8 @@
 
 {% block headerBalken2 %}
     <h1 class="col-8 header-titel">Administratorbereich</h1>
-    <div class="col-4 logout-btn"><a class="simple-a" href="{{ path('logout') }}">logout</a></div>
+    <div class="col-4 logout-btn">
+        <a class="simple-a" href="{{ path('logout') }}" title="als Administrator abmelden">logout</a></div>
 {% endblock %}
 
 {% block body %}
