@@ -67,13 +67,21 @@
     {% block top %}
         <div class="top container-fluid" id="top" style="position:fixed; z-index: 777;">
             <div class="header-balken1 row">
-                <div class="col-9">
+                <div class="col-6">
                     <a class="homepage-button" href="{{ path('_index') }}" title="Startseite">
                         <img
                             alt="Die&nbsp;Marke&nbsp;Thonet<br/>Grafik&nbsp;Archiv"
                             src="{{ asset('assets/images/Archiv_Symbole_Mobil_Grafik_Archiv.svg') }}"
                         />
                     </a>
+                </div>
+                <div class="col-3">
+                    <button class="alle-fav-button img-button" title="persönliche Favoriten anzeigen">
+                        <img
+                                alt="Favoriten"
+                                src="{{ asset('assets/images/Archiv_Symbole_Mobil_Auswahl_leer.svg') }}"
+                        />
+                    </button>
                 </div>
                 <div class="col-3">
                     <button class="burger-button burger-button-open img-button" title="Menü öffnen">

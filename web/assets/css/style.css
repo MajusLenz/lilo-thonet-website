@@ -93,7 +93,7 @@ h1,h2,h3,h4,h5,h6,p,a{
 
 a:hover{
     text-decoration: none;
-    color: hotpink;
+    color: hotpink; /* rgb(248,197,198) */
 }
 a.simple-a{
     text-decoration: underline;
@@ -340,6 +340,9 @@ hr{
     bottom: 0;
     background-color: white;
 }
+.footer hr{
+     margin-top: 1px;
+ }
 .footer .nach-oben-button{
     width: 27px;
     display: block;
