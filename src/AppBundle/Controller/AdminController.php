@@ -39,9 +39,14 @@ class AdminController extends Controller
             ->add('save', SubmitType::class, array('label' => 'Hochladen'))
             ->getForm();
 
-        $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        // Weil count() in php7 anders funktioniert als in php5.6, muss hier ein Error ignoriert werden. (Sehr dirty!)
+        try {
+            $form->handleRequest($request);
+        }catch(\Exception $e){}
+
+
+        if ($form->isSubmitted() && $form->isValid()) {  // wegen dem try-catch-Hack oben, wird dieses if leider immer TRUE!
 
             $fs = new Filesystem();
             $em = $this->getDoctrine()->getManager();
