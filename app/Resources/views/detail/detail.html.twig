@@ -17,14 +17,28 @@
     <div>
 
         <section class="detail">
-            <div class="detail-image rightclick-alert">
-                <figure class="detail-image-figure detail-zoom" data-zoom-image="{{ asset('assets/images/archivierungen/' ~ archivierung.links["gross"]) }}">
+            <div class="detail-image">
+                <figure
+                    class="detail-image-figure detail-zoom rightclick-alert"
+                    data-zoom-image="{{ asset('assets/images/archivierungen/' ~ archivierung.links["gross"]) }}"
+                >
                     <img class="detail-image-img" src="{{ asset('assets/images/archivierungen/' ~ archivierung.links["mittel"]) }}" alt="" />
                 </figure>
             </div>
-            <div class="detail-star">
-                <button class="img-button add-fav-button" title="zu Favoriten hinzufügen">
-                    <img src="{{ asset('assets/images/Archiv_Symbole_Mobil_Auswahl_leer.svg') }}" alt="zu Favoriten hinzufügen">
+            <div class="detail-fav">
+                <button class="img-button add-fav-button" title="zu Favoriten hinzufügen" data-id="{{ archivierung.id }}">
+                    <img
+                        class="add-fav-button-img-leer"
+                        alt="zu Favoriten hinzufügen add-fav-button-img-leer"
+                        src="{{ asset('assets/images/Archiv_Symbole_Mobil_Auswahl_leer.svg') }}"
+                        style="display: none;"
+                    />
+                    <img
+                        class="add-fav-button-img-voll"
+                        alt="zu Favoriten hinzufügen"
+                        src="{{ asset('assets/images/Archiv_Symbole_Mobil_Auswahl_voll.svg') }}"
+                        style="display: none;"
+                    />
                 </button>
             </div>
             <div class="detail-text">

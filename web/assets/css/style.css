@@ -85,6 +85,7 @@ button::-moz-focus-inner {
 /* generell */
 * {
     font-family: 'Circular Std Book', sans-serif;
+    color: black;
 }
 
 h1,h2,h3,h4,h5,h6,p,a{
@@ -93,12 +94,14 @@ h1,h2,h3,h4,h5,h6,p,a{
 
 a:hover{
     text-decoration: none;
+    color: black;
 }
 a.simple-a{
     text-decoration: underline;
 }
 a.simple-a:hover{
     text-decoration: underline;
+    color: black;
 }
 
 ::-moz-selection {
@@ -176,11 +179,20 @@ hr{
     padding-top: 30px;
 }
 
-.top a.homepage-button{
+.top .homepage-button{
     display: inline-block;
 }
-.top a.homepage-button img{
+.top .homepage-button img{
     width: 215px;
+}
+
+.top .alle-fav-button{
+    float: right;
+    margin-right: 14vw;
+}
+.top .alle-fav-button img{
+    width: 50px;
+    margin-top: 3px;
 }
 
 .top .burger-button{
@@ -282,6 +294,10 @@ hr{
 
 
 /* index */
+.images-overview{
+    margin-bottom: 50px;
+}
+
 .suchfilter-btn{
     display: inline-block;
     text-decoration: none;
@@ -310,10 +326,10 @@ hr{
     max-height: 65vh;
 }
 
-.detail-star{
+.detail-fav{
     margin-bottom: 35px;
 }
-.detail-star .add-fav-button{
+.detail-fav .add-fav-button img{
     width: 25px;
 }
 
@@ -342,9 +358,9 @@ hr{
 
 /* Footer: */
 .footer{
-    display: none;
     bottom: 0;
     background-color: white;
+    position: fixed;
 }
 .footer hr{
      margin-top: 1px;

@@ -1,5 +1,11 @@
 $(function() {
 
+    var removeFromArrayByValue = function(arr, item) {
+        var index = arr.indexOf(item);
+        if (index !== -1) arr.splice(index, 1);
+    };
+
+
     // Masory Grid:
     var $masoryGrid = $('.grid').masonry({
         // options
@@ -25,7 +31,7 @@ $(function() {
             $masoryGrid.masonry('layout');    // Masory Grid wieder richtig ausrichten
         },
         onFinishedAll: function() {
-            $(".footer").fadeIn();    // Footer erst einblenden wenn alle Bilder geladen wurden
+            //$(".footer").fadeIn();    // Footer erst einblenden wenn alle Bilder geladen wurden
         }
     });
 
@@ -43,12 +49,20 @@ $(function() {
     var $burgerClose = $(".burger-button-close");
     var $burgerMenu = $("#burger-overlay");
 
+    var resizeBurgerMenu = function() {
+        var hoehe = $(".header-balken1, .header-balken1 + hr").outerHeight() +0.8;
+        $burgerMenu.css("top", hoehe + "px");
+    };
+    resizeBurgerMenu();
+
     $burgerOpen.on("click", function() {
         $burgerOpen.fadeOut(0);
         $burgerClose.fadeIn(0);
 
+        resizeBurgerMenu();
         $burgerMenu.fadeIn(320);
     });
+
     $burgerClose.on("click", function() {
         $burgerClose.fadeOut(0);
         $burgerOpen.fadeIn(0);
@@ -56,28 +70,25 @@ $(function() {
         $burgerMenu.fadeOut(400);
     });
 
-    var resizeBurgerMenu = function() {
-        var hoehe = $(".header-balken1, .header-balken1 + hr").outerHeight() +0.8;
-        $burgerMenu.css("top", hoehe + "px");
-    };
-    resizeBurgerMenu();
 
 
     // Suchfilter Menu:
     var $sucheButton = $(".suchfilter-btn");
     var $sucheMenu = $("#suche-overlay");
 
-    $sucheButton.on("click", function() {
-        $sucheMenu.fadeToggle(350);
-
-        $("#testInput").focus();    // TODO
-    });
-
     var resizeSucheMenu = function() {
         var hoehe = $(".top").outerHeight();
         $sucheMenu.css("top", hoehe + "px");
     };
     resizeSucheMenu();
+
+    $sucheButton.on("click", function() {
+        resizeSucheMenu();
+        $sucheMenu.fadeToggle(350);
+
+        $("#testInput").focus();    // TODO
+    });
+
 
 
     // Image Zoom (Desktop TODO):
@@ -88,8 +99,12 @@ $(function() {
     });
 
 
+
     // Resize-Buttons:
-    $(".resize-buttons button").on("click", function(e) {
+    var gridCookieName = "grid-size";
+    var cookieExpire50Years = {expires: 18250};
+
+    $(".resize-buttons button").on("click", function() {
         var $this = $(this);
         var active = "active-btn";
         var inactive = "inactive-btn";
@@ -123,14 +138,17 @@ $(function() {
             case "gross":
                 grids.addClass(gridGross);
                 gridItems.addClass(gridItemGross);
+                Cookies.set(gridCookieName, "gross", cookieExpire50Years);
                 break;
             case "mittel":
                 grids.addClass(gridMittel);
                 gridItems.addClass(gridItemMittel);
+                Cookies.set(gridCookieName, "mittel", cookieExpire50Years);
                 break;
             case "klein":
                 grids.addClass(gridKlein);
                 gridItems.addClass(gridItemKlein);
+                Cookies.set(gridCookieName, "klein", cookieExpire50Years);
                 break;
         }
 
@@ -140,6 +158,87 @@ $(function() {
             $lazyInstance.update();     // Bilder nachladen, die nach Resize in Sichtfeld sind
         }, 200);
     });
+
+
+    // Resize-Buttons mit Cookies initialisieren:
+    var gridCookie = Cookies.get(gridCookieName);
+    if(gridCookie) {
+        $(".resize-buttons button.resize-btn-" + gridCookie).trigger("click");
+    }
+
+
+    // Favoriten Buttons:
+    var favCookieName = "favoriten";
+    var favCookieString = Cookies.get(favCookieName);
+    var favCookieArray = [];
+
+    if(favCookieString !== undefined && favCookieString !== "") {
+        favCookieArray = favCookieString.split("-");
+    }
+
+
+    var $headerFavButton = $(".alle-fav-button");
+    var $headerFavButtonVoll = $headerFavButton.find(".alle-fav-button-img-voll");
+    var $headerFavButtonLeer = $headerFavButton.find(".alle-fav-button-img-leer");
+
+    var updateHeaderFavButton = function() {
+        if(favCookieArray.length > 0) {
+            $headerFavButtonVoll.fadeIn(0);
+            $headerFavButtonLeer.fadeOut(0);
+        }
+        else{
+            $headerFavButtonVoll.fadeOut(0);
+            $headerFavButtonLeer.fadeIn(0);
+        }
+    };
+    updateHeaderFavButton();
+
+
+    var $addFavButtons = $(".add-fav-button");
+
+    var updateAddFavButtons = function() {
+
+        $addFavButtons.each(function() {
+            var $this = $(this);
+            var $detailFavButtonVoll = $this.find(".add-fav-button-img-voll");
+            var $detailFavButtonLeer = $this.find(".add-fav-button-img-leer");
+            var detailId = $this.data("id");
+
+            if( favCookieArray.includes(""+ detailId) ) {
+                $detailFavButtonVoll.fadeIn(0);
+                $detailFavButtonLeer.fadeOut(0);
+            }
+            else{
+                $detailFavButtonVoll.fadeOut(0);
+                $detailFavButtonLeer.fadeIn(0);
+            }
+        });
+    };
+    updateAddFavButtons();
+
+
+    $addFavButtons.on("click", function() {
+
+        var $this = $(this);
+        var detailId = $this.data("id");
+
+        if( favCookieArray.includes("" + detailId) ) {
+            removeFromArrayByValue(favCookieArray, "" + detailId);
+        }
+        else{
+            favCookieArray.push("" + detailId);
+        }
+
+        updateAddFavButtons();
+        updateHeaderFavButton();
+
+        Cookies.set(favCookieName, favCookieArray.join("-"), cookieExpire50Years);
+    });
+
+
+
+    // Bei Window-Resize die Menüs neu ausrichten und lazy + mansory updaten:
+    //TODO
 
 
 

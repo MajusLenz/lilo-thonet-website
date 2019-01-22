@@ -13,11 +13,11 @@
                 <img class="active-btn" src="{{ asset('assets/images/Archiv_Symbole_Mobil_Groessenasicht_klein_leer.svg') }}" alt="kleine Ansicht"/>
                 <img class="inactive-btn" src="{{ asset('assets/images/Archiv_Symbole_Mobil_Groessenasicht_klein_voll.svg') }}" alt="kleine Ansicht"/>
             </button>
-            <button class="resize-btn-mittel img-button inactive-btn" data-size="mittel" title="mittelgroßer Zoom">
+            <button class="resize-btn-mittel img-button active-btn" data-size="mittel" title="mittelgroßer Zoom">
                 <img class="active-btn" src="{{ asset('assets/images/Archiv_Symbole_Mobil_Groessenasicht_mittel_leer.svg') }}" alt="mittelgroße Ansicht"/>
                 <img class="inactive-btn" src="{{ asset('assets/images/Archiv_Symbole_Mobil_Groessenasicht_mittel_voll.svg') }}" alt="mittelgroße Ansicht"/>
             </button>
-            <button class="resize-btn-gross img-button active-btn" data-size="gross" title="großer Zoom">
+            <button class="resize-btn-gross img-button inactive-btn" data-size="gross" title="großer Zoom">
                 <img class="active-btn" src="{{ asset('assets/images/Archiv_Symbole_Mobil_Groessenasicht_gross_leer.svg') }}" alt="große Ansicht"/>
                 <img class="inactive-btn" src="{{ asset('assets/images/Archiv_Symbole_Mobil_Groessenasicht_gross_voll.svg') }}" alt="große Ansicht"/>
             </button>
@@ -39,13 +39,13 @@
 {% block body %}
     
     <div>
-        <section class="lazy-loading grid grid-gross images-overview">
-            <div class="grid-sizer grid-item-gross" style="display: none;"></div>
+        <section class="lazy-loading grid grid-mittel images-overview">
+            <div class="grid-sizer grid-item-mittel" style="display: none;"></div>
 
             {% for archivierung in archivierungen %}
 
                 <a href="{{ url('_detail', {'slug': archivierung.id}) }}"
-                   class="grid-item grid-item-gross">
+                   class="grid-item grid-item-mittel">
                     <img class="lazy" alt=""
                          src="{{ asset('assets/images/emptyPic.png') }}"
                          data-src="{{ asset('assets/images/archivierungen/' ~ archivierung.links["klein"]) }}"

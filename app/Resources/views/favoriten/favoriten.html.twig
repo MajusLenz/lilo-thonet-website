@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ parent() }} | Favoriten{% endblock %}
+
+{% block headerBalken2 %}
+    <h1 class="col-12 header-titel">Favoriten</h1>
+{% endblock %}
+
+{% block body %}
+    
+    <div>
+        <section class="lazy-loading grid grid-mittel images-overview">
+            <div class="grid-sizer grid-item-mittel" style="display: none;"></div>
+
+            {% for archivierung in archivierungen %}
+
+                <a href="{{ url('_detail', {'slug': archivierung.id}) }}"
+                   class="grid-item grid-item-mittel">
+                    <img class="lazy" alt=""
+                         src="{{ asset('assets/images/emptyPic.png') }}"
+                         data-src="{{ asset('assets/images/archivierungen/' ~ archivierung.links["klein"]) }}"
+                    />
+                </a>
+
+            {% endfor %}
+        </section>
+
+    </div>
+
+{% endblock %}

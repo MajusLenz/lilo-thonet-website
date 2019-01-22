@@ -19,6 +19,7 @@
             left: 0;
             width: 10px;
             height: 10px;
+            z-index: 999999999999999999;
         }
         @media (max-width: 992px) {
             .TEST{
@@ -67,7 +68,7 @@
     {% block top %}
         <div class="top container-fluid" id="top" style="position:fixed; z-index: 777;">
             <div class="header-balken1 row">
-                <div class="col-6">
+                <div class="col-8">
                     <a class="homepage-button" href="{{ path('_index') }}" title="Startseite">
                         <img
                             alt="Die&nbsp;Marke&nbsp;Thonet<br/>Grafik&nbsp;Archiv"
@@ -75,15 +76,7 @@
                         />
                     </a>
                 </div>
-                <div class="col-3">
-                    <button class="alle-fav-button img-button" title="persönliche Favoriten anzeigen">
-                        <img
-                                alt="Favoriten"
-                                src="{{ asset('assets/images/Archiv_Symbole_Mobil_Auswahl_leer.svg') }}"
-                        />
-                    </button>
-                </div>
-                <div class="col-3">
+                <div class="col-4">
                     <button class="burger-button burger-button-open img-button" title="Menü öffnen">
                         <img
                             alt="Menü öffnen"
@@ -96,6 +89,20 @@
                             src="{{ asset('assets/images/Archiv_Symbole_Mobil_Menue_schliessen.svg') }}"
                         />
                     </button>
+                    <a class="alle-fav-button img-button" title="persönliche Favoriten anzeigen" href="{{ path('_favoriten') }}">
+                        <img
+                            class="alle-fav-button-img-leer"
+                            alt="Favoriten"
+                            src="{{ asset('assets/images/Archiv_Symbole_Mobil_Auswahl_leer.svg') }}"
+                            style="display: none;"
+                        />
+                        <img
+                            class="alle-fav-button-img-voll"
+                            alt="Favoriten"
+                            src="{{ asset('assets/images/Archiv_Symbole_Mobil_Auswahl_voll.svg') }}"
+                            style="display: none;"
+                        />
+                    </a>
                 </div>
             </div>
             <hr/>
@@ -109,29 +116,41 @@
 
         <div class="top container-fluid" style="visibility: hidden!important; z-index: -9999!important;">
             <div class="header-balken1 row">
-                <div class="col-9">
-                    <a class="homepage-button" href="{{ path('_index') }}">
+                <div class="col-8">
+                    <a class="homepage-button" href="{{ path('_index') }}" title="Startseite">
                         <img
                                 alt="Die&nbsp;Marke&nbsp;Thonet<br/>Grafik&nbsp;Archiv"
                                 src="{{ asset('assets/images/Archiv_Symbole_Mobil_Grafik_Archiv.svg') }}"
                         />
                     </a>
                 </div>
-                <div class="col-3">
-                    <button class="burger-button burger-button-open img-button">
+                <div class="col-4">
+                    <button class="burger-button burger-button-open img-button" title="Menü öffnen">
                         <img
                                 alt="Menü öffnen"
                                 src="{{ asset('assets/images/Archiv_Symbole_Mobil_Menue.svg') }}"
                         />
                     </button>
-                    <button class="burger-button burger-button-close img-button" style="display: none;">
+                    <button class="burger-button burger-button-close img-button" style="display: none;" title="Menü schließen">
                         <img
                                 alt="Menü schließen"
                                 src="{{ asset('assets/images/Archiv_Symbole_Mobil_Menue_schliessen.svg') }}"
                         />
                     </button>
+                    <button class="alle-fav-button img-button" title="persönliche Favoriten anzeigen">
+                        <img
+                                alt="Favoriten"
+                                src="{{ asset('assets/images/Archiv_Symbole_Mobil_Auswahl_leer.svg') }}"
+                        />
+                        <img
+                                alt="Favoriten"
+                                src="{{ asset('assets/images/Archiv_Symbole_Mobil_Auswahl_voll.svg') }}"
+                                style="display: none;"
+                        />
+                    </button>
                 </div>
             </div>
+            <hr/>
             <div class="row header-balken2">
                 <h1 class="col-12 header-titel">ERROR!</h1>
             </div>
@@ -182,6 +201,7 @@
         <script src="{{ asset('assets/js/jquery.lazy.min.js') }}"></script>
         <script src="{{ asset('assets/js/masonry.pkgd.min.js') }}"></script>
         <script src="{{ asset('assets/js/jquery.zoom.min.js') }}"></script>
+        <script src="{{ asset('assets/js/js.cookie.min.js') }}"></script>
         <script src="{{ asset('assets/js/scripts.js') }}"></script>
         {% block javascripts %}{% endblock %}
 
