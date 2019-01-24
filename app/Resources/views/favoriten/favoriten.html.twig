@@ -8,21 +8,62 @@
 
 {% block body %}
     
-    <div>
-        <section class="lazy-loading grid grid-mittel images-overview">
+    <div class="favorites">
+        {% if archivierungen|length == 0 %}
+            <p>Es wurden noch keine persönlichen Favoriten hinzugefügt.
+            <br/>
+            Klicken Sie dazu einfach auf das Sternsymbol in der Detailansicht einer Archivierung.</p>
+        {% endif %}
+
+        <section class="lazy-loading grid grid-mittel images-overview favorites-overview">
             <div class="grid-sizer grid-item-mittel" style="display: none;"></div>
 
             {% for archivierung in archivierungen %}
 
-                <a href="{{ url('_detail', {'slug': archivierung.id}) }}"
-                   class="grid-item grid-item-mittel">
-                    <img class="lazy" alt=""
-                         src="{{ asset('assets/images/emptyPic.png') }}"
-                         data-src="{{ asset('assets/images/archivierungen/' ~ archivierung.links["klein"]) }}"
-                    />
-                </a>
+                <div class="grid-item grid-item-mittel">
+                    <a href="{{ url('_detail', {'slug': archivierung.id}) }}">
+                        <img class="lazy" alt=""
+                             src="{{ asset('assets/images/emptyPic.png') }}"
+                             data-src="{{ asset('assets/images/archivierungen/' ~ archivierung.links["klein"]) }}"
+                        />
+                    </a>
+                    <div class="add-fav-side">
+                        <button class="img-button add-fav-button" title="von Favoriten entfernen" data-id="{{ archivierung.id }}">
+                            <img
+                                    class="add-fav-button-img-leer"
+                                    alt="zu Favoriten hinzufügen add-fav-button-img-leer"
+                                    src="{{ asset('assets/images/Archiv_Symbole_Mobil_Auswahl_leer.svg') }}"
+                                    style="display: none;"
+                            />
+                            <img
+                                    class="add-fav-button-img-voll"
+                                    alt="zu Favoriten hinzufügen"
+                                    src="{{ asset('assets/images/Archiv_Symbole_Mobil_Auswahl_voll.svg') }}"
+                            />
+                        </button>
+                    </div>
+                </div>
 
             {% endfor %}
+        </section>
+
+        <section class="favorites-delete-all" style="display: none;">
+            <button class="black-button favorites-delete-all-button">gesamte Auswahl löschen</button>
+            <span class="favorites-delete-all-question big-text"
+                  style="display: none;">Sicher?</span>
+            <button class="black-button favorites-delete-all-confirm"
+                    style="display: none;"
+                    data-redirect="{{ path('_favoriten') }}">löschen</button>
+            <button class="black-button favorites-delete-all-back"
+                    style="display: none;">abbrechen</button>
+        </section>
+
+        <section class="favorites-mail big-text" style="display: none;">
+            <hr>
+            Anfrage über ausgewählte Objekte an
+            <a class="mailto"
+               href="mailto:mail@thonetarchiv.de?subject=Anfrage zum Download von Grafiken&body=Hallo, ich bitte um eine Downloadmöglichkeit für die Archivierungen mit den folgenden IDs: {% for archivierung in archivierungen %}{{ archivierung.id }}, {% endfor %}"
+            >mail@thonetarchiv.de</a>
         </section>
 
     </div>

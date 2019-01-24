@@ -160,23 +160,35 @@ $(function() {
     });
 
 
-    // Resize-Buttons mit Cookies initialisieren:
+    // Resize-Buttons durch Cookies initialisieren:
     var gridCookie = Cookies.get(gridCookieName);
     if(gridCookie) {
         $(".resize-buttons button.resize-btn-" + gridCookie).trigger("click");
     }
 
 
-    // Favoriten Buttons:
+    // :::Favoriten:::
+
+    // Favoriten initialisieren:
     var favCookieName = "favoriten";
-    var favCookieString = Cookies.get(favCookieName);
-    var favCookieArray = [];
+    var favCookieString = "";
+    var favCookieArray = null;
 
-    if(favCookieString !== undefined && favCookieString !== "") {
-        favCookieArray = favCookieString.split("-");
-    }
+    var updateCookieArray = function() {
+        favCookieString = Cookies.get(favCookieName);
+
+        if(favCookieString !== undefined && favCookieString !== "") {
+            favCookieArray = favCookieString.split("-");
+        }
+        else{
+            favCookieArray = [];
+        }
+    };
+
+    updateCookieArray();
 
 
+    // Favoriten anzeigen Button:
     var $headerFavButton = $(".alle-fav-button");
     var $headerFavButtonVoll = $headerFavButton.find(".alle-fav-button-img-voll");
     var $headerFavButtonLeer = $headerFavButton.find(".alle-fav-button-img-leer");
@@ -194,17 +206,18 @@ $(function() {
     updateHeaderFavButton();
 
 
+    // Favoriten hinzufügen/enfernen Buttons:
     var $addFavButtons = $(".add-fav-button");
 
     var updateAddFavButtons = function() {
-
         $addFavButtons.each(function() {
             var $this = $(this);
+
             var $detailFavButtonVoll = $this.find(".add-fav-button-img-voll");
             var $detailFavButtonLeer = $this.find(".add-fav-button-img-leer");
             var detailId = $this.data("id");
 
-            if( favCookieArray.includes(""+ detailId) ) {
+            if( favCookieArray.indexOf(""+ detailId) > -1 ) {
                 $detailFavButtonVoll.fadeIn(0);
                 $detailFavButtonLeer.fadeOut(0);
             }
@@ -216,13 +229,14 @@ $(function() {
     };
     updateAddFavButtons();
 
-
     $addFavButtons.on("click", function() {
 
         var $this = $(this);
         var detailId = $this.data("id");
 
-        if( favCookieArray.includes("" + detailId) ) {
+        updateCookieArray();
+
+        if( favCookieArray.indexOf("" + detailId) > -1 ) {
             removeFromArrayByValue(favCookieArray, "" + detailId);
         }
         else{
@@ -234,6 +248,44 @@ $(function() {
 
         Cookies.set(favCookieName, favCookieArray.join("-"), cookieExpire50Years);
     });
+
+    // Alle Favoriten löschen Button:
+    var $deleteAllFavsSection = $(".favorites-delete-all");
+    var $deleteAllFavsButton = $deleteAllFavsSection.find(".favorites-delete-all-button");
+    var $deleteAllFavsConfirm = $deleteAllFavsSection.find(".favorites-delete-all-confirm");
+    var $deleteAllFavsBack = $deleteAllFavsSection.find(".favorites-delete-all-back");
+    var $deleteAllFavsQuestion = $deleteAllFavsSection.find(".favorites-delete-all-question");
+
+    if(favCookieArray.length > 0) {
+        $deleteAllFavsSection.fadeIn(0);
+    }
+
+    $deleteAllFavsButton.on("click", function() {
+        $deleteAllFavsButton.fadeOut(0);
+        $deleteAllFavsConfirm.fadeIn(0);
+        $deleteAllFavsBack.fadeIn(0);
+        $deleteAllFavsQuestion.fadeIn(0);
+    });
+    $deleteAllFavsBack.on("click", function() {
+        $deleteAllFavsButton.fadeIn(0);
+        $deleteAllFavsConfirm.fadeOut(0);
+        $deleteAllFavsBack.fadeOut(0);
+        $deleteAllFavsQuestion.fadeOut(0);
+    });
+    $deleteAllFavsConfirm.on("click", function() {
+        Cookies.set(favCookieName, "", cookieExpire50Years);
+
+        window.location.href = $(this).data("redirect");
+    });
+
+
+    // Favoriten Mail-Anfrage einblenden:
+    if(favCookieArray.length > 0) {
+        $(".favorites-mail").fadeIn(0);
+    }
+
+
+
 
 
 
