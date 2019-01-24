@@ -34,13 +34,10 @@ class DetailController extends Controller
         // Für Twig die Jahre aufbereiten:
         $jahre = $archivierung->getJahre();
 
-        if(count($jahre) === 0 ) {
-            $archivierung->jahrString = "";
-        }
-        if( count($jahre) === 1 ) {
+        if(count($jahre) === 1 ) {
             $archivierung->jahrString = "". $jahre[0]->getWert();
         }
-        else{
+        if( count($jahre) > 1 ) {
             $jahreArray = array();
             foreach($jahre as $jahr) {
                 $jahreArray[] = $jahr->getWert();
@@ -52,8 +49,7 @@ class DetailController extends Controller
 
             $archivierung->jahrString = "$erstesJahr - $letztesJahr";
         }
-
-
+        
         // Für Twig die Infos aufbereiten:
         $infosArray = array();
         foreach($archivierung->getInfos(null) as $info) {
