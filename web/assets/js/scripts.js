@@ -91,12 +91,14 @@ $(function() {
 
 
 
-    // Image Zoom (Desktop TODO):
+    // Image Zoom (Desktop):
     $('.detail-zoom').each(function() {
         var $this = $(this);
         var bigImage = $this.data("zoom-image");
         $this.zoom({url: bigImage, magnify:0.5});
     });
+
+    // Image Zoom (mobil): TODO
 
 
 
@@ -174,7 +176,7 @@ $(function() {
     var favCookieString = "";
     var favCookieArray = null;
 
-    var updateCookieArray = function() {
+    var updateFavArray = function() {
         favCookieString = Cookies.get(favCookieName);
 
         if(favCookieString !== undefined && favCookieString !== "") {
@@ -185,10 +187,10 @@ $(function() {
         }
     };
 
-    updateCookieArray();
+    updateFavArray();
 
 
-    // Favoriten anzeigen Button:
+    // Favoriten-Seite öffnen Button:
     var $headerFavButton = $(".alle-fav-button");
     var $headerFavButtonVoll = $headerFavButton.find(".alle-fav-button-img-voll");
     var $headerFavButtonLeer = $headerFavButton.find(".alle-fav-button-img-leer");
@@ -234,7 +236,7 @@ $(function() {
         var $this = $(this);
         var detailId = $this.data("id");
 
-        updateCookieArray();
+        updateFavArray();
 
         if( favCookieArray.indexOf("" + detailId) > -1 ) {
             removeFromArrayByValue(favCookieArray, "" + detailId);
@@ -286,7 +288,12 @@ $(function() {
 
 
 
+    // ionRangeSlider:
+    var slider = $(".js-range-slider").ionRangeSlider({
+        skin: "square"
+    });
 
+    
 
 
     // Bei Window-Resize die Menüs neu ausrichten und lazy + mansory updaten:

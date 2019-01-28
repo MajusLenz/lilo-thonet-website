@@ -8,7 +8,7 @@
     <meta name="keywords" content="Thonet, Archiv, Möbel, Design, Düsseldorf, Lilo Schäfer">
     <meta name="description" lang="de" content="Privates Onlinearchiv des Möbeldesigners Thonet.">
     <link href="{{ asset('assets/css/bootstrap.min.css') }}" rel="stylesheet" type="text/css" />
-    <link href="{{ asset('assets/css/hamburgers.min.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('assets/css/ion.rangeSlider.min.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('assets/css/style.css') }}" rel="stylesheet" type="text/css" />
 
     <style> /* TEST */
@@ -166,7 +166,7 @@
 
 
     <section id="burger-overlay" class="overlay" style="display: none;">
-        <nav>
+        <nav class="big-text">
             <ul>
                 <li><a href="{{ path('_dasProjekt') }}">Das Projekt</a></li>
                 <li><a href="{{ path('_arbeitenImKontext') }}">Arbeiten im Kontext</a></li>
@@ -203,6 +203,7 @@
     <script src="{{ asset('assets/js/masonry.pkgd.min.js') }}"></script>
     <script src="{{ asset('assets/js/jquery.zoom.min.js') }}"></script>
     <script src="{{ asset('assets/js/js.cookie.min.js') }}"></script>
+    <script src="{{ asset('assets/js/ion.rangeSlider.min.js') }}"></script>
     <script src="{{ asset('assets/js/scripts.js') }}"></script>
     {% block javascripts %}{% endblock %}
 

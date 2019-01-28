@@ -338,6 +338,35 @@ hr{
     padding-top: 30px;
 }
 
+/* --- ion Range Slider --- */
+.irs .irs-bar, .irs .irs-line{
+    background-color: white;
+    border-top: 1px black solid;
+    border-bottom: 1px black solid;
+}
+.irs .irs-handle, .irs .irs-handle:hover, .irs .irs-handle.state_hover{
+    background-color: black;
+    border-radius: 25px;
+    top: 21px;
+    width: 24px;
+    height: 24px;
+}
+.irs .irs-single{
+    visibility: hidden!important;
+}
+.irs .irs-from, .irs .irs-to{
+    visibility: visible!important;
+    background: none;
+    color: black;
+    font-size: 18px;
+}
+.irs .irs-to{
+    top: 48px;
+}
+.irs .irs-from{
+    top: -6px;
+}
+
 
 
 
