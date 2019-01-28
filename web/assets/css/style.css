@@ -350,6 +350,7 @@ hr{
     top: 21px;
     width: 24px;
     height: 24px;
+    transform: none;
 }
 .irs .irs-single{
     visibility: hidden!important;
@@ -366,7 +367,6 @@ hr{
 .irs .irs-from{
     top: -6px;
 }
-
 
 
 

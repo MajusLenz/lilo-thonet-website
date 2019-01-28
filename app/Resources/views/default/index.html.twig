@@ -29,18 +29,24 @@
 {% block overlays %}
     <section id="suche-overlay" class="overlay" style="display: none;">
         <div class="suche-overlay-filter">
-            FILTER!
-            <input type="text" id="testInput">
 
-            <input type="text" class="js-range-slider" name="my_range" value=""
-                   data-type="double"
-                   data-min="1960"
-                   data-max="2018"
-                   data-from="1960"
-                   data-to="2000"
-                   data-hide-min-max="true"
-                   data-prettify-enabled="false"
-            />
+            <form>
+
+                FILTER!
+                <input type="text" id="testInput">
+
+                <input type="text" class="js-range-slider" name="my_range" value=""
+                       data-type="double"
+                       data-min="1960"
+                       data-max="2018"
+                       data-from="1960"
+                       data-to="2000"
+                       data-hide-min-max="true"
+                       data-prettify-enabled="false"
+                />
+
+                <button type="submit">save</button>
+            </form>
 
         </div>
     </section>
