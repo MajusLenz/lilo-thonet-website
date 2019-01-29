@@ -119,8 +119,12 @@ h1,h2,h3,h4,h5,h6,p,a{
     color: black;
 }
 
-.big-text{
+.big-text, .big-text *{
     font-size: 23px;
+}
+
+.half-size-text{
+    widths: 50%;
 }
 
 a:hover{

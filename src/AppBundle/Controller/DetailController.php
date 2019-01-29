@@ -47,7 +47,7 @@ class DetailController extends Controller
             $erstesJahr = $jahreArray[0];
             $letztesJahr = array_pop($jahreArray);
 
-            $archivierung->jahrString = "$erstesJahr - $letztesJahr";
+            $archivierung->jahrString = "$erstesJahr — $letztesJahr";
         }
         
         // Für Twig die Infos aufbereiten:

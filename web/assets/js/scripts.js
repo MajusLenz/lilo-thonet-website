@@ -70,6 +70,10 @@ $(function() {
         $burgerMenu.fadeOut(400);
     });
 
+    // Bei Klick auf link mit Hash(#), Burger-Menu schliessen:
+    $(".close-burger-trigger").on("click", function() {
+        $burgerClose.trigger("click");
+    });
 
 
     // Suchfilter Menu:
@@ -293,7 +297,7 @@ $(function() {
         skin: "square"
     });
 
-    
+
 
 
     // Bei Window-Resize die Menüs neu ausrichten und lazy + mansory updaten:

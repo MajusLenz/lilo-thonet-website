@@ -116,7 +116,7 @@
 
         <div class="top container-fluid" style="visibility: hidden!important; z-index: -9999!important;">
             <div class="header-balken1 row">
-                <div class="col-8">
+                <div class="col-6">
                     <a class="homepage-button" href="{{ path('_index') }}" title="Startseite">
                         <img
                                 alt="Die&nbsp;Marke&nbsp;Thonet<br/>Grafik&nbsp;Archiv"
@@ -124,7 +124,7 @@
                         />
                     </a>
                 </div>
-                <div class="col-4">
+                <div class="col-6">
                     <button class="burger-button burger-button-open img-button" title="Menü öffnen">
                         <img
                                 alt="Menü öffnen"
@@ -171,7 +171,9 @@
                 <li><a href="{{ path('_dasProjekt') }}">Das Projekt</a></li>
                 <li><a href="{{ path('_arbeitenImKontext') }}">Arbeiten im Kontext</a></li>
                 <li><a href="#">Möbel-Archiv</a></li>
-                <li><a href="{{ path('_kontakt') }}">Kontakt</a></li>
+                <li class="close-burger-trigger"><a href="{{ path('_kontakt') }}#">Kontakt</a></li>
+                <li class="close-burger-trigger"><a href="{{ path('_kontakt') }}#impressum">Impressum</a></li>
+                <li class="close-burger-trigger"><a href="{{ path('_kontakt') }}#datenschutz">Datenschutzerklärung</a></li>
             </ul>
         </nav>
     </section>
