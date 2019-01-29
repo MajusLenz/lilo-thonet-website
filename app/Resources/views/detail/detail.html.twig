@@ -165,23 +165,26 @@
                 </p>
 
             </div>
-            <div class="detail-verknuepfteobjekte">
-                <hr>
-                <div class="grid grid-klein">
-                    <div class="grid-sizer grid-item-klein" style="display: none;"></div>
 
-                    {% for vObjekt in verknuepfteObjekte %}
+            {% if verknuepfteObjekte|length > 0 %}
+                <div class="detail-verknuepfteobjekte">
+                    <hr>
+                    <div class="grid grid-klein">
+                        <div class="grid-sizer grid-item-klein" style="display: none;"></div>
 
-                        <a href="{{ url('_detail', {'slug': vObjekt.id}) }}"
-                           class="grid-item grid-item-klein">
-                            <img class="" alt=""
-                                 src="{{ asset('assets/images/archivierungen/' ~ vObjekt.links["klein"]) }}"
-                            />
-                        </a>
+                        {% for vObjekt in verknuepfteObjekte %}
 
-                    {% endfor %}
+                            <a href="{{ url('_detail', {'slug': vObjekt.id}) }}"
+                               class="grid-item grid-item-klein">
+                                <img class="" alt=""
+                                     src="{{ asset('assets/images/archivierungen/' ~ vObjekt.links["klein"]) }}"
+                                />
+                            </a>
+
+                        {% endfor %}
+                    </div>
                 </div>
-            </div>
+            {% endif %}
         </section>
 
 
