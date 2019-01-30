@@ -153,7 +153,7 @@ body {
 div.inhalt{
     margin: 0;
     margin-bottom: 50px;
-    padding: 30px;
+    padding: 2%;
     padding-bottom: 0;
 }
 
@@ -177,7 +177,7 @@ hr{
     position: fixed;
     height: 101vh;
     width: 101vw;
-    padding-left: 30px;
+    padding-left: 2%;
     padding-top: 0;
     margin-top: 0;
     z-index: 888;
@@ -209,8 +209,8 @@ hr{
 /* header */
 .top{
     background-color: white;
-    padding-left: 30px;
-    padding-right: 30px;
+    padding-left: 2%;
+    padding-right: 2%;
 }
 
 .top .header-balken1{
@@ -282,52 +282,6 @@ hr{
 }
 
 
-/* Mansory Grid: */
-
-/* --- Grid generell */
-.grid-item img{
-    max-width: 100%;
-    height: auto;
-    width:auto;
-}
-
-/* --- Grid klein */
-.grid-klein{
-    margin: 0;
-}
-.grid-item-klein{
-    width: 12.5%;
-    margin: 0;
-}
-.grid-item-klein img{
-    max-height: 12.5vw;
-}
-
-/* --- Grid mittel */
-.grid-mittel{
-    margin: 0;
-}
-.grid-item-mittel {
-    width: 16.6666%;
-    margin: 0;
-}
-.grid-item-mittel img{
-    max-height: 16.6666vw;
-}
-
-/* --- Grid gross */
-.grid-gross{
-    margin: 0;
-}
-.grid-item-gross {
-    width: 25%;
-    margin: 0;
-}
-.grid-item-gross img{
-    max-height: 25vw;
-}
-
-
 
 
 /* index */
@@ -341,6 +295,49 @@ hr{
 .suche-overlay-filter{
     padding-top: 30px;
 }
+
+/* --- Grid generell */
+.index .images-overview{
+    position: absolute!important;
+    right: 0;
+    left: 0;
+    padding-left: 2%;
+}
+.index .grid-item{
+    margin-right: 2%;
+    margin-bottom: 2%;
+    border: none;
+}
+.index .grid-item img{
+    max-width: 100%;
+    height: auto;
+    width:auto;
+}
+
+/* --- Grid klein */
+.index .grid-item-klein{
+    width: 10.25%;
+}
+.index .grid-item-klein img{
+    max-height: 10vw;
+}
+
+/* --- Grid mittel */
+.index .grid-item-mittel {
+    width: 14.3333%;
+}
+.index .grid-item-mittel img{
+    max-height: 14vw;
+}
+
+/* --- Grid gross */
+.index .grid-item-gross {
+    width: 22.5%;
+}
+.index .grid-item-gross img{
+    max-height: 22vw;
+}
+
 
 /* --- ion Range Slider --- */
 .irs .irs-bar, .irs .irs-line{
@@ -371,6 +368,7 @@ hr{
 .irs .irs-from{
     top: -6px;
 }
+
 
 
 
@@ -415,7 +413,13 @@ hr{
     max-width: 70%;
     height: auto;
     width:auto;
- }
+    max-height: 16vw;
+}
+.favorites-overview .grid-item{
+    width: 16.6666%;
+    margin: 0;
+    margin-bottom: 25px;
+}
 
 .favorites-overview .add-fav-side{
     display: inline-block;
@@ -442,7 +446,6 @@ hr{
     display: block;
 }
 
-
 .favorites-mail{
     margin-bottom: 170px;
 }
@@ -467,8 +470,8 @@ hr{
     bottom: 0;
     background-color: white;
     position: fixed;
-    padding-right: 30px;
-    padding-left: 30px;
+    padding-right: 2%;
+    padding-left: 2%;
 }
 .footer hr{
      margin-top: 1px;

@@ -47,25 +47,26 @@
             {% endfor %}
         </section>
 
-        <section class="favorites-delete-all" style="display: none;">
-            <button class="black-button favorites-delete-all-button">gesamte Auswahl löschen</button>
-            <span class="favorites-delete-all-question big-text"
-                  style="display: none;">Sicher?</span>
-            <button class="black-button favorites-delete-all-confirm"
-                    style="display: none;"
-                    data-redirect="{{ path('_favoriten') }}">löschen</button>
-            <button class="black-button favorites-delete-all-back"
-                    style="display: none;">abbrechen</button>
-        </section>
+        {% if archivierungen|length > 0 %}
+            <section class="favorites-delete-all"">
+                <button class="black-button favorites-delete-all-button">gesamte Auswahl löschen</button>
+                <span class="favorites-delete-all-question big-text"
+                      style="display: none;">Sicher?</span>
+                <button class="black-button favorites-delete-all-confirm"
+                        style="display: none;"
+                        data-redirect="{{ path('_favoriten') }}">löschen</button>
+                <button class="black-button favorites-delete-all-back"
+                        style="display: none;">abbrechen</button>
+            </section>
 
-        <section class="favorites-mail big-text" style="display: none;">
-            <hr>
-            Anfrage über ausgewählte Objekte an
-            <a class="mailto"
-               href="mailto:mail@thonetarchiv.de?subject=Anfrage zum Download von Grafiken&body=Hallo, ich bitte um einen Download der Archivierungen mit den IDs: {% for archivierung in archivierungen %}{{ archivierung.id }}, {% endfor %}"
-            >mail@thonetarchiv.de</a>
-        </section>
-
+            <section class="favorites-mail big-text">
+                <hr>
+                Anfrage über ausgewählte Objekte an
+                <a class="mailto"
+                   href="mailto:mail@thonetarchiv.de?subject=Anfrage zum Download von Grafiken&body=Hallo, ich bitte um einen Download der Archivierungen mit den IDs: {% for archivierung in archivierungen %}{{ archivierung.id }}, {% endfor %}"
+                >mail@thonetarchiv.de</a>
+            </section>
+        {% endif %}
     </div>
 
 {% endblock %}

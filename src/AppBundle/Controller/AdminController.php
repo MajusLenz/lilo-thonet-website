@@ -20,7 +20,7 @@ use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 class AdminController extends Controller
 {
     /**
-     * @Route("/admin", name="admin")
+     * @Route("/admin/", name="admin")
      */
     public function adminAction(Request $request)
     {

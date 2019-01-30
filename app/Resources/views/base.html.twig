@@ -161,22 +161,24 @@
 
 
     {% block overlays %}
-
     {% endblock %}
 
 
-    <section id="burger-overlay" class="overlay" style="display: none;">
-        <nav class="big-text">
-            <ul>
-                <li><a href="{{ path('_dasProjekt') }}">Das Projekt</a></li>
-                <li><a href="{{ path('_arbeitenImKontext') }}">Arbeiten im Kontext</a></li>
-                <li><a href="#">Möbel-Archiv</a></li>
-                <li class="close-burger-trigger"><a href="{{ path('_kontakt') }}#">Kontakt</a></li>
-                <li class="close-burger-trigger"><a href="{{ path('_kontakt') }}#impressum">Impressum</a></li>
-                <li class="close-burger-trigger"><a href="{{ path('_kontakt') }}#datenschutz">Datenschutzerklärung</a></li>
-            </ul>
-        </nav>
-    </section>
+    {% block burgeroverlay %}
+        <section id="burger-overlay" class="overlay" style="display: none;">
+            <nav class="big-text">
+                <ul>
+                    <li><a href="{{ path('_dasProjekt') }}">Das Projekt</a></li>
+                    <li><a href="{{ path('_arbeitenImKontext') }}">Arbeiten im Kontext</a></li>
+                    <li><a href="#">Möbel-Archiv</a></li>
+                    <li class="close-burger-trigger"><a href="{{ path('_kontakt') }}#">Kontakt</a></li>
+                    <li class="close-burger-trigger"><a href="{{ path('_kontakt') }}#impressum">Impressum</a></li>
+                    <li class="close-burger-trigger"><a href="{{ path('_kontakt') }}#datenschutz">Datenschutzerklärung</a></li>
+                </ul>
+            </nav>
+        </section>
+    {% endblock %}
+
 
     <div class="inhalt">
 
@@ -193,7 +195,7 @@
     {% block footer %}
         <footer class="footer container-fluid">
             <hr>
-            <a href="#" class="img-button nach-oben-button" title="nach oben scrollen">
+            <a href="#" class="img-button nach-oben-button scroll-button" title="nach oben scrollen">
                 <img src="{{ asset('assets/images/Archiv_Symbole_Mobil_Suchfilter_Menue.svg') }}" alt="zurück nach oben"/>
             </a>
         </footer>

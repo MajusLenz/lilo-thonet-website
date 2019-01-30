@@ -262,10 +262,6 @@ $(function() {
     var $deleteAllFavsBack = $deleteAllFavsSection.find(".favorites-delete-all-back");
     var $deleteAllFavsQuestion = $deleteAllFavsSection.find(".favorites-delete-all-question");
 
-    if(favCookieArray.length > 0) {
-        $deleteAllFavsSection.fadeIn(0);
-    }
-
     $deleteAllFavsButton.on("click", function() {
         $deleteAllFavsButton.fadeOut(0);
         $deleteAllFavsConfirm.fadeIn(0);
@@ -285,11 +281,6 @@ $(function() {
     });
 
 
-    // Favoriten Mail-Anfrage einblenden:
-    if(favCookieArray.length > 0) {
-        $(".favorites-mail").fadeIn(0);
-    }
-
 
 
     // ionRangeSlider:
@@ -299,9 +290,65 @@ $(function() {
 
 
 
+    // Bei Window-Resize die Menüs neu ausrichten und lazy updaten:
+    $(window).on("resize", function() {
+        resizeBurgerMenu();
+        resizeSucheMenu();
 
-    // Bei Window-Resize die Menüs neu ausrichten und lazy + mansory updaten:
-    //TODO
+        setTimeout(function() {
+            $lazyInstance.update();     // Bilder nachladen, die nach Resize in Sichtfeld sind
+        }, 200);
+    });
+
+
+
+    // Anchor-Scrolling animieren:
+    var scrollTo = function(element, speed) {
+        if(element === 0) {
+            $('html, body').animate({
+                scrollTop: 0
+            }, speed);
+        }
+        else {
+            var heightHeader = $(".top").outerHeight();
+            var offsetElement = $(element).offset().top;
+
+            $('html, body').animate({
+                scrollTop: offsetElement - heightHeader - 40
+            }, speed);
+        }
+    };
+
+    // --- Beim drücken eines scroll-buttons:
+    $(".scroll-button").on("click", function(e) {
+        var $this = $(this);
+        var href = $this.attr("href");
+        var ziel;
+
+        if(href === "#")
+            ziel = 0;
+        else
+            ziel = $(href);
+
+        scrollTo(ziel, "slow");
+    });
+
+    // --- Beim Pageloading:
+    var windowHref = window.location.href;
+    var windowHash = windowHref.split("#")[1];
+
+    if(windowHash) {
+        scrollTo(0, 0);
+        scrollTo($("#" + windowHash), "slow");
+    }
+
+
+
+
+
+
+
+
 
 
 

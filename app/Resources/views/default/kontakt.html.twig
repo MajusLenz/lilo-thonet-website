@@ -6,6 +6,21 @@
     <h1 class="col-12 header-titel">Kontakt/Impressum/Datenschutz</h1>
 {% endblock %}
 
+{% block burgeroverlay %}
+    <section id="burger-overlay" class="overlay" style="display: none;">
+        <nav class="big-text">
+            <ul>
+                <li><a href="{{ path('_dasProjekt') }}">Das Projekt</a></li>
+                <li><a href="{{ path('_arbeitenImKontext') }}">Arbeiten im Kontext</a></li>
+                <li><a href="#">Möbel-Archiv</a></li>
+                <li class="close-burger-trigger"><a class=" scroll-button" href="#">Kontakt</a></li>
+                <li class="close-burger-trigger"><a class=" scroll-button" href="#impressum">Impressum</a></li>
+                <li class="close-burger-trigger"><a class=" scroll-button" href="#datenschutz">Datenschutzerklärung</a></li>
+            </ul>
+        </nav>
+    </section>
+{% endblock %}
+
 {% block body %}
 
     <p class="big-text half-size-text">
@@ -24,9 +39,6 @@
         <small class="font-italic">Archiv und Design:</small> Lilo Schäfer
         <br/>
         <small class="font-italic">Programmierung:</small> Marius Lenzing
-
-        <small id="impressum"></small>
-
         <br/>
         <small class="font-italic">Diese Website enthält Fotografien von:</small> Maximilian Bier, Felix Obermaier,
         Mascha Linke
@@ -34,7 +46,9 @@
         <br/>
         <br/>
         <br/>
-        <small class="font-italic">Inhaber/Verantwortlich für den Inhalt:</small>
+
+
+        <small class="font-italic" id="impressum">Inhaber/Verantwortlich für den Inhalt:</small>
         <br/>
         <br/>
         Lilo Schäfer
@@ -93,15 +107,14 @@
         sind.
         Trotz sorgfältiger Prüfung zum Zeitpunkt der Verlinkung wird
         keine Haftung für Inhalte dieser Seiten übernommen.
+        <br/>
+        <br/>
+        <br/>
+        <br/>
 
-        <small id="datenschutz"></small>
 
-        <br/>
-        <br/>
-        <br/>
-        <br/>
-        <br/>
-        <small class="font-italic">Datenschutzerklärung:</small>
+
+        <small class="font-italic" id="datenschutz">Datenschutzerklärung:</small>
         <br/>
         <small class="font-italic">1. Datenschutz auf einen Blick</small>
         <br/>

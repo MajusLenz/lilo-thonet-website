@@ -11,7 +11,7 @@ use Doctrine\ORM\Query\ResultSetMappingBuilder;
 class DetailController extends Controller
 {
     /**
-     * @Route("/Detail/{slug}", name="_detail")
+     * @Route("/Detail/{slug}/", name="_detail")
      */
     public function indexAction(Request $request, $slug)
     {
