@@ -320,7 +320,7 @@ $(function() {
     };
 
     // --- Beim drücken eines scroll-buttons:
-    $(".scroll-button").on("click", function(e) {
+    $(".scroll-button").on("click", function() {
         var $this = $(this);
         var href = $this.attr("href");
         var ziel;
@@ -338,8 +338,11 @@ $(function() {
     var windowHash = windowHref.split("#")[1];
 
     if(windowHash) {
-        scrollTo(0, 0);
-        scrollTo($("#" + windowHash), "slow");
+        var ziel = $("#" + windowHash);
+        if(ziel.length) {
+            scrollTo(0, 0);
+            scrollTo(ziel, "slow");
+        }
     }
 
 
