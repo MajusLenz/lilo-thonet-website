@@ -108,33 +108,49 @@ class DefaultController extends Controller
 
 
 
-        $sql = "SELECT a.* " .
+        // Freitext-Suche
+        $sql =
+            "SELECT a.* " .
             "FROM Archivierung a " .
             "LEFT JOIN Archivierung_Information ai ON a.id = ai.archivierung_id " .
             "LEFT JOIN Information i ON ai.information_id = i.id " .
             "LEFT JOIN Archivierung_Jahr aj ON a.id = aj.archivierung_id " .
             "LEFT JOIN Jahr j ON aj.jahr_id = j.id " .
-
-            // Freietext-Suche:
-            "WHERE ( ( LOWER(i.wert) LIKE LOWER('%papier%') AND i.name != 'Tags' ) OR LOWER(j.wert) LIKE LOWER('%papier%') )"
-
-            // Filternde Suche Jahre:
-            // TODO
-
-            // Filternde Suche Informationen:
-            // TODO
-
-
-
-            // ( SELECT freitext )   INER JOIN  ( SELECT filter )
+            "WHERE ( ( LOWER(i.wert) LIKE LOWER('%illustration%') AND i.name != 'Tags' ) OR LOWER(j.wert) LIKE LOWER('%illustration%') )"
         ;
-
-
 
         $rsm = new ResultSetMappingBuilder($em);
         $rsm->addRootEntityFromClassMetadata('AppBundle:Archivierung', 'a');
         $query = $em->createNativeQuery($sql, $rsm);
-        $archivierungen = $query->getResult();
+        $archivierungenFreitext = $query->getResult();
+
+
+        // Filter-Suche
+        $sql =
+            "SELECT a.* " .
+            "FROM Archivierung a " .
+            "LEFT JOIN Archivierung_Information ai ON a.id = ai.archivierung_id " .
+            "LEFT JOIN Information i ON ai.information_id = i.id " .
+            "LEFT JOIN Archivierung_Jahr aj ON a.id = aj.archivierung_id " .
+            "LEFT JOIN Jahr j ON aj.jahr_id = j.id " .
+            "WHERE ( j.wert IN(1957) )"
+        ;
+
+        $rsm = new ResultSetMappingBuilder($em);
+        $rsm->addRootEntityFromClassMetadata('AppBundle:Archivierung', 'a');
+        $query = $em->createNativeQuery($sql, $rsm);
+        $archivierungenFilter = $query->getResult();
+
+
+        $archivierungen = array_uintersect($archivierungenFreitext, $archivierungenFilter, function($a1, $a2){
+            if($a1->getId() == $a2->getId())
+                return 0;
+            else
+                return 1;
+        });
+
+
+        $archivierung = $archivierungenFreitext;
 
 
         foreach($archivierungen as $key => $archivierung) {
