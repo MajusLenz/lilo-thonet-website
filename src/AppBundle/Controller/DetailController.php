@@ -90,8 +90,8 @@ class DetailController extends Controller
             }
             $sql = "SELECT a.* " .
                 "FROM Archivierung a " .
-                "INNER JOIN Archivierung_Information ai ON a.id = ai.archivierung_id " .
-                "INNER JOIN Information i ON ai.information_id = i.id " .
+                "LEFT JOIN Archivierung_Information ai ON a.id = ai.archivierung_id " .
+                "LEFT JOIN Information i ON ai.information_id = i.id " .
                 "WHERE i.id IN ($tagIDs)"
             ;
             $rsm = new ResultSetMappingBuilder($em);

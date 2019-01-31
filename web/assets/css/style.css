@@ -345,10 +345,14 @@ hr{
 
 
 /* --- ion Range Slider --- */
-.irs .irs-bar, .irs .irs-line{
+.irs .irs-bar{
     background-color: white;
     border-top: 1px black solid;
     border-bottom: 1px black solid;
+}
+.irs .irs-line{
+    background-color: black;
+    border: none;
 }
 .irs .irs-handle, .irs .irs-handle:hover, .irs .irs-handle.state_hover{
     background-color: black;
@@ -438,7 +442,7 @@ hr{
     margin-bottom: 30px;
 }
 
-.detail-verknuepfteobjekte-overview .grid-item{
+.detail-verknuepfteobjekte-overview .grid-item, .detail-verknuepfteobjekte-overview .grid-sizer{
     display: inline-block;
     max-width: 150px;
     margin-right: 28px;

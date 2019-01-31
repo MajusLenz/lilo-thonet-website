@@ -169,14 +169,12 @@
                 </div>
             </div>
 
-
-
             {% if verknuepfteObjekte|length > 0 %}
                 <div class="detail-verknuepfteobjekte">
                     <h3 class="font-italic">Verknüpfte Objekte:</h3>
                     <hr/>
                     <section class="no-grid detail-verknuepfteobjekte-overview">
-                        <div class="grid-sizer grid-item" style="display: none;"></div>
+                        <div class="grid-sizer" style="display: none;"></div>
                         {% for vObjekt in verknuepfteObjekte %}
 
                             <a href="{{ url('_detail', {'slug': vObjekt.id}) }}"
@@ -192,6 +190,5 @@
                 <div class="clearfix"></div>
             {% endif %}
         </section>
-
     </div>
 {% endblock %}
