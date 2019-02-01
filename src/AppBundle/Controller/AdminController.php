@@ -223,7 +223,7 @@ class AdminController extends Controller
                             continue; // gesamte Zeile überspringen
                         }
 
-                        // ein Jahr
+                        // nur ein Jahr
                         if (count($jahreArray) === 1) {
                             $minJahr = trim($jahreArray[0]);
                             $maxJahr = $minJahr;

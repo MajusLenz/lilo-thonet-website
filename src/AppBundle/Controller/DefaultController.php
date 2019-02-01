@@ -108,6 +108,17 @@ class DefaultController extends Controller
 
 
 
+        $allParams = $request->query->all();
+
+
+
+        $freitextParam = trim($allParams["Freitext"]);
+        unset($allParams["Freitext"]);
+
+
+        $rsm = new ResultSetMappingBuilder($em);
+        $rsm->addRootEntityFromClassMetadata('AppBundle:Archivierung', 'a');
+
         // Freitext-Suche:
         $sql =
             "SELECT a.* " .
@@ -116,12 +127,56 @@ class DefaultController extends Controller
             "LEFT JOIN Information i ON ai.information_id = i.id " .
             "LEFT JOIN Archivierung_Jahr aj ON a.id = aj.archivierung_id " .
             "LEFT JOIN Jahr j ON aj.jahr_id = j.id " .
-            "WHERE ( ( LOWER(i.wert) LIKE LOWER('%Illustration%') AND i.name != 'Tags' ) OR LOWER(j.wert) LIKE LOWER('%Illustration%') )"
+            "WHERE ( ( LOWER(i.wert) LIKE LOWER('%papier%') AND i.name != 'Tags' ) OR LOWER(j.wert) LIKE LOWER('%papier%') )"
         ;
-        $rsm = new ResultSetMappingBuilder($em);
-        $rsm->addRootEntityFromClassMetadata('AppBundle:Archivierung', 'a');
         $query = $em->createNativeQuery($sql, $rsm);
         $freitextSuche = $query->getResult();
+
+
+
+
+
+
+        $jahrParam = trim($allParams["Jahr"]);
+        unset($allParams["Jahr"]);
+
+        $minJahr = 0;
+        $maxJahr = 0;
+        $jahreArray = explode(";", $jahrParam);
+
+        // Fehler wenn Jahre in falschem Format angegeben
+        if (count($jahreArray) > 2) {
+            return $this->getResponse()->setStatusCode('422');
+        }
+
+        // nur ein Jahr
+        if (count($jahreArray) === 1) {
+            $minJahr = trim($jahreArray[0]);
+            $maxJahr = $minJahr;
+        }
+        // mehrere Jahre
+        elseif (count($jahreArray) === 2) {
+            $minJahr = trim($jahreArray[0]);
+            $maxJahr = trim($jahreArray[1]);
+        }
+
+        // min und max tauschen falls falschherum
+        if ($minJahr > $maxJahr) {
+            $temp = $maxJahr;
+            $maxJahr = $minJahr;
+            $minJahr = $temp;
+        }
+
+        // Fehler wenn eines der Jahre keine Zahl ist
+        if (!is_numeric($minJahr) || !is_numeric($maxJahr)) {
+            return $this->getResponse()->setStatusCode('422');
+        }
+
+        $jahrString = "$minJahr";
+
+        for ($i = $minJahr+1; $i <= $maxJahr; $i++) {
+            $jahrString = $jahrString . ", $i";
+        }
 
         // Jahr-Filter:
         $sql =
@@ -131,12 +186,22 @@ class DefaultController extends Controller
             "LEFT JOIN Information i ON ai.information_id = i.id " .
             "LEFT JOIN Archivierung_Jahr aj ON a.id = aj.archivierung_id " .
             "LEFT JOIN Jahr j ON aj.jahr_id = j.id " .
-            "WHERE j.wert IN(1957)"
+            "WHERE j.wert IN($jahrString)"
         ;
-        $rsm = new ResultSetMappingBuilder($em);
-        $rsm->addRootEntityFromClassMetadata('AppBundle:Archivierung', 'a');
         $query = $em->createNativeQuery($sql, $rsm);
         $filterJahr = $query->getResult();
+
+
+
+
+
+
+
+
+
+
+
+
 
         // Titel-Filter:
         $sql =
@@ -148,8 +213,6 @@ class DefaultController extends Controller
             "LEFT JOIN Jahr j ON aj.jahr_id = j.id " .
             "WHERE (i.wert IN('Thonet 157') AND i.name = 'Titel')"
         ;
-        $rsm = new ResultSetMappingBuilder($em);
-        $rsm->addRootEntityFromClassMetadata('AppBundle:Archivierung', 'a');
         $query = $em->createNativeQuery($sql, $rsm);
         $filterTitel = $query->getResult();
 
@@ -163,8 +226,6 @@ class DefaultController extends Controller
             "LEFT JOIN Jahr j ON aj.jahr_id = j.id " .
             "WHERE (i.wert IN('Thonet 157') AND i.name = 'Auftraggeber')"
         ;
-        $rsm = new ResultSetMappingBuilder($em);
-        $rsm->addRootEntityFromClassMetadata('AppBundle:Archivierung', 'a');
         $query = $em->createNativeQuery($sql, $rsm);
         $filterAuftraggeber = $query->getResult();
 
@@ -176,10 +237,8 @@ class DefaultController extends Controller
             "LEFT JOIN Information i ON ai.information_id = i.id " .
             "LEFT JOIN Archivierung_Jahr aj ON a.id = aj.archivierung_id " .
             "LEFT JOIN Jahr j ON aj.jahr_id = j.id " .
-            "WHERE (i.wert IN('Thonet 157') AND i.name = 'Objektkategorie')"
+            "WHERE (i.wert IN('Möbelkatalog') AND i.name = 'Objektkategorie')"
         ;
-        $rsm = new ResultSetMappingBuilder($em);
-        $rsm->addRootEntityFromClassMetadata('AppBundle:Archivierung', 'a');
         $query = $em->createNativeQuery($sql, $rsm);
         $titelObjektkategorie = $query->getResult();
 
@@ -193,8 +252,6 @@ class DefaultController extends Controller
             "LEFT JOIN Jahr j ON aj.jahr_id = j.id " .
             "WHERE (i.wert IN('Thonet 157') AND i.name = 'Gestaltung')"
         ;
-        $rsm = new ResultSetMappingBuilder($em);
-        $rsm->addRootEntityFromClassMetadata('AppBundle:Archivierung', 'a');
         $query = $em->createNativeQuery($sql, $rsm);
         $filterGestaltung = $query->getResult();
 
@@ -208,8 +265,6 @@ class DefaultController extends Controller
             "LEFT JOIN Jahr j ON aj.jahr_id = j.id " .
             "WHERE (i.wert IN('Thonet 157') AND i.name = 'Fotografie')"
         ;
-        $rsm = new ResultSetMappingBuilder($em);
-        $rsm->addRootEntityFromClassMetadata('AppBundle:Archivierung', 'a');
         $query = $em->createNativeQuery($sql, $rsm);
         $filterFotografie = $query->getResult();
 
@@ -223,8 +278,6 @@ class DefaultController extends Controller
             "LEFT JOIN Jahr j ON aj.jahr_id = j.id " .
             "WHERE (i.wert IN('Thonet 157') AND i.name = 'Druckerei')"
         ;
-        $rsm = new ResultSetMappingBuilder($em);
-        $rsm->addRootEntityFromClassMetadata('AppBundle:Archivierung', 'a');
         $query = $em->createNativeQuery($sql, $rsm);
         $filterDruckerei = $query->getResult();
 
@@ -238,8 +291,6 @@ class DefaultController extends Controller
             "LEFT JOIN Jahr j ON aj.jahr_id = j.id " .
             "WHERE (i.wert IN('Thonet 157') AND i.name = 'Autor')"
         ;
-        $rsm = new ResultSetMappingBuilder($em);
-        $rsm->addRootEntityFromClassMetadata('AppBundle:Archivierung', 'a');
         $query = $em->createNativeQuery($sql, $rsm);
         $filterAutor = $query->getResult();
 
@@ -253,8 +304,6 @@ class DefaultController extends Controller
             "LEFT JOIN Jahr j ON aj.jahr_id = j.id " .
             "WHERE (i.wert IN('Thonet 157') AND i.name = 'Material')"
         ;
-        $rsm = new ResultSetMappingBuilder($em);
-        $rsm->addRootEntityFromClassMetadata('AppBundle:Archivierung', 'a');
         $query = $em->createNativeQuery($sql, $rsm);
         $filterMaterial = $query->getResult();
 
@@ -268,8 +317,6 @@ class DefaultController extends Controller
             "LEFT JOIN Jahr j ON aj.jahr_id = j.id " .
             "WHERE (i.wert IN('Thonet 157') AND i.name = 'Produktionsverfahren')"
         ;
-        $rsm = new ResultSetMappingBuilder($em);
-        $rsm->addRootEntityFromClassMetadata('AppBundle:Archivierung', 'a');
         $query = $em->createNativeQuery($sql, $rsm);
         $filterProduktionsverfahren = $query->getResult();
 
@@ -283,8 +330,6 @@ class DefaultController extends Controller
             "LEFT JOIN Jahr j ON aj.jahr_id = j.id " .
             "WHERE (i.wert IN('Thonet 157') AND i.name = 'Sprache')"
         ;
-        $rsm = new ResultSetMappingBuilder($em);
-        $rsm->addRootEntityFromClassMetadata('AppBundle:Archivierung', 'a');
         $query = $em->createNativeQuery($sql, $rsm);
         $filterSprache = $query->getResult();
 
@@ -298,8 +343,6 @@ class DefaultController extends Controller
             "LEFT JOIN Jahr j ON aj.jahr_id = j.id " .
             "WHERE (i.wert IN('Thonet 157') AND i.name = 'Schrift')"
         ;
-        $rsm = new ResultSetMappingBuilder($em);
-        $rsm->addRootEntityFromClassMetadata('AppBundle:Archivierung', 'a');
         $query = $em->createNativeQuery($sql, $rsm);
         $filterSchrift = $query->getResult();
 
@@ -313,8 +356,6 @@ class DefaultController extends Controller
             "LEFT JOIN Jahr j ON aj.jahr_id = j.id " .
             "WHERE (i.wert IN('Thonet 157') AND i.name = 'Farbe')"
         ;
-        $rsm = new ResultSetMappingBuilder($em);
-        $rsm->addRootEntityFromClassMetadata('AppBundle:Archivierung', 'a');
         $query = $em->createNativeQuery($sql, $rsm);
         $filterFarbe = $query->getResult();
 
@@ -328,8 +369,6 @@ class DefaultController extends Controller
             "LEFT JOIN Jahr j ON aj.jahr_id = j.id " .
             "WHERE (i.wert IN('Thonet 157') AND i.name = 'Bilddarstellung')"
         ;
-        $rsm = new ResultSetMappingBuilder($em);
-        $rsm->addRootEntityFromClassMetadata('AppBundle:Archivierung', 'a');
         $query = $em->createNativeQuery($sql, $rsm);
         $filterBilddarstellung = $query->getResult();
 
@@ -343,8 +382,6 @@ class DefaultController extends Controller
             "LEFT JOIN Jahr j ON aj.jahr_id = j.id " .
             "WHERE (i.wert IN('Thonet 157') AND i.name = 'Hinweis')"
         ;
-        $rsm = new ResultSetMappingBuilder($em);
-        $rsm->addRootEntityFromClassMetadata('AppBundle:Archivierung', 'a');
         $query = $em->createNativeQuery($sql, $rsm);
         $filterHinweis = $query->getResult();
 
@@ -358,8 +395,6 @@ class DefaultController extends Controller
             "LEFT JOIN Jahr j ON aj.jahr_id = j.id " .
             "WHERE (i.wert IN('Thonet 157') AND i.name = 'Produktkategorie')"
         ;
-        $rsm = new ResultSetMappingBuilder($em);
-        $rsm->addRootEntityFromClassMetadata('AppBundle:Archivierung', 'a');
         $query = $em->createNativeQuery($sql, $rsm);
         $filterProduktkategorie = $query->getResult();
 
@@ -373,8 +408,6 @@ class DefaultController extends Controller
             "LEFT JOIN Jahr j ON aj.jahr_id = j.id " .
             "WHERE (i.wert IN('Thonet 157') AND i.name = 'Moebel')"
         ;
-        $rsm = new ResultSetMappingBuilder($em);
-        $rsm->addRootEntityFromClassMetadata('AppBundle:Archivierung', 'a');
         $query = $em->createNativeQuery($sql, $rsm);
         $filterMoebel = $query->getResult();
 
@@ -388,8 +421,6 @@ class DefaultController extends Controller
             "LEFT JOIN Jahr j ON aj.jahr_id = j.id " .
             "WHERE (i.wert IN('Thonet 157') AND i.name = 'Text')"
         ;
-        $rsm = new ResultSetMappingBuilder($em);
-        $rsm->addRootEntityFromClassMetadata('AppBundle:Archivierung', 'a');
         $query = $em->createNativeQuery($sql, $rsm);
         $filterText = $query->getResult();
 
@@ -403,8 +434,6 @@ class DefaultController extends Controller
             "LEFT JOIN Jahr j ON aj.jahr_id = j.id " .
             "WHERE (i.wert IN('Thonet 157') AND i.name = 'Archiv')"
         ;
-        $rsm = new ResultSetMappingBuilder($em);
-        $rsm->addRootEntityFromClassMetadata('AppBundle:Archivierung', 'a');
         $query = $em->createNativeQuery($sql, $rsm);
         $filterArchiv = $query->getResult();
 
@@ -413,29 +442,31 @@ class DefaultController extends Controller
         $archivierungen = array_uintersect(
             $freitextSuche,
             $filterJahr,
-            $filterTitel,
-            $filterAuftraggeber,
-            $titelObjektkategorie,
-            $filterGestaltung,
-            $filterFotografie,
-            $filterDruckerei,
-            $filterAutor,
-            $filterMaterial,
-            $filterProduktionsverfahren,
-            $filterSprache,
-            $filterSchrift,
-            $filterFarbe,
-            $filterBilddarstellung,
-            $filterHinweis,
-            $filterProduktkategorie,
-            $filterMoebel,
-            $filterText,
-            $filterArchiv,
+//            $filterTitel,
+//            $filterAuftraggeber,
+//            $titelObjektkategorie,
+//            $filterGestaltung,
+//            $filterFotografie,
+//            $filterDruckerei,
+//            $filterAutor,
+//            $filterMaterial,
+//            $filterProduktionsverfahren,
+//            $filterSprache,
+//            $filterSchrift,
+//            $filterFarbe,
+//            $filterBilddarstellung,
+//            $filterHinweis,
+//            $filterProduktkategorie,
+//            $filterMoebel,
+//            $filterText,
+//            $filterArchiv,
 
             function($a1, $a2) {
-                if($a1->getId() == $a2->getId())
+                $id1 = $a1->getId();
+                $id2 = $a2->getId();
+                if($id1 == $id2)
                     return 0;
-                elseif($a1->getId() > $a2->getId())
+                elseif($id1 > $id2)
                     return 1;
                 else
                     return -1;

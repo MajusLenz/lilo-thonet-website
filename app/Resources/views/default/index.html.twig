@@ -30,12 +30,12 @@
     <section id="suche-overlay" class="overlay" style="display: none;">
         <div class="suche-overlay-filter">
 
-            <form>
+            <form method="get" action="{{ path('_suchetest') }}">
 
                 FILTER!
-                <input type="text" id="testInput">
+                <input type="text" id="testInput" name="Freitext">
 
-                <input type="text" class="js-range-slider" name="my_range" value=""
+                <input type="text" class="js-range-slider" name="Jahr" value=""
                        data-type="double"
                        data-min="1960"
                        data-max="2018"
