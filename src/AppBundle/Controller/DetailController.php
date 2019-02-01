@@ -81,7 +81,7 @@ class DetailController extends Controller
                 $tagID = $tag->getId();
 
                 if($firstOne) {
-                    $tagIDs .= "$tagID";
+                    $tagIDs = "$tagID";
                     $firstOne = false;
                 }
                 else{

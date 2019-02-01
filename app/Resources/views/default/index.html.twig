@@ -37,10 +37,10 @@
 
                 <input type="text" class="js-range-slider" name="Jahr" value=""
                        data-type="double"
-                       data-min="1960"
-                       data-max="2018"
-                       data-from="1960"
-                       data-to="2000"
+                       data-min="{{ minDBJahr }}"
+                       data-max="{{ maxDBJahr }}"
+                       data-from="{{ minDBJahr }}"
+                       data-to="{{ maxDBJahr -3 }}"
                        data-hide-min-max="true"
                        data-prettify-enabled="false"
                 />

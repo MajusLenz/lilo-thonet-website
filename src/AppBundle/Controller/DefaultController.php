@@ -2,11 +2,14 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\Archivierung;
+use AppBundle\Helper\MysqlEscapeHelper;
 use Doctrine\ORM\Query\ResultSetMappingBuilder;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use AppBundle\Helper\HashHelper;
+use Symfony\Component\HttpFoundation\Response;
 
 class DefaultController extends Controller
 {
@@ -19,17 +22,18 @@ class DefaultController extends Controller
         $em = $this->getDoctrine()->getManager();
         $archivierungen = $em->getRepository('AppBundle:Archivierung')->findBy(array(), array('erstelldatum' => 'ASC'));
 
-        foreach($archivierungen as $key => $archivierung) {
-            $dateiHash = $archivierung->getDateiHash();
+        $sql = ""."SELECT MIN(wert) AS 'min', MAX(wert) AS 'max' FROM Jahr";
+        $stmt = $em->getConnection()->prepare($sql);
+        $stmt->execute();
+        $stmtResult = $stmt->fetchAll();
 
-            $links = HashHelper::dateiHashToURL($dateiHash);    // Pfade zu Bildern
-            $archivierungen[$key]->links = $links;
-        }
-        
-        return $this->render('default/index.html.twig', [
-            "archivierungen" => $archivierungen
-        ]);
+        $minDBJahr = $stmtResult[0]["min"];   // kleinstes Jahr in der DB
+        $maxDBJahr = $stmtResult[0]["max"];   // groesstes Jahr in der DB
+
+
+        return $this->createSuchResponse($archivierungen, $minDBJahr, $maxDBJahr);
     }
+
 
     /**
      * @Route("/DasProjekt/", name="_dasProjekt")
@@ -72,15 +76,12 @@ class DefaultController extends Controller
         ]);
     }
 
+
     /**
      * @Route("/suche/", name="_suchetest")
      */
     public function sucheAction(Request $request)
     {
-
-        $em = $this->getDoctrine()->getManager();
-
-
 
 //        // Verknüpfte Objekte laden:
 //        $tags = $archivierung->getInfos("Tags");
@@ -98,7 +99,7 @@ class DefaultController extends Controller
 //                $tagID = $tag->getId();
 //
 //                if($firstOne) {
-//                    $tagIDs .= "$tagID";
+//                    $tagIDs = "$tagID";
 //                    $firstOne = false;
 //                }
 //                else{
@@ -107,19 +108,27 @@ class DefaultController extends Controller
 //            }
 
 
+        $em = $this->getDoctrine()->getManager();
+        $rsm = new ResultSetMappingBuilder($em);
+        $rsm->addRootEntityFromClassMetadata('AppBundle:Archivierung', 'a');
+
+        $sql = ""."SELECT MIN(wert) AS 'min', MAX(wert) AS 'max' FROM Jahr";
+        $stmt = $em->getConnection()->prepare($sql);
+        $stmt->execute();
+        $stmtResult = $stmt->fetchAll();
+
+        $minDBJahr = $stmtResult[0]["min"];   // kleinstes Jahr in der DB
+        $maxDBJahr = $stmtResult[0]["max"];   // groesstes Jahr in der DB
 
         $allParams = $request->query->all();
 
 
+        // FREITEXT-SUCHE:
 
         $freitextParam = trim($allParams["Freitext"]);
         unset($allParams["Freitext"]);
+        $freitextString = MysqlEscapeHelper::escape($freitextParam);
 
-
-        $rsm = new ResultSetMappingBuilder($em);
-        $rsm->addRootEntityFromClassMetadata('AppBundle:Archivierung', 'a');
-
-        // Freitext-Suche:
         $sql =
             "SELECT a.* " .
             "FROM Archivierung a " .
@@ -127,15 +136,22 @@ class DefaultController extends Controller
             "LEFT JOIN Information i ON ai.information_id = i.id " .
             "LEFT JOIN Archivierung_Jahr aj ON a.id = aj.archivierung_id " .
             "LEFT JOIN Jahr j ON aj.jahr_id = j.id " .
-            "WHERE ( ( LOWER(i.wert) LIKE LOWER('%papier%') AND i.name != 'Tags' ) OR LOWER(j.wert) LIKE LOWER('%papier%') )"
+            "WHERE ( ( LOWER(i.wert) LIKE LOWER('%$freitextString%') AND i.name != 'Tags' ) OR LOWER(j.wert) LIKE LOWER('%$freitextString%') )"
         ;
         $query = $em->createNativeQuery($sql, $rsm);
-        $freitextSuche = $query->getResult();
+        $freitextErgebnis = $query->getResult();
+
+
+        // wenn jetzt die Ergebnismenge schon leer ist, die anderen Filter ignorieren und Response mit leerer Menge returnen
+        if(empty($freitextErgebnis))
+            return $this->createSuchResponse(array(), $minDBJahr, $maxDBJahr);
+
+        else
+            $gesamtErgebnis = $freitextErgebnis;
 
 
 
-
-
+        // JAHR-FILTER:
 
         $jahrParam = trim($allParams["Jahr"]);
         unset($allParams["Jahr"]);
@@ -146,7 +162,7 @@ class DefaultController extends Controller
 
         // Fehler wenn Jahre in falschem Format angegeben
         if (count($jahreArray) > 2) {
-            return $this->getResponse()->setStatusCode('422');
+            throw $this->createNotFoundException('Falsches Jahresformat!');
         }
 
         // nur ein Jahr
@@ -169,35 +185,67 @@ class DefaultController extends Controller
 
         // Fehler wenn eines der Jahre keine Zahl ist
         if (!is_numeric($minJahr) || !is_numeric($maxJahr)) {
-            return $this->getResponse()->setStatusCode('422');
+            throw $this->createNotFoundException('Falsches Jahresformat!');
         }
 
-        $jahrString = "$minJahr";
+        // Nur nach Jahren filtern, wenn der User den Jahr-Slider ueberhaupt benutzt hat
+        if($minJahr != $minDBJahr || $maxJahr != $maxDBJahr) {
 
-        for ($i = $minJahr+1; $i <= $maxJahr; $i++) {
-            $jahrString = $jahrString . ", $i";
+            $jahrString = "$minJahr";
+
+            for ($i = $minJahr + 1; $i <= $maxJahr; $i++) {
+                $jahrString = $jahrString . ", $i";
+            }
+
+            $sql =
+                "SELECT a.* " .
+                "FROM Archivierung a " .
+                "LEFT JOIN Archivierung_Information ai ON a.id = ai.archivierung_id " .
+                "LEFT JOIN Information i ON ai.information_id = i.id " .
+                "LEFT JOIN Archivierung_Jahr aj ON a.id = aj.archivierung_id " .
+                "LEFT JOIN Jahr j ON aj.jahr_id = j.id " .
+                "WHERE j.wert IN($jahrString)"
+            ;
+            $query = $em->createNativeQuery($sql, $rsm);
+            $jahrErgebnis = $query->getResult();
+
+            // wenn jetzt die Ergebnismenge schon leer ist, die anderen Filter ignorieren und Response mit leerer Menge returnen
+            if(empty($jahrErgebnis))
+                return $this->createSuchResponse(array(), $minDBJahr, $maxDBJahr);
+
+            else
+                // Schnittmenge bilden
+                $gesamtErgebnis = array_uintersect(
+                    $freitextErgebnis,
+                    $jahrErgebnis,
+                    [$this, 'archivierungsVergleich'] // Vergleichs-Callback
+                );
+
+            // wenn jetzt die Ergebnismenge schon leer ist, die anderen Filter ignorieren und Response mit leerer Menge returnen
+            if(empty($gesamtErgebnis))
+                return $this->createSuchResponse(array(), $minDBJahr, $maxDBJahr);
         }
 
-        // Jahr-Filter:
-        $sql =
-            "SELECT a.* " .
-            "FROM Archivierung a " .
-            "LEFT JOIN Archivierung_Information ai ON a.id = ai.archivierung_id " .
-            "LEFT JOIN Information i ON ai.information_id = i.id " .
-            "LEFT JOIN Archivierung_Jahr aj ON a.id = aj.archivierung_id " .
-            "LEFT JOIN Jahr j ON aj.jahr_id = j.id " .
-            "WHERE j.wert IN($jahrString)"
-        ;
-        $query = $em->createNativeQuery($sql, $rsm);
-        $filterJahr = $query->getResult();
 
 
+        // RESTLICHE INFO-FILTER:
 
+        foreach($allParams as $infoParam) {
 
+            if(empty($infoParam))
+                continue;
 
+            $infoArray = explode(";", $infoParam);
 
+            foreach($infoArray as $info) {
+                $info = trim($info);
 
+                if(empty($info))
+                    continue;
 
+                
+            }
+        }
 
 
 
@@ -440,8 +488,8 @@ class DefaultController extends Controller
 
         // Schnittmenge aller Ergebnismengen:
         $archivierungen = array_uintersect(
-            $freitextSuche,
-            $filterJahr,
+            $freitextErgebnis,
+            $jahrErgebnis,
 //            $filterTitel,
 //            $filterAuftraggeber,
 //            $titelObjektkategorie,
@@ -461,20 +509,37 @@ class DefaultController extends Controller
 //            $filterText,
 //            $filterArchiv,
 
-            function($a1, $a2) {
-                $id1 = $a1->getId();
-                $id2 = $a2->getId();
-                if($id1 == $id2)
-                    return 0;
-                elseif($id1 > $id2)
-                    return 1;
-                else
-                    return -1;
-            }
+            [$this, 'archivierungsVergleich']
         );
 
 
-        //$archivierungen = $archivierungenFilter;
+        return $this->createSuchResponse($archivierungen, $minDBJahr, $maxDBJahr);
+    }
+
+
+    /**
+     * @param $a1 Archivierung
+     * @param $a2 Archivierung
+     * @return int 0 wenn die beiden Archivierungen die Gleiche ID haben. 1 oder -1 wenn die beiden Archivierungen nicht die gleiche ID haben.
+     */
+    private function archivierungsVergleich($a1, $a2) {
+        $id1 = $a1->getId();
+        $id2 = $a2->getId();
+        if($id1 == $id2)
+            return 0;
+        elseif($id1 > $id2)
+            return 1;
+        else
+            return -1;
+    }
+
+    /**
+     * @param $archivierungen array mit Archivierungen
+     * @param $minDBJahr int
+     * @param $maxDBJahr int
+     * @return Response
+     */
+    private function createSuchResponse($archivierungen, $minDBJahr, $maxDBJahr) {
 
         foreach($archivierungen as $key => $archivierung) {
             $dateiHash = $archivierung->getDateiHash();
@@ -484,7 +549,9 @@ class DefaultController extends Controller
         }
 
         return $this->render('default/index.html.twig', [
-            "archivierungen" => $archivierungen
+            "archivierungen" => $archivierungen,
+            "minDBJahr" => $minDBJahr,
+            "maxDBJahr" => $maxDBJahr
         ]);
     }
 }
