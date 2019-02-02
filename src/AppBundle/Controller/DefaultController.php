@@ -38,7 +38,7 @@ class DefaultController extends Controller
     /**
      * @Route("/DasProjekt/", name="_dasProjekt")
      */
-    public function dasProjektAction(Request $request)
+    public function dasProjektAction()
     {
         // replace this example code with whatever you need
         return $this->render('default/dasProjekt.html.twig', [
@@ -49,7 +49,7 @@ class DefaultController extends Controller
     /**
      * @Route("/ArbeitenImKontext/", name="_arbeitenImKontext")
      */
-    public function arbeitenImKontextAction(Request $request)
+    public function arbeitenImKontextAction()
     {
         // replace this example code with whatever you need
         return $this->render('default/arbeitenImKontext.html.twig', [
@@ -68,7 +68,7 @@ class DefaultController extends Controller
     /**
      * @Route("/Kontakt/", name="_kontakt")
      */
-    public function kontaktAction(Request $request)
+    public function kontaktAction()
     {
         // replace this example code with whatever you need
         return $this->render('default/kontakt.html.twig', [
@@ -82,32 +82,6 @@ class DefaultController extends Controller
      */
     public function sucheAction(Request $request)
     {
-
-//        // Verknüpfte Objekte laden:
-//        $tags = $archivierung->getInfos("Tags");
-//        $verknuepfteObjekte = array();
-//
-//        if(!empty($tags)) {
-//
-//            // Der richtige Weg, wenn Doctrine nicht ekelhaft verbuggt wäre:
-//            //$verknuepfteObjekte = $archivierung = $em->getRepository('AppBundle:Archivierung')->findBy(array("infos" => 1));
-//
-//            // Die Alternative:
-//            $tagIDs = "";
-//            $firstOne = true;
-//            foreach($tags as $tag) {
-//                $tagID = $tag->getId();
-//
-//                if($firstOne) {
-//                    $tagIDs = "$tagID";
-//                    $firstOne = false;
-//                }
-//                else{
-//                    $tagIDs .= ", $tagID";
-//                }
-//            }
-
-
         $em = $this->getDoctrine()->getManager();
         $rsm = new ResultSetMappingBuilder($em);
         $rsm->addRootEntityFromClassMetadata('AppBundle:Archivierung', 'a');
@@ -122,11 +96,19 @@ class DefaultController extends Controller
 
         $allParams = $request->query->all();
 
+        if(empty($allParams))
+            return $this->redirectToRoute("_index");
+
 
         // FREITEXT-SUCHE:
 
         $freitextParam = trim($allParams["Freitext"]);
         unset($allParams["Freitext"]);
+
+
+        // TODO Freitext mehrere Strings möglich!
+
+
         $freitextString = MysqlEscapeHelper::escape($freitextParam);
 
         $sql =
@@ -136,11 +118,10 @@ class DefaultController extends Controller
             "LEFT JOIN Information i ON ai.information_id = i.id " .
             "LEFT JOIN Archivierung_Jahr aj ON a.id = aj.archivierung_id " .
             "LEFT JOIN Jahr j ON aj.jahr_id = j.id " .
-            "WHERE ( ( LOWER(i.wert) LIKE LOWER('%$freitextString%') AND i.name != 'Tags' ) OR LOWER(j.wert) LIKE LOWER('%$freitextString%') )"
+            "WHERE ( LOWER(i.wert) LIKE LOWER('%$freitextString%') AND i.name != 'Tags' ) OR LOWER(j.wert) LIKE LOWER('%$freitextString%')"
         ;
         $query = $em->createNativeQuery($sql, $rsm);
         $freitextErgebnis = $query->getResult();
-
 
         // wenn jetzt die Ergebnismenge schon leer ist, die anderen Filter ignorieren und Response mit leerer Menge returnen
         if(empty($freitextErgebnis))
@@ -190,7 +171,7 @@ class DefaultController extends Controller
 
         // Nur nach Jahren filtern, wenn der User den Jahr-Slider ueberhaupt benutzt hat
         if($minJahr != $minDBJahr || $maxJahr != $maxDBJahr) {
-            
+
             $jahrString = "$minJahr";
 
             for ($i = $minJahr + 1; $i <= $maxJahr; $i++) {

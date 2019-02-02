@@ -27,26 +27,100 @@
 
 
 {% block overlays %}
-    <section id="suche-overlay" class="overlay" style="display: none;">
+    <section id="suche-overlay" class="overlay big-text" style="display: none;">
         <div class="suche-overlay-filter">
 
             <form method="get" action="{{ path('_suchetest') }}">
 
-                Freitext<br/>
-                <input type="text" id="freitext" name="Freitext">
-                <br/>
-                <br/>
+                <div class="input-frame info-frame">
+                    <label class="label outer-label" for="Freitext">Freie Suche</label>
+                    <label class="label inner-label" for="Freitext">Freie Suche</label>
+                    <input
+                        type="text"
+                        id="Freitext-add"
+                        placeholder="Suchtext"
+                    >
+                    <hr class="input-frame-hr-bottom" />
+                    <input type="hidden" name="Freitext" id="Freitext-wert" />
+                </div>
 
-                Jahr
-                <input type="text" class="js-range-slider" name="Jahr" value=""
-                       data-type="double"
-                       data-min="{{ minDBJahr }}"
-                       data-max="{{ maxDBJahr }}"
-                       data-from="{{ minDBJahr }}"
-                       data-to="{{ maxDBJahr }}"
-                       data-hide-min-max="true"
-                       data-prettify-enabled="false"
-                />
+                <div class="input-frame jahr-frame">
+                    <label class="label outer-label img-button">Jahr</label>
+                    <hr class="input-frame-hr-top" />
+                    <label class="label inner-label img-button">Jahr</label>
+                    <input type="text" class="js-range-slider" name="Jahr" value=""
+                           data-type="double"
+                           data-min="{{ minDBJahr }}"
+                           data-max="{{ maxDBJahr }}"
+                           data-from="{{ minDBJahr }}"
+                           data-to="{{ maxDBJahr }}"
+                           data-hide-min-max="true"
+                           data-prettify-enabled="false"
+                    />
+                    <div class="clearfix"></div>
+                    <hr class="input-frame-hr-bottom" />
+                </div>
+
+
+                <div class="input-frame info-frame">
+                    <label class="label outer-label" for="Titel-add">Titel</label>
+                    <hr class="input-frame-hr-top" />
+                    <label class="label inner-label" for="Titel-add">Titel</label>
+                    <input
+                            type="text"
+                            id="Titel-add"
+                            placeholder="Suchtext"
+                    >
+                    <div class="vorschlaege">
+                        <ul>
+                            <li class="vorschlag1"><small class="normal-text">Suchtext-Vorschlag 1</small></li>
+                            <li class="vorschlag2"><small class="normal-text">Suchtext-Vorschlag 2</small></li>
+                            <li class="vorschlag3"><small class="normal-text">Suchtext-Vorschlag 3</small></li>
+                            <li class="vorschlag4"><small class="normal-text">Suchtext-Vorschlag 4</small></li>
+                            <li class="vorschlag5"><small class="normal-text">Suchtext-Vorschlag 5</small></li>
+                        </ul>
+
+                    </div><div class="auswahl">
+
+                        <ul>
+                            <li class="auswahl1"><small class="normal-text">Auswahl 1</small>
+                                <button type="button" class="img-button" title="Suchbegriff entfernen">
+                                    <img alt="X" src="{{ asset('assets/images/Archiv_Symbole_Mobil_Suchfilter_abwaehlen.svg') }}"/>
+                                </button>
+                            </li>
+
+                            <li class="auswahl2"><small class="normal-text">Auswahl 2</small>
+                                <button type="button" class="img-button" title="Suchbegriff entfernen">
+                                    <img alt="X" src="{{ asset('assets/images/Archiv_Symbole_Mobil_Suchfilter_abwaehlen.svg') }}"/>
+                                </button>
+                            </li>
+
+                            <li class="auswahl3"><small class="normal-text">Auswahl 3</small>
+                                <button type="button" class="img-button" title="Suchbegriff entfernen">
+                                    <img alt="X" src="{{ asset('assets/images/Archiv_Symbole_Mobil_Suchfilter_abwaehlen.svg') }}"/>
+                                </button>
+                            </li>
+
+                            <li class="auswahl4"><small class="normal-text">Auswahl 4</small>
+                                <button type="button" class="img-button" title="Suchbegriff entfernen">
+                                    <img alt="X" src="{{ asset('assets/images/Archiv_Symbole_Mobil_Suchfilter_abwaehlen.svg') }}"/>
+                                </button>
+                            </li>
+
+                            <li class="auswahl5"><small class="normal-text">Auswahl 5</small>
+                                <button type="button" class="img-button" title="Suchbegriff entfernen">
+                                    <img alt="X" src="{{ asset('assets/images/Archiv_Symbole_Mobil_Suchfilter_abwaehlen.svg') }}"/>
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+                    <hr class="input-frame-hr-bottom" />
+                    <input type="hidden" name="Titel" id="Titel-wert">
+                </div>
+
+
+
+
 
                 <br/>
                 <br/>
@@ -60,121 +134,83 @@
 
                 <br/>
                 <br/>
-                Auftraggeber<br/>
-                <input type="text" name="Auftraggeber">
+                Objektkategorie<br/>
+                <input type="text" name="Objektkategorie">
 
                 <br/>
                 <br/>
-                Auftraggeber<br/>
-                <input type="text" name="Auftraggeber">
+                Gestaltung<br/>
+                <input type="text" name="Gestaltung">
 
                 <br/>
                 <br/>
-                Auftraggeber<br/>
-                <input type="text" name="Auftraggeber">
+                Fotografie<br/>
+                <input type="text" name="Fotografie">
 
                 <br/>
                 <br/>
-                Auftraggeber<br/>
-                <input type="text" name="Auftraggeber">
+                Druckerei<br/>
+                <input type="text" name="Druckerei">
 
                 <br/>
                 <br/>
-                Auftraggeber<br/>
-                <input type="text" name="Auftraggeber">
+                Autor<br/>
+                <input type="text" name="Autor">
 
                 <br/>
                 <br/>
-                Auftraggeber<br/>
-                <input type="text" name="Auftraggeber">
+                Material<br/>
+                <input type="text" name="Material">
 
                 <br/>
                 <br/>
-                Auftraggeber<br/>
-                <input type="text" name="Auftraggeber">
+                Produktionsverfahren<br/>
+                <input type="text" name="Produktionsverfahren">
 
                 <br/>
                 <br/>
-                Auftraggeber<br/>
-                <input type="text" name="Auftraggeber">
+                Sprache<br/>
+                <input type="text" name="Sprache">
 
                 <br/>
                 <br/>
-                Auftraggeber<br/>
-                <input type="text" name="Auftraggeber">
+                Schrift<br/>
+                <input type="text" name="Schrift">
 
                 <br/>
                 <br/>
-                Auftraggeber<br/>
-                <input type="text" name="Auftraggeber">
+                Farbe<br/>
+                <input type="text" name="Farbe">
 
                 <br/>
                 <br/>
-                Auftraggeber<br/>
-                <input type="text" name="Auftraggeber">
+                Bilddarstellung<br/>
+                <input type="text" name="Bilddarstellung">
 
                 <br/>
                 <br/>
-                Auftraggeber<br/>
-                <input type="text" name="Auftraggeber">
+                Hinweis<br/>
+                <input type="text" name="Hinweis">
 
                 <br/>
                 <br/>
-                Auftraggeber<br/>
-                <input type="text" name="Auftraggeber">
+                Produktkategorie<br/>
+                <input type="text" name="Produktkategorie">
 
                 <br/>
                 <br/>
-                Auftraggeber<br/>
-                <input type="text" name="Auftraggeber">
+                Möbel<br/>
+                <input type="text" name="Möbel">
 
                 <br/>
                 <br/>
-                Auftraggeber<br/>
-                <input type="text" name="Auftraggeber">
+                Text<br/>
+                <input type="text" name="Text">
 
                 <br/>
                 <br/>
-                Auftraggeber<br/>
-                <input type="text" name="Auftraggeber">
-
-                <br/>
-                <br/>
-                Auftraggeber<br/>
-                <input type="text" name="Auftraggeber">
-
-                <br/>
-                <br/>
-                Auftraggeber<br/>
-                <input type="text" name="Auftraggeber">
-
-                <br/>
-                <br/>
-                Auftraggeber<br/>
-                <input type="text" name="Auftraggeber">
-
-                <br/>
-                <br/>
-                Auftraggeber<br/>
-                <input type="text" name="Auftraggeber">
-
-                <br/>
-                <br/>
-                Auftraggeber<br/>
-                <input type="text" name="Auftraggeber">
-
-                <br/>
-                <br/>
-                Auftraggeber<br/>
-                <input type="text" name="Auftraggeber">
-
-                <br/>
-                <br/>
-                Auftraggeber<br/>
-                <input type="text" name="Auftraggeber">
-
-
-
+                Archiv<br/>
+                <input type="text" name="Archiv">
 
                 <br/>
                 <br/>
@@ -191,6 +227,10 @@
 
 
 {% block body %}
+
+    {% if archivierungen|length == 0 %}
+        <small class="big-text">Es konnten keine passenden Archivierungen zu den Sucheinstellungen gefunden werden.</small>
+    {% endif %}
     
     <div class="index">
         <section class="lazy-loading grid grid-mittel images-overview">
