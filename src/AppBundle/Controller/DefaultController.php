@@ -190,7 +190,7 @@ class DefaultController extends Controller
 
         // Nur nach Jahren filtern, wenn der User den Jahr-Slider ueberhaupt benutzt hat
         if($minJahr != $minDBJahr || $maxJahr != $maxDBJahr) {
-
+            
             $jahrString = "$minJahr";
 
             for ($i = $minJahr + 1; $i <= $maxJahr; $i++) {
@@ -216,7 +216,7 @@ class DefaultController extends Controller
             else
                 // Schnittmenge bilden
                 $gesamtErgebnis = array_uintersect(
-                    $freitextErgebnis,
+                    $gesamtErgebnis,
                     $jahrErgebnis,
                     [$this, 'archivierungsVergleich'] // Vergleichs-Callback
                 );
@@ -230,290 +230,55 @@ class DefaultController extends Controller
 
         // RESTLICHE INFO-FILTER:
 
-        foreach($allParams as $infoParam) {
+        foreach($allParams as $infoName => $infoParam) {
 
             if(empty($infoParam))
                 continue;
 
             $infoArray = explode(";", $infoParam);
+            $infoName = MysqlEscapeHelper::escape($infoName);
 
-            foreach($infoArray as $info) {
-                $info = trim($info);
+            foreach($infoArray as $infoWert) {
+                $infoWert = trim($infoWert);
 
-                if(empty($info))
+                if(empty($infoWert))
                     continue;
 
-                
+                $infoWert = MysqlEscapeHelper::escape($infoWert);
+
+                $sql =
+                    "SELECT a.* " .
+                    "FROM Archivierung a " .
+                    "LEFT JOIN Archivierung_Information ai ON a.id = ai.archivierung_id " .
+                    "LEFT JOIN Information i ON ai.information_id = i.id " .
+                    "LEFT JOIN Archivierung_Jahr aj ON a.id = aj.archivierung_id " .
+                    "LEFT JOIN Jahr j ON aj.jahr_id = j.id " .
+                    "WHERE (i.wert LIKE '%$infoWert%' AND i.name = '$infoName')"
+                ;
+                $query = $em->createNativeQuery($sql, $rsm);
+                $infoErgenis = $query->getResult();
+
+                // wenn jetzt die Ergebnismenge schon leer ist, die anderen Filter ignorieren und Response mit leerer Menge returnen
+                if(empty($infoErgenis))
+                    return $this->createSuchResponse(array(), $minDBJahr, $maxDBJahr);
+
+                else
+                    // Schnittmenge bilden
+                    $gesamtErgebnis = array_uintersect(
+                        $gesamtErgebnis,
+                        $infoErgenis,
+                        [$this, 'archivierungsVergleich'] // Vergleichs-Callback
+                    );
+
+                // wenn jetzt die Ergebnismenge schon leer ist, die anderen Filter ignorieren und Response mit leerer Menge returnen
+                if(empty($gesamtErgebnis))
+                    return $this->createSuchResponse(array(), $minDBJahr, $maxDBJahr);
             }
         }
 
 
-
-
-
-        // Titel-Filter:
-        $sql =
-            "SELECT a.* " .
-            "FROM Archivierung a " .
-            "LEFT JOIN Archivierung_Information ai ON a.id = ai.archivierung_id " .
-            "LEFT JOIN Information i ON ai.information_id = i.id " .
-            "LEFT JOIN Archivierung_Jahr aj ON a.id = aj.archivierung_id " .
-            "LEFT JOIN Jahr j ON aj.jahr_id = j.id " .
-            "WHERE (i.wert IN('Thonet 157') AND i.name = 'Titel')"
-        ;
-        $query = $em->createNativeQuery($sql, $rsm);
-        $filterTitel = $query->getResult();
-
-        // Auftraggeber-Filter:
-        $sql =
-            "SELECT a.* " .
-            "FROM Archivierung a " .
-            "LEFT JOIN Archivierung_Information ai ON a.id = ai.archivierung_id " .
-            "LEFT JOIN Information i ON ai.information_id = i.id " .
-            "LEFT JOIN Archivierung_Jahr aj ON a.id = aj.archivierung_id " .
-            "LEFT JOIN Jahr j ON aj.jahr_id = j.id " .
-            "WHERE (i.wert IN('Thonet 157') AND i.name = 'Auftraggeber')"
-        ;
-        $query = $em->createNativeQuery($sql, $rsm);
-        $filterAuftraggeber = $query->getResult();
-
-        // Objektkategorie-Filter:
-        $sql =
-            "SELECT a.* " .
-            "FROM Archivierung a " .
-            "LEFT JOIN Archivierung_Information ai ON a.id = ai.archivierung_id " .
-            "LEFT JOIN Information i ON ai.information_id = i.id " .
-            "LEFT JOIN Archivierung_Jahr aj ON a.id = aj.archivierung_id " .
-            "LEFT JOIN Jahr j ON aj.jahr_id = j.id " .
-            "WHERE (i.wert IN('Möbelkatalog') AND i.name = 'Objektkategorie')"
-        ;
-        $query = $em->createNativeQuery($sql, $rsm);
-        $titelObjektkategorie = $query->getResult();
-
-        // Gestaltung-Filter:
-        $sql =
-            "SELECT a.* " .
-            "FROM Archivierung a " .
-            "LEFT JOIN Archivierung_Information ai ON a.id = ai.archivierung_id " .
-            "LEFT JOIN Information i ON ai.information_id = i.id " .
-            "LEFT JOIN Archivierung_Jahr aj ON a.id = aj.archivierung_id " .
-            "LEFT JOIN Jahr j ON aj.jahr_id = j.id " .
-            "WHERE (i.wert IN('Thonet 157') AND i.name = 'Gestaltung')"
-        ;
-        $query = $em->createNativeQuery($sql, $rsm);
-        $filterGestaltung = $query->getResult();
-
-        // Fotografie-Filter:
-        $sql =
-            "SELECT a.* " .
-            "FROM Archivierung a " .
-            "LEFT JOIN Archivierung_Information ai ON a.id = ai.archivierung_id " .
-            "LEFT JOIN Information i ON ai.information_id = i.id " .
-            "LEFT JOIN Archivierung_Jahr aj ON a.id = aj.archivierung_id " .
-            "LEFT JOIN Jahr j ON aj.jahr_id = j.id " .
-            "WHERE (i.wert IN('Thonet 157') AND i.name = 'Fotografie')"
-        ;
-        $query = $em->createNativeQuery($sql, $rsm);
-        $filterFotografie = $query->getResult();
-
-        // Druckerei-Filter:
-        $sql =
-            "SELECT a.* " .
-            "FROM Archivierung a " .
-            "LEFT JOIN Archivierung_Information ai ON a.id = ai.archivierung_id " .
-            "LEFT JOIN Information i ON ai.information_id = i.id " .
-            "LEFT JOIN Archivierung_Jahr aj ON a.id = aj.archivierung_id " .
-            "LEFT JOIN Jahr j ON aj.jahr_id = j.id " .
-            "WHERE (i.wert IN('Thonet 157') AND i.name = 'Druckerei')"
-        ;
-        $query = $em->createNativeQuery($sql, $rsm);
-        $filterDruckerei = $query->getResult();
-
-        // Autor-Filter:
-        $sql =
-            "SELECT a.* " .
-            "FROM Archivierung a " .
-            "LEFT JOIN Archivierung_Information ai ON a.id = ai.archivierung_id " .
-            "LEFT JOIN Information i ON ai.information_id = i.id " .
-            "LEFT JOIN Archivierung_Jahr aj ON a.id = aj.archivierung_id " .
-            "LEFT JOIN Jahr j ON aj.jahr_id = j.id " .
-            "WHERE (i.wert IN('Thonet 157') AND i.name = 'Autor')"
-        ;
-        $query = $em->createNativeQuery($sql, $rsm);
-        $filterAutor = $query->getResult();
-
-        // Material-Filter:
-        $sql =
-            "SELECT a.* " .
-            "FROM Archivierung a " .
-            "LEFT JOIN Archivierung_Information ai ON a.id = ai.archivierung_id " .
-            "LEFT JOIN Information i ON ai.information_id = i.id " .
-            "LEFT JOIN Archivierung_Jahr aj ON a.id = aj.archivierung_id " .
-            "LEFT JOIN Jahr j ON aj.jahr_id = j.id " .
-            "WHERE (i.wert IN('Thonet 157') AND i.name = 'Material')"
-        ;
-        $query = $em->createNativeQuery($sql, $rsm);
-        $filterMaterial = $query->getResult();
-
-        // Produktionsverfahren-Filter:
-        $sql =
-            "SELECT a.* " .
-            "FROM Archivierung a " .
-            "LEFT JOIN Archivierung_Information ai ON a.id = ai.archivierung_id " .
-            "LEFT JOIN Information i ON ai.information_id = i.id " .
-            "LEFT JOIN Archivierung_Jahr aj ON a.id = aj.archivierung_id " .
-            "LEFT JOIN Jahr j ON aj.jahr_id = j.id " .
-            "WHERE (i.wert IN('Thonet 157') AND i.name = 'Produktionsverfahren')"
-        ;
-        $query = $em->createNativeQuery($sql, $rsm);
-        $filterProduktionsverfahren = $query->getResult();
-
-        // Sprache-Filter:
-        $sql =
-            "SELECT a.* " .
-            "FROM Archivierung a " .
-            "LEFT JOIN Archivierung_Information ai ON a.id = ai.archivierung_id " .
-            "LEFT JOIN Information i ON ai.information_id = i.id " .
-            "LEFT JOIN Archivierung_Jahr aj ON a.id = aj.archivierung_id " .
-            "LEFT JOIN Jahr j ON aj.jahr_id = j.id " .
-            "WHERE (i.wert IN('Thonet 157') AND i.name = 'Sprache')"
-        ;
-        $query = $em->createNativeQuery($sql, $rsm);
-        $filterSprache = $query->getResult();
-
-        // Schrift-Filter:
-        $sql =
-            "SELECT a.* " .
-            "FROM Archivierung a " .
-            "LEFT JOIN Archivierung_Information ai ON a.id = ai.archivierung_id " .
-            "LEFT JOIN Information i ON ai.information_id = i.id " .
-            "LEFT JOIN Archivierung_Jahr aj ON a.id = aj.archivierung_id " .
-            "LEFT JOIN Jahr j ON aj.jahr_id = j.id " .
-            "WHERE (i.wert IN('Thonet 157') AND i.name = 'Schrift')"
-        ;
-        $query = $em->createNativeQuery($sql, $rsm);
-        $filterSchrift = $query->getResult();
-
-        // Farbe-Filter:
-        $sql =
-            "SELECT a.* " .
-            "FROM Archivierung a " .
-            "LEFT JOIN Archivierung_Information ai ON a.id = ai.archivierung_id " .
-            "LEFT JOIN Information i ON ai.information_id = i.id " .
-            "LEFT JOIN Archivierung_Jahr aj ON a.id = aj.archivierung_id " .
-            "LEFT JOIN Jahr j ON aj.jahr_id = j.id " .
-            "WHERE (i.wert IN('Thonet 157') AND i.name = 'Farbe')"
-        ;
-        $query = $em->createNativeQuery($sql, $rsm);
-        $filterFarbe = $query->getResult();
-
-        // Bilddarstellung-Filter:
-        $sql =
-            "SELECT a.* " .
-            "FROM Archivierung a " .
-            "LEFT JOIN Archivierung_Information ai ON a.id = ai.archivierung_id " .
-            "LEFT JOIN Information i ON ai.information_id = i.id " .
-            "LEFT JOIN Archivierung_Jahr aj ON a.id = aj.archivierung_id " .
-            "LEFT JOIN Jahr j ON aj.jahr_id = j.id " .
-            "WHERE (i.wert IN('Thonet 157') AND i.name = 'Bilddarstellung')"
-        ;
-        $query = $em->createNativeQuery($sql, $rsm);
-        $filterBilddarstellung = $query->getResult();
-
-        // Hinweis-Filter:
-        $sql =
-            "SELECT a.* " .
-            "FROM Archivierung a " .
-            "LEFT JOIN Archivierung_Information ai ON a.id = ai.archivierung_id " .
-            "LEFT JOIN Information i ON ai.information_id = i.id " .
-            "LEFT JOIN Archivierung_Jahr aj ON a.id = aj.archivierung_id " .
-            "LEFT JOIN Jahr j ON aj.jahr_id = j.id " .
-            "WHERE (i.wert IN('Thonet 157') AND i.name = 'Hinweis')"
-        ;
-        $query = $em->createNativeQuery($sql, $rsm);
-        $filterHinweis = $query->getResult();
-
-        // Produktkategorie-Filter:
-        $sql =
-            "SELECT a.* " .
-            "FROM Archivierung a " .
-            "LEFT JOIN Archivierung_Information ai ON a.id = ai.archivierung_id " .
-            "LEFT JOIN Information i ON ai.information_id = i.id " .
-            "LEFT JOIN Archivierung_Jahr aj ON a.id = aj.archivierung_id " .
-            "LEFT JOIN Jahr j ON aj.jahr_id = j.id " .
-            "WHERE (i.wert IN('Thonet 157') AND i.name = 'Produktkategorie')"
-        ;
-        $query = $em->createNativeQuery($sql, $rsm);
-        $filterProduktkategorie = $query->getResult();
-
-        // Möbel-Filter:
-        $sql =
-            "SELECT a.* " .
-            "FROM Archivierung a " .
-            "LEFT JOIN Archivierung_Information ai ON a.id = ai.archivierung_id " .
-            "LEFT JOIN Information i ON ai.information_id = i.id " .
-            "LEFT JOIN Archivierung_Jahr aj ON a.id = aj.archivierung_id " .
-            "LEFT JOIN Jahr j ON aj.jahr_id = j.id " .
-            "WHERE (i.wert IN('Thonet 157') AND i.name = 'Moebel')"
-        ;
-        $query = $em->createNativeQuery($sql, $rsm);
-        $filterMoebel = $query->getResult();
-
-        // Text-Filter:
-        $sql =
-            "SELECT a.* " .
-            "FROM Archivierung a " .
-            "LEFT JOIN Archivierung_Information ai ON a.id = ai.archivierung_id " .
-            "LEFT JOIN Information i ON ai.information_id = i.id " .
-            "LEFT JOIN Archivierung_Jahr aj ON a.id = aj.archivierung_id " .
-            "LEFT JOIN Jahr j ON aj.jahr_id = j.id " .
-            "WHERE (i.wert IN('Thonet 157') AND i.name = 'Text')"
-        ;
-        $query = $em->createNativeQuery($sql, $rsm);
-        $filterText = $query->getResult();
-
-        // Archiv-Filter:
-        $sql =
-            "SELECT a.* " .
-            "FROM Archivierung a " .
-            "LEFT JOIN Archivierung_Information ai ON a.id = ai.archivierung_id " .
-            "LEFT JOIN Information i ON ai.information_id = i.id " .
-            "LEFT JOIN Archivierung_Jahr aj ON a.id = aj.archivierung_id " .
-            "LEFT JOIN Jahr j ON aj.jahr_id = j.id " .
-            "WHERE (i.wert IN('Thonet 157') AND i.name = 'Archiv')"
-        ;
-        $query = $em->createNativeQuery($sql, $rsm);
-        $filterArchiv = $query->getResult();
-
-
-        // Schnittmenge aller Ergebnismengen:
-        $archivierungen = array_uintersect(
-            $freitextErgebnis,
-            $jahrErgebnis,
-//            $filterTitel,
-//            $filterAuftraggeber,
-//            $titelObjektkategorie,
-//            $filterGestaltung,
-//            $filterFotografie,
-//            $filterDruckerei,
-//            $filterAutor,
-//            $filterMaterial,
-//            $filterProduktionsverfahren,
-//            $filterSprache,
-//            $filterSchrift,
-//            $filterFarbe,
-//            $filterBilddarstellung,
-//            $filterHinweis,
-//            $filterProduktkategorie,
-//            $filterMoebel,
-//            $filterText,
-//            $filterArchiv,
-
-            [$this, 'archivierungsVergleich']
-        );
-
-
-        return $this->createSuchResponse($archivierungen, $minDBJahr, $maxDBJahr);
+        // Gesamtergebnis der Suche returnen:
+        return $this->createSuchResponse($gesamtErgebnis, $minDBJahr, $maxDBJahr);
     }
 
 

@@ -5,6 +5,22 @@ $(function() {
         if (index !== -1) arr.splice(index, 1);
     };
 
+    var scrollTo = function(element, speed) {
+        if(element === 0) {
+            $('html, body').animate({
+                scrollTop: 0
+            }, speed);
+        }
+        else {
+            var heightHeader = $(".top").outerHeight();
+            var offsetElement = $(element).offset().top;
+
+            $('html, body').animate({
+                scrollTop: offsetElement - heightHeader - 40
+            }, speed);
+        }
+    };
+
 
     // Masory Grid:
     var $masoryGrid = $('.grid').masonry({
@@ -79,6 +95,8 @@ $(function() {
     // Suchfilter Menu:
     var $sucheButton = $(".suchfilter-btn");
     var $sucheMenu = $("#suche-overlay");
+    var $inhalt = $(".inhalt");
+    var $allGridItems = $(".grid-item");
 
     var resizeSucheMenu = function() {
         var hoehe = $(".top").outerHeight();
@@ -87,12 +105,31 @@ $(function() {
     resizeSucheMenu();
 
     $sucheButton.on("click", function() {
-        resizeSucheMenu();
-        $sucheMenu.fadeToggle(350);
+        var isClosed = true;
 
-        $("#testInput").focus();    // TODO
+        if($sucheMenu.hasClass("open"))
+            isClosed = false;
+
+        if(isClosed) {
+            resizeSucheMenu();
+            $sucheMenu.fadeIn(350);
+            $inhalt.animate({opacity: 0}, 350, 'linear', function() {
+                $allGridItems.addClass("mini");
+                $masoryGrid.masonry('layout');
+            });
+            $sucheMenu.addClass("open");
+            setTimeout(function() {
+                scrollTo(0, 0);
+            }, 300);
+        }
+        else{
+            $allGridItems.removeClass("mini");
+            $masoryGrid.masonry('layout');
+            $sucheMenu.fadeOut(350);
+            $inhalt.animate({opacity: 100}, 350);
+            $sucheMenu.removeClass("open");
+        }
     });
-
 
 
     // Image Zoom (Desktop):
@@ -101,6 +138,7 @@ $(function() {
         var bigImage = $this.data("zoom-image");
         $this.zoom({url: bigImage, magnify:0.5});
     });
+
 
     // Image Zoom (mobil): TODO
 
@@ -171,6 +209,8 @@ $(function() {
     if(gridCookie) {
         $(".resize-buttons button.resize-btn-" + gridCookie).trigger("click");
     }
+    else
+        $(".resize-btn-mittel").addClass("active-btn").removeClass("inactive-btn");
 
 
     // :::Favoriten:::
@@ -302,24 +342,7 @@ $(function() {
 
 
 
-    // Anchor-Scrolling animieren:
-    var scrollTo = function(element, speed) {
-        if(element === 0) {
-            $('html, body').animate({
-                scrollTop: 0
-            }, speed);
-        }
-        else {
-            var heightHeader = $(".top").outerHeight();
-            var offsetElement = $(element).offset().top;
-
-            $('html, body').animate({
-                scrollTop: offsetElement - heightHeader - 40
-            }, speed);
-        }
-    };
-
-    // --- Beim drücken eines scroll-buttons:
+    // Anchor-Scrolling animieren beim drücken eines Scroll-Buttons:
     $(".scroll-button").on("click", function() {
         var $this = $(this);
         var href = $this.attr("href");
@@ -333,7 +356,7 @@ $(function() {
         scrollTo(ziel, "slow");
     });
 
-    // --- Beim Pageloading:
+    // Anchor-Scrolling animieren beim drücken eines Scroll-Buttons:
     var windowHref = window.location.href;
     var windowHash = windowHref.split("#")[1];
 

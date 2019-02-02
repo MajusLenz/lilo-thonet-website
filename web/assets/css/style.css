@@ -110,10 +110,19 @@ button::-moz-focus-inner {
     color: rgb(248,197,198);
 }
 
+.mini{
+    width: 0;
+    height: 0;
+}
+
 * {
     font-family: 'Circular Std Book', sans-serif;
     color: black;
     font-size: 13px;
+}
+
+html, body{
+    overflow-x: hidden;
 }
 
 h1,h2,h3,h4,h5,h6,p,a{
@@ -180,12 +189,11 @@ hr{
 
 .overlay{
     position: fixed;
-    height: 101vh;
-    width: 101vw;
+    width: 100%;
     padding-left: 2%;
     padding-top: 0;
     margin-top: 0;
-    z-index: 888;
+    z-index: 777;
     right: 0;
     left: 0;
     background-color: white;
@@ -290,6 +298,9 @@ hr{
 
 
 /* index */
+#suche-overlay{
+    position: absolute;
+}
 .suchfilter-btn{
     display: inline-block;
     text-decoration: none;
@@ -377,6 +388,11 @@ hr{
 .irs .irs-from{
     top: -6px;
 }
+
+.irs--square{
+    width: 80%;
+}
+
 
 
 
@@ -533,9 +549,4 @@ hr{
     margin-top: 10px;
     margin-bottom: 15px;
 }
-
-
-
-
-
 

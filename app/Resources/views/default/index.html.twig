@@ -10,16 +10,16 @@
     <div class="col-7 resize-buttons">
         <div>
             <button class="resize-btn-klein img-button inactive-btn" data-size="klein" title="kleiner Zoom">
-                <img class="active-btn" src="{{ asset('assets/images/Archiv_Symbole_Mobil_Groessenasicht_klein_leer.svg') }}" alt="kleine Ansicht"/>
-                <img class="inactive-btn" src="{{ asset('assets/images/Archiv_Symbole_Mobil_Groessenasicht_klein_voll.svg') }}" alt="kleine Ansicht"/>
+                <img src="{{ asset('assets/images/Archiv_Symbole_Mobil_Groessenasicht_klein_leer.svg') }}" alt="kleine Ansicht"/>
+                <img src="{{ asset('assets/images/Archiv_Symbole_Mobil_Groessenasicht_klein_voll.svg') }}" alt="kleine Ansicht"/>
             </button>
-            <button class="resize-btn-mittel img-button active-btn" data-size="mittel" title="mittelgroßer Zoom">
-                <img class="active-btn" src="{{ asset('assets/images/Archiv_Symbole_Mobil_Groessenasicht_mittel_leer.svg') }}" alt="mittelgroße Ansicht"/>
-                <img class="inactive-btn" src="{{ asset('assets/images/Archiv_Symbole_Mobil_Groessenasicht_mittel_voll.svg') }}" alt="mittelgroße Ansicht"/>
+            <button class="resize-btn-mittel img-button inactive-btn" data-size="mittel" title="mittelgroßer Zoom">
+                <img src="{{ asset('assets/images/Archiv_Symbole_Mobil_Groessenasicht_mittel_leer.svg') }}" alt="mittelgroße Ansicht"/>
+                <img src="{{ asset('assets/images/Archiv_Symbole_Mobil_Groessenasicht_mittel_voll.svg') }}" alt="mittelgroße Ansicht"/>
             </button>
             <button class="resize-btn-gross img-button inactive-btn" data-size="gross" title="großer Zoom">
-                <img class="active-btn" src="{{ asset('assets/images/Archiv_Symbole_Mobil_Groessenasicht_gross_leer.svg') }}" alt="große Ansicht"/>
-                <img class="inactive-btn" src="{{ asset('assets/images/Archiv_Symbole_Mobil_Groessenasicht_gross_voll.svg') }}" alt="große Ansicht"/>
+                <img src="{{ asset('assets/images/Archiv_Symbole_Mobil_Groessenasicht_gross_leer.svg') }}" alt="große Ansicht"/>
+                <img src="{{ asset('assets/images/Archiv_Symbole_Mobil_Groessenasicht_gross_voll.svg') }}" alt="große Ansicht"/>
             </button>
         </div>
     </div>
@@ -32,20 +32,157 @@
 
             <form method="get" action="{{ path('_suchetest') }}">
 
-                FILTER!
-                <input type="text" id="testInput" name="Freitext">
+                Freitext<br/>
+                <input type="text" id="freitext" name="Freitext">
+                <br/>
+                <br/>
 
+                Jahr
                 <input type="text" class="js-range-slider" name="Jahr" value=""
                        data-type="double"
                        data-min="{{ minDBJahr }}"
                        data-max="{{ maxDBJahr }}"
                        data-from="{{ minDBJahr }}"
-                       data-to="{{ maxDBJahr -3 }}"
+                       data-to="{{ maxDBJahr }}"
                        data-hide-min-max="true"
                        data-prettify-enabled="false"
                 />
 
+                <br/>
+                <br/>
+                Titel<br/>
+                <input type="text" name="Titel">
+
+                <br/>
+                <br/>
+                Auftraggeber<br/>
+                <input type="text" name="Auftraggeber">
+
+                <br/>
+                <br/>
+                Auftraggeber<br/>
+                <input type="text" name="Auftraggeber">
+
+                <br/>
+                <br/>
+                Auftraggeber<br/>
+                <input type="text" name="Auftraggeber">
+
+                <br/>
+                <br/>
+                Auftraggeber<br/>
+                <input type="text" name="Auftraggeber">
+
+                <br/>
+                <br/>
+                Auftraggeber<br/>
+                <input type="text" name="Auftraggeber">
+
+                <br/>
+                <br/>
+                Auftraggeber<br/>
+                <input type="text" name="Auftraggeber">
+
+                <br/>
+                <br/>
+                Auftraggeber<br/>
+                <input type="text" name="Auftraggeber">
+
+                <br/>
+                <br/>
+                Auftraggeber<br/>
+                <input type="text" name="Auftraggeber">
+
+                <br/>
+                <br/>
+                Auftraggeber<br/>
+                <input type="text" name="Auftraggeber">
+
+                <br/>
+                <br/>
+                Auftraggeber<br/>
+                <input type="text" name="Auftraggeber">
+
+                <br/>
+                <br/>
+                Auftraggeber<br/>
+                <input type="text" name="Auftraggeber">
+
+                <br/>
+                <br/>
+                Auftraggeber<br/>
+                <input type="text" name="Auftraggeber">
+
+                <br/>
+                <br/>
+                Auftraggeber<br/>
+                <input type="text" name="Auftraggeber">
+
+                <br/>
+                <br/>
+                Auftraggeber<br/>
+                <input type="text" name="Auftraggeber">
+
+                <br/>
+                <br/>
+                Auftraggeber<br/>
+                <input type="text" name="Auftraggeber">
+
+                <br/>
+                <br/>
+                Auftraggeber<br/>
+                <input type="text" name="Auftraggeber">
+
+                <br/>
+                <br/>
+                Auftraggeber<br/>
+                <input type="text" name="Auftraggeber">
+
+                <br/>
+                <br/>
+                Auftraggeber<br/>
+                <input type="text" name="Auftraggeber">
+
+                <br/>
+                <br/>
+                Auftraggeber<br/>
+                <input type="text" name="Auftraggeber">
+
+                <br/>
+                <br/>
+                Auftraggeber<br/>
+                <input type="text" name="Auftraggeber">
+
+                <br/>
+                <br/>
+                Auftraggeber<br/>
+                <input type="text" name="Auftraggeber">
+
+                <br/>
+                <br/>
+                Auftraggeber<br/>
+                <input type="text" name="Auftraggeber">
+
+                <br/>
+                <br/>
+                Auftraggeber<br/>
+                <input type="text" name="Auftraggeber">
+
+                <br/>
+                <br/>
+                Auftraggeber<br/>
+                <input type="text" name="Auftraggeber">
+
+
+
+
+                <br/>
+                <br/>
                 <button type="submit">save</button>
+                <br/>
+                <br/>
+                <br/>
+                <br/>
             </form>
 
         </div>
