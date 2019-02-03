@@ -102,34 +102,64 @@ class DefaultController extends Controller
 
         // FREITEXT-SUCHE:
 
-        $freitextParam = trim($allParams["Freitext"]);
+        $freitextParam = $allParams["Freitext"];
         unset($allParams["Freitext"]);
 
+        $freitextArray = explode(";", $freitextParam);
 
-        // TODO Freitext mehrere Strings möglich!
+        $freitextWerte = "";
+        $freitextJahre = "";
+        $isFirst = true;
 
+        foreach ($freitextArray as $freitextWert) {
+            $freitextWert = trim($freitextWert);
 
-        $freitextString = MysqlEscapeHelper::escape($freitextParam);
+            if (empty($freitextWert))
+                continue;
 
-        $sql =
-            "SELECT a.* " .
-            "FROM Archivierung a " .
-            "LEFT JOIN Archivierung_Information ai ON a.id = ai.archivierung_id " .
-            "LEFT JOIN Information i ON ai.information_id = i.id " .
-            "LEFT JOIN Archivierung_Jahr aj ON a.id = aj.archivierung_id " .
-            "LEFT JOIN Jahr j ON aj.jahr_id = j.id " .
-            "WHERE ( LOWER(i.wert) LIKE LOWER('%$freitextString%') AND i.name != 'Tags' ) OR LOWER(j.wert) LIKE LOWER('%$freitextString%')"
-        ;
-        $query = $em->createNativeQuery($sql, $rsm);
-        $freitextErgebnis = $query->getResult();
+            $freitextWert = MysqlEscapeHelper::escape($freitextWert);
 
-        // wenn jetzt die Ergebnismenge schon leer ist, die anderen Filter ignorieren und Response mit leerer Menge returnen
-        if(empty($freitextErgebnis))
-            return $this->createSuchResponse(array(), $minDBJahr, $maxDBJahr);
+            if ($isFirst) {
+                $freitextJahre = "LOWER('%$freitextWert%')";
+                $freitextWerte = "LOWER('%$freitextWert%')";
+                $isFirst = false;
+            } else {
+                $freitextJahre .= " OR j.wert LIKE '%$freitextWert%' ";
+                $freitextWerte .= " OR LOWER(i.wert) LIKE LOWER('%$freitextWert%') ";
+            }
+        }
 
-        else
-            $gesamtErgebnis = $freitextErgebnis;
+        if( !empty($freitextWerte) ) {
 
+            $sql =
+                "SELECT a.* " .
+                "FROM Archivierung a " .
+                "LEFT JOIN Archivierung_Information ai ON a.id = ai.archivierung_id " .
+                "LEFT JOIN Information i ON ai.information_id = i.id " .
+                "LEFT JOIN Archivierung_Jahr aj ON a.id = aj.archivierung_id " .
+                "LEFT JOIN Jahr j ON aj.jahr_id = j.id " .
+                "WHERE ( ( LOWER(i.wert) LIKE $freitextWerte ) AND i.name != 'Tags' ) " .
+                "   OR ( j.wert LIKE $freitextJahre )"
+            ;
+            $query = $em->createNativeQuery($sql, $rsm);
+            $freitextErgebnis = $query->getResult();
+
+            // wenn jetzt die Ergebnismenge schon leer ist, die anderen Filter ignorieren und Response mit leerer Menge returnen
+            if(empty($freitextErgebnis))
+                return $this->createSuchResponse(array(), $minDBJahr, $maxDBJahr);
+
+            else
+                $gesamtErgebnis = $freitextErgebnis;
+        }
+
+        // Falls Freitext leer ist, Das Ergebnis mit allen Archivierungen initialisieren für die nachfolgenden Schnittmengen-Operationen
+        else{
+            $sql =
+                "SELECT a.* " .
+                "FROM Archivierung a ";
+            $query = $em->createNativeQuery($sql, $rsm);
+            $gesamtErgebnis = $query->getResult();
+        }
 
 
         // JAHR-FILTER:
@@ -219,6 +249,9 @@ class DefaultController extends Controller
             $infoArray = explode(";", $infoParam);
             $infoName = MysqlEscapeHelper::escape($infoName);
 
+            $infoWerte = "";
+            $isFirst = true;
+
             foreach($infoArray as $infoWert) {
                 $infoWert = trim($infoWert);
 
@@ -227,6 +260,16 @@ class DefaultController extends Controller
 
                 $infoWert = MysqlEscapeHelper::escape($infoWert);
 
+                if($isFirst) {
+                    $infoWerte = "LOWER('%$infoWert%')";
+                    $isFirst = false;
+                }
+                else
+                    $infoWerte .= " OR LOWER(i.wert) LIKE LOWER('%$infoWert%')";
+            }
+
+            if( !empty($infoWerte)) {
+
                 $sql =
                     "SELECT a.* " .
                     "FROM Archivierung a " .
@@ -234,7 +277,7 @@ class DefaultController extends Controller
                     "LEFT JOIN Information i ON ai.information_id = i.id " .
                     "LEFT JOIN Archivierung_Jahr aj ON a.id = aj.archivierung_id " .
                     "LEFT JOIN Jahr j ON aj.jahr_id = j.id " .
-                    "WHERE (i.wert LIKE '%$infoWert%' AND i.name = '$infoName')"
+                    "WHERE ( LOWER(i.wert) LIKE $infoWerte ) AND i.name = '$infoName'"
                 ;
                 $query = $em->createNativeQuery($sql, $rsm);
                 $infoErgenis = $query->getResult();
