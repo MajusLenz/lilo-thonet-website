@@ -144,6 +144,11 @@
                             {{ archivierung.infosArray["Produktkategorie"] }}<br/>
                         {% endif %}
 
+                        {% if archivierung.infosArray["Moebel"] is defined %}
+                            <span class="detail-text-label">Möbel:</span>
+                            {{ archivierung.infosArray["Moebel"] }}<br/>
+                        {% endif %}
+
                         {% if archivierung.infosArray["Text"] is defined %}
                             <span class="detail-text-label">Text:</span>
                             {{ archivierung.infosArray["Text"] }}<br/>

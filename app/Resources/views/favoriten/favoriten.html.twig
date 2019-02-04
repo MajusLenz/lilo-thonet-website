@@ -10,7 +10,7 @@
     
     <div class="favorites">
         {% if archivierungen|length == 0 %}
-            <p>Es wurden noch keine persönlichen Favoriten hinzugefügt.
+            <p class="big-text">Es wurden noch keine persönlichen Favoriten hinzugefügt.
             <br/>
             Klicken Sie dazu einfach auf das Sternsymbol in der Detailansicht einer Archivierung.</p>
         {% endif %}
@@ -48,7 +48,7 @@
         </section>
 
         {% if archivierungen|length > 0 %}
-            <section class="favorites-delete-all"">
+            <section class="favorites-delete-all">
                 <button class="black-button favorites-delete-all-button">gesamte Auswahl löschen</button>
                 <span class="favorites-delete-all-question big-text"
                       style="display: none;">Sicher?</span>

@@ -21,6 +21,20 @@ $(function() {
         }
     };
 
+    /** returnt eine Funktion, die "callback" nach "delay" milisekunden aufruft, wenn sie ausgeführt wird.
+     *  Wenn während des delays die returnte Funktion noch ein mal aufgerufen wird, wird der delay resetet.
+     */
+    function debounce(callback, delay) {
+        var timeout;
+        return function() {
+            var args = arguments;
+            clearTimeout(timeout);
+            timeout = setTimeout(function() {
+                callback.apply(this, args)
+            }.bind(this), delay)
+        }
+    }
+
 
     // Masory Grid:
     var $masoryGrid = $('.grid').masonry({
@@ -324,7 +338,7 @@ $(function() {
 
 
     // ionRangeSlider:
-    var slider = $(".js-range-slider").ionRangeSlider({
+    $(".js-range-slider").ionRangeSlider({
         skin: "square"
     });
 
@@ -356,7 +370,7 @@ $(function() {
         scrollTo(ziel, "slow");
     });
 
-    // Anchor-Scrolling animieren beim drücken eines Scroll-Buttons:
+    // Anchor-Scrolling animieren beim Seitenaufbau:
     var windowHref = window.location.href;
     var windowHash = windowHref.split("#")[1];
 
@@ -370,6 +384,147 @@ $(function() {
 
 
 
+
+    // :::SUCHE:::
+
+    var active = "active";
+    var inactive = "inactive";
+    var $inputFrames = $sucheMenu.find(".input-frame");
+    var $infoFrames = $inputFrames.filter(".info-frame");
+    var $blaupausen = $("#blaupausen");
+    var $auswahlBlaupause = $blaupausen.find(".auswahl-item").first();
+    var $vorschlagBlaupause = $blaupausen.find(".vorschlag-item").first();
+    var $allInputs = $inputFrames.find("input");
+    var $addInputs = $allInputs.filter(".add-input");
+
+
+    // Erst beim ersten Öffnen der Suche Jahrfilter inactive geben, damit ion-Range sich richtig initialisieren kann
+    var firstSucheButtonClick = true;
+    $sucheButton.on("click", function() {
+        if(firstSucheButtonClick) {
+            setTimeout(function() {
+                $inputFrames.filter(".jahr-frame").addClass(inactive);
+            } ,200);
+            firstSucheButtonClick = false;
+        }
+    });
+
+    $inputFrames.find(".outer-label").on("click", function() {
+        $inputFrames.removeClass(active).addClass(inactive);
+        $(this).parent().addClass(active).removeClass(inactive);
+    });
+
+    var addToAuswahl = function(auswahlContainer, wert) {
+        var newItem = $auswahlBlaupause.clone();
+        newItem.data("wert",  wert);
+        newItem.find("span").text(wert);
+
+        newItem.find("button").on("click", function() {
+            var li = $(this).parent();
+            deleteFromAuswahl(li);
+        });
+
+        newItem.appendTo(auswahlContainer);
+    };
+
+    var deleteFromAuswahl = function(auswahlItem) {
+        $(auswahlItem).remove();
+    };
+
+
+    // Bei ENTER neues Auswahl-Item erstellen:
+    $addInputs.on("keypress", function(e) {
+        if (e.which == 13) {
+            e.preventDefault();
+
+            var $this = $(this);
+            var wert = $this.val();
+
+            if(wert) {
+                var $auswahlContainer = $this.parent().find(".auswahl ul");
+                var stringExistst = false;
+
+                $auswahlContainer.find("li span").each(function() {
+
+                    if( $(this).text() == wert ) {
+                        stringExistst = true;
+                    }
+                });
+
+                if( !stringExistst ) {
+                    $this.val(null);
+                    addToAuswahl($auswahlContainer, wert);
+                }
+            }
+        }
+    });
+
+
+    // Bei SUBMIT vor dem Abschicken die Auswahlen in die hidden-inputs schreiben:
+    $("#suche-form").on("submit", function() {
+
+        $infoFrames.each(function() {
+            var $this = $(this);
+            var realWert = "";
+
+            $this.find(".auswahl li").each(function() {
+                var wert = $(this).data("wert");
+
+                if(wert) {
+                    realWert += ";"+wert;
+                }
+            });
+
+            $this.find(".real-input").val(realWert);
+        });
+    });
+
+
+
+    // Bei einer Texteingabe Vorschäge per AJAX updaten:
+
+    var route = $("#ajax-route").data("route");
+
+    var updateVorschlaege = function(vorschlaegeArray) {
+
+    };
+
+    var sendAjaxRequest = function(wert) {
+        $.ajax({
+            url: route,
+            type: "POST",
+            dataType: "json",
+            data: {
+                "infoName": "Titel",
+                "infoWert": wert
+            },
+            async: true,
+            success: function(data) {
+                updateVorschlaege(data);
+            }
+        });
+    };
+
+    var ajaxRequestTrigger = debounce(
+
+        function(thisInput) {
+            var wert = thisInput.val();
+            if(wert) {
+                sendAjaxRequest(wert);
+            }
+        },
+        2000
+    );
+
+    $addInputs.on('input paste', function() {
+        var $this = $(this);
+        ajaxRequestTrigger($this);
+    });
+
+
+
+
+    
 
 
 

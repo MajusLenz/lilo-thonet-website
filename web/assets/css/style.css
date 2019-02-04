@@ -129,10 +129,6 @@ h1,h2,h3,h4,h5,h6,p,a{
     color: black;
 }
 
-small{
-    font-size: inherit;
-}
-
 ::placeholder {
     color: black!important;
     opacity: 1!important;
@@ -347,11 +343,15 @@ hr{
     outline: none;
 }
 .input-frame{
-    margin-bottom: 40px;
+     margin: 0;
+ }
+.input-frame .label{
+    margin: 0;
 }
 .input-frame .vorschlaege, .input-frame .auswahl{
     width: 49.9%;
     display: inline-block;
+    vertical-align: top;
 }
 .input-frame .vorschlaege ul, .input-frame .auswahl ul{
     list-style: none;
@@ -362,7 +362,7 @@ hr{
 .input-frame .vorschlaege ul li, .input-frame .auswahl ul li{
     font-size: 13px;
 }
-.input-frame .vorschlaege ul li small{
+.input-frame .vorschlaege ul li span{
     cursor: pointer;
 }
 .auswahl button{
@@ -376,6 +376,24 @@ hr{
 .auswahl button img{
     vertical-align: top;
 }
+
+.input-frame.inactive .inner-label, .input-frame.inactive hr, .input-frame.inactive .add-input, .input-frame.inactive .vorschlaege, .input-frame.inactive .irs{
+    display: none;
+}
+.input-frame.inactive .auswahl{
+    display: block;
+}
+.input-frame.active .outer-label{
+    display: none;
+}
+.jahr-frame .irs, .jahr-frame hr, .jahr-frame .inner-label, .input-frame.jahr-frame .irs .irs-from, .input-frame.jahr-frame .irs .irs-to{
+    visibility: hidden!important;
+}
+.jahr-frame.active .irs, .jahr-frame.active hr, .jahr-frame.active .inner-label, .input-frame.jahr-frame.active .irs .irs-from, .input-frame.jahr-frame.active .irs .irs-to{
+    visibility: visible!important;
+}
+
+
 
 
 

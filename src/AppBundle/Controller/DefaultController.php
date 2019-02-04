@@ -7,6 +7,7 @@ use AppBundle\Helper\MysqlEscapeHelper;
 use Doctrine\ORM\Query\ResultSetMappingBuilder;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use AppBundle\Helper\HashHelper;
 use Symfony\Component\HttpFoundation\Response;
@@ -78,7 +79,7 @@ class DefaultController extends Controller
 
 
     /**
-     * @Route("/suche/", name="_suchetest")
+     * @Route("/suche/", name="_suche")
      */
     public function sucheAction(Request $request)
     {
@@ -280,17 +281,17 @@ class DefaultController extends Controller
                     "WHERE ( LOWER(i.wert) LIKE $infoWerte ) AND i.name = '$infoName'"
                 ;
                 $query = $em->createNativeQuery($sql, $rsm);
-                $infoErgenis = $query->getResult();
+                $infoErgebnis = $query->getResult();
 
                 // wenn jetzt die Ergebnismenge schon leer ist, die anderen Filter ignorieren und Response mit leerer Menge returnen
-                if(empty($infoErgenis))
+                if(empty($infoErgebnis))
                     return $this->createSuchResponse(array(), $minDBJahr, $maxDBJahr);
 
                 else
                     // Schnittmenge bilden
                     $gesamtErgebnis = array_uintersect(
                         $gesamtErgebnis,
-                        $infoErgenis,
+                        $infoErgebnis,
                         [$this, 'archivierungsVergleich'] // Vergleichs-Callback
                     );
 
@@ -303,6 +304,40 @@ class DefaultController extends Controller
 
         // Gesamtergebnis der Suche returnen:
         return $this->createSuchResponse($gesamtErgebnis, $minDBJahr, $maxDBJahr);
+    }
+
+
+
+    /**
+     * Liefert TODO
+     * @Route("/ajaxVorschlaege/", name="_ajaxVorschlaege")
+     */
+    public function ajaxVorschlaegeAction(Request $request) {
+
+        if($request->isXmlHttpRequest()) {
+            $infoName = $request->request->get('infoName');
+            $infoWert = $request->request->get('infoWert');
+
+            $infoName = MysqlEscapeHelper::escape($infoName);
+            $infoWert = MysqlEscapeHelper::escape($infoWert);
+
+            $em = $this->getDoctrine()->getManager();
+
+            $sql =
+                "SELECT i.wert " .
+                "FROM Information i " .
+                "WHERE LOWER(i.wert) LIKE '%$infoWert%' AND i.name = '$infoName'" .
+                "LIMIT 5"
+            ;
+            $stmt = $em->getConnection()->prepare($sql);
+            $stmt->execute();
+            $ergebnis = $stmt->fetchAll();
+            
+            $arrData = ['vorschlaege' => $ergebnis];
+            return new JsonResponse($arrData);
+        }
+
+        return $this->createNotFoundException();
     }
 
 
