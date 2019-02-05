@@ -340,7 +340,7 @@ class DefaultController extends Controller
                     $isFirst = false;
                 }
                 else
-                    $pickedWerte .= ", '$pickedWert')";
+                    $pickedWerte .= ", '$pickedWert'";
             }
 
             $sqlPicked = "";

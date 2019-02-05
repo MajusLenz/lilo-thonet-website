@@ -418,7 +418,7 @@ $(function() {
         $(this).parent().addClass(active).removeClass(inactive);
     });
 
-    var addToAuswahl = function(auswahlContainer, wert) {
+    var addToAuswahl = function($input, auswahlContainer, wert) {
         var newItem = $auswahlBlaupause.clone();
         newItem.data("wert",  wert);
         newItem.find("span").text(wert);
@@ -429,6 +429,9 @@ $(function() {
         });
 
         newItem.appendTo(auswahlContainer);
+
+        $input.val(null); // input leerern
+        sendAjaxRequest($input); // Neue Vorschlaege requesten
     };
 
     var deleteFromAuswahl = function(auswahlItem) {
@@ -474,6 +477,10 @@ $(function() {
         var wert = $addInput.val();
         var $inputFrame = $addInput.parent();
         var name = $inputFrame.find(".real-input").prop("name");
+        var infoPicked = "";
+        $inputFrame.find(".auswahl-item").each(function() {
+            infoPicked += ";"+ ( $(this).text()+"" ).trim();
+        });
 
         $.ajax({
             url: route,
@@ -481,7 +488,8 @@ $(function() {
             dataType: "json",
             data: {
                 "infoName": name,
-                "infoWert": wert
+                "infoWert": wert,
+                "infoPicked" : infoPicked
             },
             async: true,
             success: function(data) {
@@ -528,9 +536,7 @@ $(function() {
                 });
 
                 if( !stringExistst ) {
-                    $this.val(null); // input leerern
-                    sendAjaxRequest($this); // Neue Vorschlaege requesten
-                    addToAuswahl($auswahlContainer, wert); // Vorschlaege darstellen
+                    addToAuswahl($this, $auswahlContainer, wert); // Eingabe zu Auswahl hinzufuegen
                 }
             }
         }
