@@ -1,5 +1,7 @@
 $(function() {
 
+    var ajaxCounter = 1; // variable um zu pruefen in welche Reihenfolge AJAX-Requests verschickt wurden
+
     var removeFromArrayByValue = function(arr, item) {
         var index = arr.indexOf(item);
         if (index !== -1) arr.splice(index, 1);
@@ -418,20 +420,33 @@ $(function() {
         $(this).parent().addClass(active).removeClass(inactive);
     });
 
-    var addToAuswahl = function($input, auswahlContainer, wert) {
-        var newItem = $auswahlBlaupause.clone();
-        newItem.data("wert",  wert);
-        newItem.find("span").text(wert);
+    var addToAuswahl = function($input, $auswahlContainer, wert) {
 
-        newItem.find("button").on("click", function() {
-            var li = $(this).parent();
-            deleteFromAuswahl(li);
+        var stringAlreadyExistst = false;
+
+        $auswahlContainer.find("li span").each(function() {
+
+            if( $(this).text() == wert ) {
+                stringAlreadyExistst = true;
+            }
         });
 
-        newItem.appendTo(auswahlContainer);
+        if( !stringAlreadyExistst ) {
 
-        $input.val(null); // input leerern
-        sendAjaxRequest($input); // Neue Vorschlaege requesten
+            var newItem = $auswahlBlaupause.clone();
+            newItem.data("wert", wert);
+            newItem.find("span").text(wert);
+
+            newItem.find("button").on("click", function () {
+                var li = $(this).parent();
+                deleteFromAuswahl(li);
+            });
+
+            newItem.appendTo($auswahlContainer);
+
+            $input.val(null); // input leerern
+            sendAjaxRequest($input); // Neue Vorschlaege requesten
+        }
     };
 
     var deleteFromAuswahl = function(auswahlItem) {
@@ -464,15 +479,25 @@ $(function() {
 
     var route = $("#ajax-route").data("route");
 
-    var updateVorschlaege = function(vorschlaegeArray, $inputFrame) {
+    var updateVorschlaege = function(vorschlaegeArray, $inputFrame, thisAjaxCounter) {
 
-        // TODO
+        // Nur wenn Die Ajax-Antwort zum aktuellsten Ajax-Request passt, Vorschlaege updaten
+        if(thisAjaxCounter == ajaxCounter) {
 
-        console.log($inputFrame);
-        console.log(vorschlaegeArray);
+            console.log($inputFrame);
+            console.log(vorschlaegeArray);
+
+            
+
+
+
+
+
+        }
     };
 
     var sendAjaxRequest = function($addInput) {
+        var thisAjaxCounter = ++ajaxCounter;
 
         var wert = $addInput.val();
         var $inputFrame = $addInput.parent();
@@ -493,7 +518,7 @@ $(function() {
             },
             async: true,
             success: function(data) {
-                updateVorschlaege(data, $inputFrame);
+                updateVorschlaege(data, $inputFrame, thisAjaxCounter);
             }
         });
     };
@@ -526,18 +551,8 @@ $(function() {
 
             if(wert) {
                 var $auswahlContainer = $this.parent().find(".auswahl ul");
-                var stringExistst = false;
 
-                $auswahlContainer.find("li span").each(function() {
-
-                    if( $(this).text() == wert ) {
-                        stringExistst = true;
-                    }
-                });
-
-                if( !stringExistst ) {
-                    addToAuswahl($this, $auswahlContainer, wert); // Eingabe zu Auswahl hinzufuegen
-                }
+                addToAuswahl($this, $auswahlContainer, wert); // Eingabe zu Auswahl hinzufuegen
             }
         }
     });

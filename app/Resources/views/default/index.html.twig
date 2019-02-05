@@ -34,9 +34,9 @@
                 <var id="ajax-route" data-route="{{ path('_ajaxVorschlaege') }}" style="display: none!important;"></var>
 
                 <ul id="blaupausen" style="display: none!important;">
-                    <li class="vorschlag-item"><span class="normal-text">Suchtext-Vorschlag A</span></li>
+                    <li class="vorschlag-item"><span class="normal-text">ERROR!</span></li>
 
-                    <li class="auswahl-item"><span class="normal-text">Auswahl A</span>
+                    <li class="auswahl-item"><span class="normal-text">ERROR!</span>
                         <button type="button" class="img-button" title="Suchbegriff entfernen">
                             <img alt="X" src="{{ asset('assets/images/Archiv_Symbole_Mobil_Suchfilter_abwaehlen.svg') }}"/>
                         </button>
@@ -52,6 +52,7 @@
                         id="Freitext-add"
                         class="add-input"
                         placeholder="Suchtext"
+                        maxlength="170"
                     >
                     <div class="vorschlaege">
                         <ul>
@@ -97,6 +98,7 @@
                             id="Titel-add"
                             class="add-input"
                             placeholder="Suchtext"
+                            maxlength="170"
                     />
                     <div class="vorschlaege">
                         <ul>

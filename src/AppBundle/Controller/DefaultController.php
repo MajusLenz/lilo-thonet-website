@@ -370,7 +370,7 @@ class DefaultController extends Controller
                 $sqlInfo .
                 $sqlName .
                 $sqlPicked .
-                "LIMIT 5"
+                "ORDER BY i.wert LIMIT 5"
             ;
             $stmt = $em->getConnection()->prepare($sql);
             $stmt->execute();
