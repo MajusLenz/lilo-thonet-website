@@ -309,7 +309,10 @@ class DefaultController extends Controller
 
 
     /**
-     * Liefert TODO
+     * Liefert passend zum InfoNamen und InfoWert passende Vorschaege zur Verfollstaendigung.
+     * Werte die bereits in InfoPicked stehen werden ignoriert und stattdessen andere zurückgesendet.
+     * maximal 5 Vorschlaege werden gesendet.
+     *
      * @Route("/ajaxVorschlaege/", name="_ajaxVorschlaege")
      */
     public function ajaxVorschlaegeAction(Request $request) {
@@ -317,24 +320,65 @@ class DefaultController extends Controller
         if($request->isXmlHttpRequest()) {
             $infoName = $request->request->get('infoName');
             $infoWert = $request->request->get('infoWert');
+            $infoPicked = $request->request->get('infoPicked'); // werte die bereits in der Auswahl enthalten sind.
 
-            $infoName = MysqlEscapeHelper::escape($infoName);
-            $infoWert = MysqlEscapeHelper::escape($infoWert);
+            $pickedArray = explode(";", $infoPicked);
+
+            $pickedWerte = "";
+            $isFirst = true;
+
+            foreach($pickedArray as $pickedWert) {
+                $pickedWert = trim($pickedWert);
+
+                if(empty($pickedWert))
+                    continue;
+
+                $pickedWert = MysqlEscapeHelper::escape($pickedWert);
+
+                if($isFirst) {
+                    $pickedWerte = "'$pickedWert'";
+                    $isFirst = false;
+                }
+                else
+                    $pickedWerte .= ", '$pickedWert')";
+            }
+
+            $sqlPicked = "";
+            if( !empty($pickedWerte) ) {
+                $sqlPicked = "AND i.wert NOT IN($pickedWerte) ";
+            }
+
+            $sqlInfo = "";
+            if( !empty($infoWert) ) {
+
+                $infoWert = MysqlEscapeHelper::escape($infoWert);
+                $sqlInfo = "LOWER(i.wert) LIKE '%$infoWert%' AND ";
+            }
+
+            $sqlName = "i.name != 'Tags' ";
+            if($infoName != "Freitext") {
+
+                $infoName = MysqlEscapeHelper::escape($infoName);
+                $sqlName = "i.name = '$infoName' ";
+            }
 
             $em = $this->getDoctrine()->getManager();
 
             $sql =
-                "SELECT i.wert " .
-                "FROM Information i " .
-                "WHERE LOWER(i.wert) LIKE '%$infoWert%' AND i.name = '$infoName'" .
+                "SELECT DISTINCT i.wert " .
+                "FROM Information i WHERE " .
+                $sqlInfo .
+                $sqlName .
+                $sqlPicked .
                 "LIMIT 5"
             ;
             $stmt = $em->getConnection()->prepare($sql);
             $stmt->execute();
             $ergebnis = $stmt->fetchAll();
-            
-            $arrData = ['vorschlaege' => $ergebnis];
-            return new JsonResponse($arrData);
+
+            return new JsonResponse([
+                    'vorschlaege' => $ergebnis
+                ]);
         }
 
         return $this->createNotFoundException();

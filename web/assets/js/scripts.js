@@ -139,6 +139,10 @@ $(function() {
         else{
             $allGridItems.removeClass("mini");
             $masoryGrid.masonry('layout');
+            setTimeout(function() {
+                $allGridItems.removeClass("mini");
+                $masoryGrid.masonry('layout');
+            }, 300);
             $sucheMenu.fadeOut(350);
             $inhalt.animate({opacity: 100}, 350);
             $sucheMenu.removeClass("open");
@@ -432,34 +436,6 @@ $(function() {
     };
 
 
-    // Bei ENTER neues Auswahl-Item erstellen:
-    $addInputs.on("keypress", function(e) {
-        if (e.which == 13) {
-            e.preventDefault();
-
-            var $this = $(this);
-            var wert = $this.val();
-
-            if(wert) {
-                var $auswahlContainer = $this.parent().find(".auswahl ul");
-                var stringExistst = false;
-
-                $auswahlContainer.find("li span").each(function() {
-
-                    if( $(this).text() == wert ) {
-                        stringExistst = true;
-                    }
-                });
-
-                if( !stringExistst ) {
-                    $this.val(null);
-                    addToAuswahl($auswahlContainer, wert);
-                }
-            }
-        }
-    });
-
-
     // Bei SUBMIT vor dem Abschicken die Auswahlen in die hidden-inputs schreiben:
     $("#suche-form").on("submit", function() {
 
@@ -485,37 +461,45 @@ $(function() {
 
     var route = $("#ajax-route").data("route");
 
-    var updateVorschlaege = function(vorschlaegeArray) {
+    var updateVorschlaege = function(vorschlaegeArray, $inputFrame) {
 
+        // TODO
+
+        console.log($inputFrame);
+        console.log(vorschlaegeArray);
     };
 
-    var sendAjaxRequest = function(wert) {
+    var sendAjaxRequest = function($addInput) {
+
+        var wert = $addInput.val();
+        var $inputFrame = $addInput.parent();
+        var name = $inputFrame.find(".real-input").prop("name");
+
         $.ajax({
             url: route,
             type: "POST",
             dataType: "json",
             data: {
-                "infoName": "Titel",
+                "infoName": name,
                 "infoWert": wert
             },
             async: true,
             success: function(data) {
-                updateVorschlaege(data);
+                updateVorschlaege(data, $inputFrame);
             }
         });
     };
 
     var ajaxRequestTrigger = debounce(
 
-        function(thisInput) {
-            var wert = thisInput.val();
-            if(wert) {
-                sendAjaxRequest(wert);
-            }
+        function($addInput) {
+            sendAjaxRequest($addInput);
         },
         2000
     );
 
+
+    // --- Wenn Eingabe erfolgt, countdown starten:
     $addInputs.on('input paste', function() {
         var $this = $(this);
         ajaxRequestTrigger($this);
@@ -524,7 +508,38 @@ $(function() {
 
 
 
-    
+    // Bei ENTER neues Auswahl-Item erstellen:
+    $addInputs.on("keypress", function(e) {
+        if (e.which == 13) {
+            e.preventDefault();
+
+            var $this = $(this);
+            var wert = $this.val();
+
+            if(wert) {
+                var $auswahlContainer = $this.parent().find(".auswahl ul");
+                var stringExistst = false;
+
+                $auswahlContainer.find("li span").each(function() {
+
+                    if( $(this).text() == wert ) {
+                        stringExistst = true;
+                    }
+                });
+
+                if( !stringExistst ) {
+                    $this.val(null); // input leerern
+                    sendAjaxRequest($this); // Neue Vorschlaege requesten
+                    addToAuswahl($auswahlContainer, wert); // Vorschlaege darstellen
+                }
+            }
+        }
+    });
+
+
+
+
+
 
 
 
