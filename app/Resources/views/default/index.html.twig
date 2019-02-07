@@ -31,6 +31,7 @@
         <div class="suche-overlay-filter">
 
             <form id="suche-form" method="get" action="{{ path('_suche') }}">
+
                 <var id="ajax-route" data-route="{{ path('_ajaxVorschlaege') }}" style="display: none!important;"></var>
 
                 <ul id="blaupausen" style="display: none!important;">
@@ -43,93 +44,778 @@
                     </li>
                 </ul>
 
+                <div class="input-frame-spalte-1 input-frame-spalte">
 
-                <div class="input-frame info-frame inactive">
-                    <label class="label outer-label" for="Freitext-add">Freie Suche</label>
-                    <label class="label inner-label" for="Freitext-add">Freie Suche</label>
-                    <input
-                        type="text"
-                        id="Freitext-add"
-                        class="add-input"
-                        placeholder="Suchtext"
-                        maxlength="170"
-                    >
-                    <div class="vorschlaege">
-                        <ul>
-                            <li class="vorschlag1"><span class="normal-text">Suchtext-Vorschlag 1</span></li>
-                            <li class="vorschlag2"><span class="normal-text">Suchtext-Vorschlag 2</span></li>
-                            <li class="vorschlag3"><span class="normal-text">Suchtext-Vorschlag 3</span></li>
-                            <li class="vorschlag4"><span class="normal-text">Suchtext-Vorschlag 4</span></li>
-                            <li class="vorschlag5"><span class="normal-text">Suchtext-Vorschlag 5</span></li>
-                        </ul>
-
-                    </div><div class="auswahl">
-                        <ul></ul>
-                    </div>
-
-                    <hr class="input-frame-hr-bottom" />
-                    <input type="hidden" name="Freitext" id="Freitext-wert" class="real-input" />
-                </div>
-
-                <div class="input-frame jahr-frame">
-                    <label class="label outer-label img-button">Jahr</label>
-                    <hr class="input-frame-hr-top" />
-                    <label class="label inner-label img-button">Jahr</label>
-                    <input type="text" class="js-range-slider real-input" name="Jahr" value=""
-                           data-type="double"
-                           data-min="{{ minDBJahr }}"
-                           data-max="{{ maxDBJahr }}"
-                           data-from="{{ minDBJahr }}"
-                           data-to="{{ maxDBJahr }}"
-                           data-hide-min-max="true"
-                           data-prettify-enabled="false"
-                    />
-                    <div class="clearfix"></div>
-                    <hr class="input-frame-hr-bottom" />
-                </div>
-
-
-                <div class="input-frame info-frame inactive">
-                    <label class="label outer-label" for="Titel-add">Titel</label>
-                    <hr class="input-frame-hr-top" />
-                    <label class="label inner-label" for="Titel-add">Titel</label>
-                    <input
+                    <div class="input-frame info-frame inactive">
+                        <label class="label outer-label" for="Freitext-add">Freie Suche</label>
+                        <label class="label inner-label" for="Freitext-add">Freie Suche</label>
+                        <input
                             type="text"
-                            id="Titel-add"
+                            id="Freitext-add"
                             class="add-input"
                             placeholder="Suchtext"
                             maxlength="170"
-                    />
-                    <div class="vorschlaege">
-                        <ul>
-                            <li class="vorschlag1"><span class="normal-text">Suchtext-Vorschlag 1</span></li>
-                            <li class="vorschlag2"><span class="normal-text">Suchtext-Vorschlag 2</span></li>
-                            <li class="vorschlag3"><span class="normal-text">Suchtext-Vorschlag 3</span></li>
-                            <li class="vorschlag4"><span class="normal-text">Suchtext-Vorschlag 4</span></li>
-                            <li class="vorschlag5"><span class="normal-text">Suchtext-Vorschlag 5</span></li>
-                        </ul>
+                        >
+                        <div class="vorschlaege">
+                            <ul>
+                                {% if vorschlaege["Freitext"] is defined %}
+                                    {% for vorschlag in vorschlaege["Freitext"] %}
+                                        <li class="vorschlag-item" data-wert="{{ vorschlag.wert }}"><span class="normal-text">{{ vorschlag.wert }}</span></li>
+                                    {% endfor %}
+                                {% endif %}
+                            </ul>
 
-                    </div><div class="auswahl">
-                        <ul></ul>
+                        </div><div class="auswahl">
+                            <ul>
+                                {% if auswahl["Freitext"] is defined %}
+                                    {% for auswahlItem in auswahl["Freitext"] %}
+                                        <li class="auswahl-item" data-wert="{{ auswahlItem }}"><span class="normal-text">{{ auswahlItem }}</span>
+                                            <button type="button" class="img-button" title="Suchbegriff entfernen">
+                                                <img alt="X" src="{{ asset('assets/images/Archiv_Symbole_Mobil_Suchfilter_abwaehlen.svg') }}"/>
+                                            </button>
+                                        </li>
+                                    {% endfor %}
+                                {% endif %}
+                            </ul>
+                        </div>
+
+                        <hr class="input-frame-hr-bottom" />
+                        <input type="hidden" name="Freitext" id="Freitext-wert" class="real-input" />
                     </div>
 
-                    <hr class="input-frame-hr-bottom" />
-                    <input type="hidden" name="Titel" id="Titel-wert" class="real-input" />
+                    <br/>
+
+                    <div class="input-frame jahr-frame inactive">
+                        <label class="label outer-label img-button">Jahr</label>
+                        <hr class="input-frame-hr-top" />
+                        <label class="label inner-label img-button">Jahr</label>
+                        <input type="text" class="js-range-slider real-input" name="Jahr" value="{{ auswahl["Jahr"]["min"] }};{{ auswahl["Jahr"]["max"] }}"
+                               data-type="double"
+                               data-min="{{ minDBJahr }}"
+                               data-max="{{ maxDBJahr }}"
+                               data-from="{{ auswahl["Jahr"]["min"] }}"
+                               data-to="{{ auswahl["Jahr"]["max"] }}"
+                               data-hide-min-max="true"
+                               data-prettify-enabled="false"
+                        />
+                        <div class="clearfix"></div>
+                        <hr class="input-frame-hr-bottom" />
+                    </div>
+
+
+                    <div class="input-frame info-frame inactive">
+                        <label class="label outer-label" for="Titel-add">Titel</label>
+                        <hr class="input-frame-hr-top" />
+                        <label class="label inner-label" for="Titel-add">Titel</label>
+                        <input
+                                type="text"
+                                id="Titel-add"
+                                class="add-input"
+                                placeholder="Suchtext"
+                                maxlength="170"
+                        />
+                        <div class="vorschlaege">
+                            <ul>
+                                {% if vorschlaege["Titel"] is defined %}
+                                    {% for vorschlag in vorschlaege["Titel"] %}
+                                        <li class="vorschlag-item" data-wert="{{ vorschlag.wert }}"><span class="normal-text">{{ vorschlag.wert }}</span></li>
+                                    {% endfor %}
+                                {% endif %}
+                            </ul>
+
+                        </div><div class="auswahl">
+                            <ul>
+                                {% if auswahl["Titel"] is defined %}
+                                    {% for auswahlItem in auswahl["Titel"] %}
+                                        <li class="auswahl-item" data-wert="{{ auswahlItem }}"><span class="normal-text">{{ auswahlItem }}</span>
+                                            <button type="button" class="img-button" title="Suchbegriff entfernen">
+                                                <img alt="X" src="{{ asset('assets/images/Archiv_Symbole_Mobil_Suchfilter_abwaehlen.svg') }}"/>
+                                            </button>
+                                        </li>
+                                    {% endfor %}
+                                {% endif %}
+                            </ul>
+                        </div>
+
+                        <hr class="input-frame-hr-bottom" />
+                        <input type="hidden" name="Titel" id="Titel-wert" class="real-input" />
+                    </div>
+
+
+                    <div class="input-frame info-frame inactive">
+                        <label class="label outer-label" for="Auftraggeber-add">Auftraggeber</label>
+                        <hr class="input-frame-hr-top" />
+                        <label class="label inner-label" for="Auftraggeber-add">Auftraggeber</label>
+                        <input
+                                type="text"
+                                id="Auftraggeber-add"
+                                class="add-input"
+                                placeholder="Suchtext"
+                                maxlength="170"
+                        />
+                        <div class="vorschlaege">
+                            <ul>
+                                {% if vorschlaege["Auftraggeber"] is defined %}
+                                    {% for vorschlag in vorschlaege["Auftraggeber"] %}
+                                        <li class="vorschlag-item" data-wert="{{ vorschlag.wert }}"><span class="normal-text">{{ vorschlag.wert }}</span></li>
+                                    {% endfor %}
+                                {% endif %}
+                            </ul>
+
+                        </div><div class="auswahl">
+                            <ul>
+                                {% if auswahl["Auftraggeber"] is defined %}
+                                    {% for auswahlItem in auswahl["Auftraggeber"] %}
+                                        <li class="auswahl-item" data-wert="{{ auswahlItem }}"><span class="normal-text">{{ auswahlItem }}</span>
+                                            <button type="button" class="img-button" title="Suchbegriff entfernen">
+                                                <img alt="X" src="{{ asset('assets/images/Archiv_Symbole_Mobil_Suchfilter_abwaehlen.svg') }}"/>
+                                            </button>
+                                        </li>
+                                    {% endfor %}
+                                {% endif %}
+                            </ul>
+                        </div>
+
+                        <hr class="input-frame-hr-bottom" />
+                        <input type="hidden" name="Auftraggeber" id="Auftraggeber-wert" class="real-input" />
+                    </div>
+
+
+                    <div class="input-frame info-frame inactive">
+                        <label class="label outer-label" for="Objektkategorie-add">Objektkategorie</label>
+                        <hr class="input-frame-hr-top" />
+                        <label class="label inner-label" for="Objektkategorie-add">Objektkategorie</label>
+                        <input
+                                type="text"
+                                id="Objektkategorie-add"
+                                class="add-input"
+                                placeholder="Suchtext"
+                                maxlength="170"
+                        />
+                        <div class="vorschlaege">
+                            <ul>
+                                {% if vorschlaege["Objektkategorie"] is defined %}
+                                    {% for vorschlag in vorschlaege["Objektkategorie"] %}
+                                        <li class="vorschlag-item" data-wert="{{ vorschlag.wert }}"><span class="normal-text">{{ vorschlag.wert }}</span></li>
+                                    {% endfor %}
+                                {% endif %}
+                            </ul>
+
+                        </div><div class="auswahl">
+                            <ul>
+                                {% if auswahl["Objektkategorie"] is defined %}
+                                    {% for auswahlItem in auswahl["Objektkategorie"] %}
+                                        <li class="auswahl-item" data-wert="{{ auswahlItem }}"><span class="normal-text">{{ auswahlItem }}</span>
+                                            <button type="button" class="img-button" title="Suchbegriff entfernen">
+                                                <img alt="X" src="{{ asset('assets/images/Archiv_Symbole_Mobil_Suchfilter_abwaehlen.svg') }}"/>
+                                            </button>
+                                        </li>
+                                    {% endfor %}
+                                {% endif %}
+                            </ul>
+                        </div>
+
+                        <hr class="input-frame-hr-bottom" />
+                        <input type="hidden" name="Objektkategorie" id="Objektkategorie-wert" class="real-input" />
+                    </div>
+
+                    <br/>
+
+                    <div class="input-frame info-frame inactive">
+                        <label class="label outer-label" for="Gestaltung-add">Gestaltung</label>
+                        <hr class="input-frame-hr-top" />
+                        <label class="label inner-label" for="Gestaltung-add">Gestaltung</label>
+                        <input
+                                type="text"
+                                id="Gestaltung-add"
+                                class="add-input"
+                                placeholder="Suchtext"
+                                maxlength="170"
+                        />
+                        <div class="vorschlaege">
+                            <ul>
+                                {% if vorschlaege["Gestaltung"] is defined %}
+                                    {% for vorschlag in vorschlaege["Gestaltung"] %}
+                                        <li class="vorschlag-item" data-wert="{{ vorschlag.wert }}"><span class="normal-text">{{ vorschlag.wert }}</span></li>
+                                    {% endfor %}
+                                {% endif %}
+                            </ul>
+
+                        </div><div class="auswahl">
+                            <ul>
+                                {% if auswahl["Gestaltung"] is defined %}
+                                    {% for auswahlItem in auswahl["Gestaltung"] %}
+                                        <li class="auswahl-item" data-wert="{{ auswahlItem }}"><span class="normal-text">{{ auswahlItem }}</span>
+                                            <button type="button" class="img-button" title="Suchbegriff entfernen">
+                                                <img alt="X" src="{{ asset('assets/images/Archiv_Symbole_Mobil_Suchfilter_abwaehlen.svg') }}"/>
+                                            </button>
+                                        </li>
+                                    {% endfor %}
+                                {% endif %}
+                            </ul>
+                        </div>
+
+                        <hr class="input-frame-hr-bottom" />
+                        <input type="hidden" name="Gestaltung" id="Gestaltung-wert" class="real-input" />
+                    </div>
+
+
+                    <div class="input-frame info-frame inactive">
+                        <label class="label outer-label" for="Fotografie-add">Fotografie</label>
+                        <hr class="input-frame-hr-top" />
+                        <label class="label inner-label" for="Fotografie-add">Fotografie</label>
+                        <input
+                                type="text"
+                                id="Fotografie-add"
+                                class="add-input"
+                                placeholder="Suchtext"
+                                maxlength="170"
+                        />
+                        <div class="vorschlaege">
+                            <ul>
+                                {% if vorschlaege["Fotografie"] is defined %}
+                                    {% for vorschlag in vorschlaege["Fotografie"] %}
+                                        <li class="vorschlag-item" data-wert="{{ vorschlag.wert }}"><span class="normal-text">{{ vorschlag.wert }}</span></li>
+                                    {% endfor %}
+                                {% endif %}
+                            </ul>
+
+                        </div><div class="auswahl">
+                            <ul>
+                                {% if auswahl["Fotografie"] is defined %}
+                                    {% for auswahlItem in auswahl["Fotografie"] %}
+                                        <li class="auswahl-item" data-wert="{{ auswahlItem }}"><span class="normal-text">{{ auswahlItem }}</span>
+                                            <button type="button" class="img-button" title="Suchbegriff entfernen">
+                                                <img alt="X" src="{{ asset('assets/images/Archiv_Symbole_Mobil_Suchfilter_abwaehlen.svg') }}"/>
+                                            </button>
+                                        </li>
+                                    {% endfor %}
+                                {% endif %}
+                            </ul>
+                        </div>
+
+                        <hr class="input-frame-hr-bottom" />
+                        <input type="hidden" name="Fotografie" id="Fotografie-wert" class="real-input" />
+                    </div>
+
+
+                    <div class="input-frame info-frame inactive">
+                        <label class="label outer-label" for="Druckerei-add">Druckerei</label>
+                        <hr class="input-frame-hr-top" />
+                        <label class="label inner-label" for="Druckerei-add">Druckerei</label>
+                        <input
+                                type="text"
+                                id="Druckerei-add"
+                                class="add-input"
+                                placeholder="Suchtext"
+                                maxlength="170"
+                        />
+                        <div class="vorschlaege">
+                            <ul>
+                                {% if vorschlaege["Druckerei"] is defined %}
+                                    {% for vorschlag in vorschlaege["Druckerei"] %}
+                                        <li class="vorschlag-item" data-wert="{{ vorschlag.wert }}"><span class="normal-text">{{ vorschlag.wert }}</span></li>
+                                    {% endfor %}
+                                {% endif %}
+                            </ul>
+
+                        </div><div class="auswahl">
+                            <ul>
+                                {% if auswahl["Druckerei"] is defined %}
+                                    {% for auswahlItem in auswahl["Druckerei"] %}
+                                        <li class="auswahl-item" data-wert="{{ auswahlItem }}"><span class="normal-text">{{ auswahlItem }}</span>
+                                            <button type="button" class="img-button" title="Suchbegriff entfernen">
+                                                <img alt="X" src="{{ asset('assets/images/Archiv_Symbole_Mobil_Suchfilter_abwaehlen.svg') }}"/>
+                                            </button>
+                                        </li>
+                                    {% endfor %}
+                                {% endif %}
+                            </ul>
+                        </div>
+
+                        <hr class="input-frame-hr-bottom" />
+                        <input type="hidden" name="Druckerei" id="Druckerei-wert" class="real-input" />
+                    </div>
+
+
+                    <div class="input-frame info-frame inactive">
+                        <label class="label outer-label" for="Autor-add">Autor</label>
+                        <hr class="input-frame-hr-top" />
+                        <label class="label inner-label" for="Autor-add">Autor</label>
+                        <input
+                                type="text"
+                                id="Autor-add"
+                                class="add-input"
+                                placeholder="Suchtext"
+                                maxlength="170"
+                        />
+                        <div class="vorschlaege">
+                            <ul>
+                                {% if vorschlaege["Autor"] is defined %}
+                                    {% for vorschlag in vorschlaege["Autor"] %}
+                                        <li class="vorschlag-item" data-wert="{{ vorschlag.wert }}"><span class="normal-text">{{ vorschlag.wert }}</span></li>
+                                    {% endfor %}
+                                {% endif %}
+                            </ul>
+
+                        </div><div class="auswahl">
+                            <ul>
+                                {% if auswahl["Autor"] is defined %}
+                                    {% for auswahlItem in auswahl["Autor"] %}
+                                        <li class="auswahl-item" data-wert="{{ auswahlItem }}"><span class="normal-text">{{ auswahlItem }}</span>
+                                            <button type="button" class="img-button" title="Suchbegriff entfernen">
+                                                <img alt="X" src="{{ asset('assets/images/Archiv_Symbole_Mobil_Suchfilter_abwaehlen.svg') }}"/>
+                                            </button>
+                                        </li>
+                                    {% endfor %}
+                                {% endif %}
+                            </ul>
+                        </div>
+
+                        <hr class="input-frame-hr-bottom" />
+                        <input type="hidden" name="Autor" id="Autor-wert" class="real-input" />
+                    </div>
+
                 </div>
 
 
+                <div class="input-frame-spalte-2 input-frame-spalte">
+
+                    <div class="input-frame info-frame inactive">
+                        <label class="label outer-label" for="Material-add">Material</label>
+                        <label class="label inner-label" for="Material-add">Material</label>
+                        <input
+                                type="text"
+                                id="Material-add"
+                                class="add-input"
+                                placeholder="Suchtext"
+                                maxlength="170"
+                        />
+                        <div class="vorschlaege">
+                            <ul>
+                                {% if vorschlaege["Material"] is defined %}
+                                    {% for vorschlag in vorschlaege["Material"] %}
+                                        <li class="vorschlag-item" data-wert="{{ vorschlag.wert }}"><span class="normal-text">{{ vorschlag.wert }}</span></li>
+                                    {% endfor %}
+                                {% endif %}
+                            </ul>
+
+                        </div><div class="auswahl">
+                            <ul>
+                                {% if auswahl["Material"] is defined %}
+                                    {% for auswahlItem in auswahl["Material"] %}
+                                        <li class="auswahl-item" data-wert="{{ auswahlItem }}"><span class="normal-text">{{ auswahlItem }}</span>
+                                            <button type="button" class="img-button" title="Suchbegriff entfernen">
+                                                <img alt="X" src="{{ asset('assets/images/Archiv_Symbole_Mobil_Suchfilter_abwaehlen.svg') }}"/>
+                                            </button>
+                                        </li>
+                                    {% endfor %}
+                                {% endif %}
+                            </ul>
+                        </div>
+
+                        <hr class="input-frame-hr-bottom" />
+                        <input type="hidden" name="Material" id="Material-wert" class="real-input" />
+                    </div>
 
 
+                    <div class="input-frame info-frame inactive">
+                        <label class="label outer-label" for="Produktionsverfahren-add">Produktionsverfahren</label>
+                        <hr class="input-frame-hr-top" />
+                        <label class="label inner-label" for="Produktionsverfahren-add">Produktionsverfahren</label>
+                        <input
+                                type="text"
+                                id="Produktionsverfahren-add"
+                                class="add-input"
+                                placeholder="Suchtext"
+                                maxlength="170"
+                        />
+                        <div class="vorschlaege">
+                            <ul>
+                                {% if vorschlaege["Produktionsverfahren"] is defined %}
+                                    {% for vorschlag in vorschlaege["Produktionsverfahren"] %}
+                                        <li class="vorschlag-item" data-wert="{{ vorschlag.wert }}"><span class="normal-text">{{ vorschlag.wert }}</span></li>
+                                    {% endfor %}
+                                {% endif %}
+                            </ul>
+
+                        </div><div class="auswahl">
+                            <ul>
+                                {% if auswahl["Produktionsverfahren"] is defined %}
+                                    {% for auswahlItem in auswahl["Produktionsverfahren"] %}
+                                        <li class="auswahl-item" data-wert="{{ auswahlItem }}"><span class="normal-text">{{ auswahlItem }}</span>
+                                            <button type="button" class="img-button" title="Suchbegriff entfernen">
+                                                <img alt="X" src="{{ asset('assets/images/Archiv_Symbole_Mobil_Suchfilter_abwaehlen.svg') }}"/>
+                                            </button>
+                                        </li>
+                                    {% endfor %}
+                                {% endif %}
+                            </ul>
+                        </div>
+
+                        <hr class="input-frame-hr-bottom" />
+                        <input type="hidden" name="Produktionsverfahren" id="Produktionsverfahren-wert" class="real-input" />
+                    </div>
 
 
+                    <div class="input-frame info-frame inactive">
+                        <label class="label outer-label" for="Sprache-add">Sprache</label>
+                        <hr class="input-frame-hr-top" />
+                        <label class="label inner-label" for="Sprache-add">Sprache</label>
+                        <input
+                                type="text"
+                                id="Sprache-add"
+                                class="add-input"
+                                placeholder="Suchtext"
+                                maxlength="170"
+                        />
+                        <div class="vorschlaege">
+                            <ul>
+                                {% if vorschlaege["Sprache"] is defined %}
+                                    {% for vorschlag in vorschlaege["Sprache"] %}
+                                        <li class="vorschlag-item" data-wert="{{ vorschlag.wert }}"><span class="normal-text">{{ vorschlag.wert }}</span></li>
+                                    {% endfor %}
+                                {% endif %}
+                            </ul>
 
-                <br/>
-                <br/>
-                <button type="submit">save</button>
-                <br/>
-                <br/>
-                <br/>
-                <br/>
+                        </div><div class="auswahl">
+                            <ul>
+                                {% if auswahl["Sprache"] is defined %}
+                                    {% for auswahlItem in auswahl["Sprache"] %}
+                                        <li class="auswahl-item" data-wert="{{ auswahlItem }}"><span class="normal-text">{{ auswahlItem }}</span>
+                                            <button type="button" class="img-button" title="Suchbegriff entfernen">
+                                                <img alt="X" src="{{ asset('assets/images/Archiv_Symbole_Mobil_Suchfilter_abwaehlen.svg') }}"/>
+                                            </button>
+                                        </li>
+                                    {% endfor %}
+                                {% endif %}
+                            </ul>
+                        </div>
+
+                        <hr class="input-frame-hr-bottom" />
+                        <input type="hidden" name="Sprache" id="Sprache-wert" class="real-input" />
+                    </div>
+
+
+                    <div class="input-frame info-frame inactive">
+                        <label class="label outer-label" for="Schrift-add">Schrift</label>
+                        <hr class="input-frame-hr-top" />
+                        <label class="label inner-label" for="Schrift-add">Schrift</label>
+                        <input
+                                type="text"
+                                id="Schrift-add"
+                                class="add-input"
+                                placeholder="Suchtext"
+                                maxlength="170"
+                        />
+                        <div class="vorschlaege">
+                            <ul>
+                                {% if vorschlaege["Schrift"] is defined %}
+                                    {% for vorschlag in vorschlaege["Schrift"] %}
+                                        <li class="vorschlag-item" data-wert="{{ vorschlag.wert }}"><span class="normal-text">{{ vorschlag.wert }}</span></li>
+                                    {% endfor %}
+                                {% endif %}
+                            </ul>
+
+                        </div><div class="auswahl">
+                            <ul>
+                                {% if auswahl["Schrift"] is defined %}
+                                    {% for auswahlItem in auswahl["Schrift"] %}
+                                        <li class="auswahl-item" data-wert="{{ auswahlItem }}"><span class="normal-text">{{ auswahlItem }}</span>
+                                            <button type="button" class="img-button" title="Suchbegriff entfernen">
+                                                <img alt="X" src="{{ asset('assets/images/Archiv_Symbole_Mobil_Suchfilter_abwaehlen.svg') }}"/>
+                                            </button>
+                                        </li>
+                                    {% endfor %}
+                                {% endif %}
+                            </ul>
+                        </div>
+
+                        <hr class="input-frame-hr-bottom" />
+                        <input type="hidden" name="Schrift" id="Schrift-wert" class="real-input" />
+                    </div>
+
+
+                    <div class="input-frame info-frame inactive">
+                        <label class="label outer-label" for="Farbe-add">Farbe</label>
+                        <hr class="input-frame-hr-top" />
+                        <label class="label inner-label" for="Farbe-add">Farbe</label>
+                        <input
+                                type="text"
+                                id="Farbe-add"
+                                class="add-input"
+                                placeholder="Suchtext"
+                                maxlength="170"
+                        />
+                        <div class="vorschlaege">
+                            <ul>
+                                {% if vorschlaege["Farbe"] is defined %}
+                                    {% for vorschlag in vorschlaege["Farbe"] %}
+                                        <li class="vorschlag-item" data-wert="{{ vorschlag.wert }}"><span class="normal-text">{{ vorschlag.wert }}</span></li>
+                                    {% endfor %}
+                                {% endif %}
+                            </ul>
+
+                        </div><div class="auswahl">
+                            <ul>
+                                {% if auswahl["Farbe"] is defined %}
+                                    {% for auswahlItem in auswahl["Farbe"] %}
+                                        <li class="auswahl-item" data-wert="{{ auswahlItem }}"><span class="normal-text">{{ auswahlItem }}</span>
+                                            <button type="button" class="img-button" title="Suchbegriff entfernen">
+                                                <img alt="X" src="{{ asset('assets/images/Archiv_Symbole_Mobil_Suchfilter_abwaehlen.svg') }}"/>
+                                            </button>
+                                        </li>
+                                    {% endfor %}
+                                {% endif %}
+                            </ul>
+                        </div>
+
+                        <hr class="input-frame-hr-bottom" />
+                        <input type="hidden" name="Farbe" id="Farbe-wert" class="real-input" />
+                    </div>
+
+
+                    <div class="input-frame info-frame inactive">
+                        <label class="label outer-label" for="Bilddarstellung-add">Bilddarstellung</label>
+                        <hr class="input-frame-hr-top" />
+                        <label class="label inner-label" for="Bilddarstellung-add">Bilddarstellung</label>
+                        <input
+                                type="text"
+                                id="Bilddarstellung-add"
+                                class="add-input"
+                                placeholder="Suchtext"
+                                maxlength="170"
+                        />
+                        <div class="vorschlaege">
+                            <ul>
+                                {% if vorschlaege["Bilddarstellung"] is defined %}
+                                    {% for vorschlag in vorschlaege["Bilddarstellung"] %}
+                                        <li class="vorschlag-item" data-wert="{{ vorschlag.wert }}"><span class="normal-text">{{ vorschlag.wert }}</span></li>
+                                    {% endfor %}
+                                {% endif %}
+                            </ul>
+
+                        </div><div class="auswahl">
+                            <ul>
+                                {% if auswahl["Bilddarstellung"] is defined %}
+                                    {% for auswahlItem in auswahl["Bilddarstellung"] %}
+                                        <li class="auswahl-item" data-wert="{{ auswahlItem }}"><span class="normal-text">{{ auswahlItem }}</span>
+                                            <button type="button" class="img-button" title="Suchbegriff entfernen">
+                                                <img alt="X" src="{{ asset('assets/images/Archiv_Symbole_Mobil_Suchfilter_abwaehlen.svg') }}"/>
+                                            </button>
+                                        </li>
+                                    {% endfor %}
+                                {% endif %}
+                            </ul>
+                        </div>
+
+                        <hr class="input-frame-hr-bottom" />
+                        <input type="hidden" name="Bilddarstellung" id="Bilddarstellung-wert" class="real-input" />
+                    </div>
+
+                    <br/>
+
+                    <div class="input-frame info-frame inactive">
+                        <label class="label outer-label" for="Hinweis-add">Hinweis</label>
+                        <hr class="input-frame-hr-top" />
+                        <label class="label inner-label" for="Hinweis-add">Hinweis</label>
+                        <input
+                                type="text"
+                                id="Hinweis-add"
+                                class="add-input"
+                                placeholder="Suchtext"
+                                maxlength="170"
+                        />
+                        <div class="vorschlaege">
+                            <ul>
+                                {% if vorschlaege["Hinweis"] is defined %}
+                                    {% for vorschlag in vorschlaege["Hinweis"] %}
+                                        <li class="vorschlag-item" data-wert="{{ vorschlag.wert }}"><span class="normal-text">{{ vorschlag.wert }}</span></li>
+                                    {% endfor %}
+                                {% endif %}
+                            </ul>
+
+                        </div><div class="auswahl">
+                            <ul>
+                                {% if auswahl["Hinweis"] is defined %}
+                                    {% for auswahlItem in auswahl["Hinweis"] %}
+                                        <li class="auswahl-item" data-wert="{{ auswahlItem }}"><span class="normal-text">{{ auswahlItem }}</span>
+                                            <button type="button" class="img-button" title="Suchbegriff entfernen">
+                                                <img alt="X" src="{{ asset('assets/images/Archiv_Symbole_Mobil_Suchfilter_abwaehlen.svg') }}"/>
+                                            </button>
+                                        </li>
+                                    {% endfor %}
+                                {% endif %}
+                            </ul>
+                        </div>
+
+                        <hr class="input-frame-hr-bottom" />
+                        <input type="hidden" name="Hinweis" id="Hinweis-wert" class="real-input" />
+                    </div>
+
+
+                    <div class="input-frame info-frame inactive">
+                        <label class="label outer-label" for="Produktkategorie-add">Produktkategorie</label>
+                        <hr class="input-frame-hr-top" />
+                        <label class="label inner-label" for="Produktkategorie-add">Produktkategorie</label>
+                        <input
+                                type="text"
+                                id="Produktkategorie-add"
+                                class="add-input"
+                                placeholder="Suchtext"
+                                maxlength="170"
+                        />
+                        <div class="vorschlaege">
+                            <ul>
+                                {% if vorschlaege["Produktkategorie"] is defined %}
+                                    {% for vorschlag in vorschlaege["Produktkategorie"] %}
+                                        <li class="vorschlag-item" data-wert="{{ vorschlag.wert }}"><span class="normal-text">{{ vorschlag.wert }}</span></li>
+                                    {% endfor %}
+                                {% endif %}
+                            </ul>
+
+                        </div><div class="auswahl">
+                            <ul>
+                                {% if auswahl["Produktkategorie"] is defined %}
+                                    {% for auswahlItem in auswahl["Produktkategorie"] %}
+                                        <li class="auswahl-item" data-wert="{{ auswahlItem }}"><span class="normal-text">{{ auswahlItem }}</span>
+                                            <button type="button" class="img-button" title="Suchbegriff entfernen">
+                                                <img alt="X" src="{{ asset('assets/images/Archiv_Symbole_Mobil_Suchfilter_abwaehlen.svg') }}"/>
+                                            </button>
+                                        </li>
+                                    {% endfor %}
+                                {% endif %}
+                            </ul>
+                        </div>
+
+                        <hr class="input-frame-hr-bottom" />
+                        <input type="hidden" name="Produktkategorie" id="Produktkategorie-wert" class="real-input" />
+                    </div>
+
+
+                    <div class="input-frame info-frame inactive">
+                        <label class="label outer-label" for="Moebel-add">Möbel</label>
+                        <hr class="input-frame-hr-top" />
+                        <label class="label inner-label" for="Moebel-add">Möbel</label>
+                        <input
+                                type="text"
+                                id="Moebel-add"
+                                class="add-input"
+                                placeholder="Suchtext"
+                                maxlength="170"
+                        />
+                        <div class="vorschlaege">
+                            <ul>
+                                {% if vorschlaege["Moebel"] is defined %}
+                                    {% for vorschlag in vorschlaege["Moebel"] %}
+                                        <li class="vorschlag-item" data-wert="{{ vorschlag.wert }}"><span class="normal-text">{{ vorschlag.wert }}</span></li>
+                                    {% endfor %}
+                                {% endif %}
+                            </ul>
+
+                        </div><div class="auswahl">
+                            <ul>
+                                {% if auswahl["Moebel"] is defined %}
+                                    {% for auswahlItem in auswahl["Moebel"] %}
+                                        <li class="auswahl-item" data-wert="{{ auswahlItem }}"><span class="normal-text">{{ auswahlItem }}</span>
+                                            <button type="button" class="img-button" title="Suchbegriff entfernen">
+                                                <img alt="X" src="{{ asset('assets/images/Archiv_Symbole_Mobil_Suchfilter_abwaehlen.svg') }}"/>
+                                            </button>
+                                        </li>
+                                    {% endfor %}
+                                {% endif %}
+                            </ul>
+                        </div>
+
+                        <hr class="input-frame-hr-bottom" />
+                        <input type="hidden" name="Moebel" id="Moebel-wert" class="real-input" />
+                    </div>
+
+
+                    <div class="input-frame info-frame inactive">
+                        <label class="label outer-label" for="Text-add">Text</label>
+                        <hr class="input-frame-hr-top" />
+                        <label class="label inner-label" for="Text-add">Text</label>
+                        <input
+                                type="text"
+                                id="Text-add"
+                                class="add-input"
+                                placeholder="Suchtext"
+                                maxlength="170"
+                        />
+                        <div class="vorschlaege">
+                            <ul>
+                                {% if vorschlaege["Text"] is defined %}
+                                    {% for vorschlag in vorschlaege["Text"] %}
+                                        <li class="vorschlag-item" data-wert="{{ vorschlag.wert }}"><span class="normal-text">{{ vorschlag.wert }}</span></li>
+                                    {% endfor %}
+                                {% endif %}
+                            </ul>
+
+                        </div><div class="auswahl">
+                            <ul>
+                                {% if auswahl["Text"] is defined %}
+                                    {% for auswahlItem in auswahl["Text"] %}
+                                        <li class="auswahl-item" data-wert="{{ auswahlItem }}"><span class="normal-text">{{ auswahlItem }}</span>
+                                            <button type="button" class="img-button" title="Suchbegriff entfernen">
+                                                <img alt="X" src="{{ asset('assets/images/Archiv_Symbole_Mobil_Suchfilter_abwaehlen.svg') }}"/>
+                                            </button>
+                                        </li>
+                                    {% endfor %}
+                                {% endif %}
+                            </ul>
+                        </div>
+
+                        <hr class="input-frame-hr-bottom" />
+                        <input type="hidden" name="Text" id="Text-wert" class="real-input" />
+                    </div>
+
+                    <br/>
+
+                    <div class="input-frame info-frame inactive">
+                        <label class="label outer-label" for="Archiv-add">Archiv</label>
+                        <hr class="input-frame-hr-top" />
+                        <label class="label inner-label" for="Archiv-add">Archiv</label>
+                        <input
+                                type="text"
+                                id="Archiv-add"
+                                class="add-input"
+                                placeholder="Suchtext"
+                                maxlength="170"
+                        />
+                        <div class="vorschlaege">
+                            <ul>
+                                {% if vorschlaege["Archiv"] is defined %}
+                                    {% for vorschlag in vorschlaege["Archiv"] %}
+                                        <li class="vorschlag-item" data-wert="{{ vorschlag.wert }}"><span class="normal-text">{{ vorschlag.wert }}</span></li>
+                                    {% endfor %}
+                                {% endif %}
+                            </ul>
+
+                        </div><div class="auswahl">
+                            <ul>
+                                {% if auswahl["Archiv"] is defined %}
+                                    {% for auswahlItem in auswahl["Archiv"] %}
+                                        <li class="auswahl-item" data-wert="{{ auswahlItem }}"><span class="normal-text">{{ auswahlItem }}</span>
+                                            <button type="button" class="img-button" title="Suchbegriff entfernen">
+                                                <img alt="X" src="{{ asset('assets/images/Archiv_Symbole_Mobil_Suchfilter_abwaehlen.svg') }}"/>
+                                            </button>
+                                        </li>
+                                    {% endfor %}
+                                {% endif %}
+                            </ul>
+                        </div>
+
+                        <hr class="input-frame-hr-bottom" />
+                        <input type="hidden" name="Archiv" id="Archiv-wert" class="real-input" />
+                    </div>
+
+                </div>
+
+                <div class="suche-form-buttons">
+                    <button type="submit" class="black-button">Filter anwenden</button>
+                    <button type="reset" class="black-button">alle Filter löschen</button>
+                </div>
             </form>
 
         </div>

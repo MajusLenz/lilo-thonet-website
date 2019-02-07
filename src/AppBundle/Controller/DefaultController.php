@@ -15,28 +15,6 @@ use Symfony\Component\HttpFoundation\Response;
 class DefaultController extends Controller
 {
     /**
-     * @Route("/", name="_index")
-     */
-    public function indexAction(Request $request)
-    {
-
-        $em = $this->getDoctrine()->getManager();
-        $archivierungen = $em->getRepository('AppBundle:Archivierung')->findBy(array(), array('erstelldatum' => 'ASC'));
-
-        $sql = ""."SELECT MIN(wert) AS 'min', MAX(wert) AS 'max' FROM Jahr";
-        $stmt = $em->getConnection()->prepare($sql);
-        $stmt->execute();
-        $stmtResult = $stmt->fetchAll();
-
-        $minDBJahr = $stmtResult[0]["min"];   // kleinstes Jahr in der DB
-        $maxDBJahr = $stmtResult[0]["max"];   // groesstes Jahr in der DB
-
-
-        return $this->createSuchResponse($archivierungen, $minDBJahr, $maxDBJahr);
-    }
-
-
-    /**
      * @Route("/DasProjekt/", name="_dasProjekt")
      */
     public function dasProjektAction()
@@ -77,6 +55,15 @@ class DefaultController extends Controller
         ]);
     }
 
+    /**
+     * @Route("/", name="_index")
+     */
+    public function indexAction(Request $request)
+    {
+
+        return $this->sucheAction($request);
+    }
+
 
     /**
      * @Route("/suche/", name="_suche")
@@ -97,9 +84,108 @@ class DefaultController extends Controller
 
         $allParams = $request->query->all();
 
-        if(empty($allParams))
-            return $this->redirectToRoute("_index");
 
+        // speichere die Auswahl der Text-Suchfilter des Requests ab. geordnet nach infoNamen:
+        $auswahl = array();
+
+        foreach($allParams as $infoName => $infoParam) {
+
+            if($infoName != "Tags" && $infoName != "Jahr") {
+                $infoAuswahl = array();
+                $infoArray = explode(";", $infoParam);
+
+                foreach($infoArray as $infoWert) {
+                    $infoWert = trim($infoWert);
+
+                    if(empty($infoWert))
+                        continue;
+
+                    array_push($infoAuswahl, $infoWert);
+                }
+
+                $auswahl[$infoName] = $infoAuswahl;
+            }
+        }
+
+
+        // speichere die Auswahl der Jahr-Suchfilter des Requests ab:
+        $minAuswahlJahr = $minDBJahr;
+        $maxAuswahlJahr = $maxDBJahr;
+
+        if( array_key_exists("Jahr", $allParams) ) {
+
+            $jahrArray = explode(";", $allParams["Jahr"]);
+            $minAuswahlJahr = $jahrArray[0];
+            $maxAuswahlJahr = $jahrArray[1];
+        }
+
+        $auswahl["Jahr"] = array("min" => $minAuswahlJahr, "max" => $maxAuswahlJahr);
+
+
+
+        // Hole alle verschiedenen infoNamen die es gibt aus der DB:
+        $sql = ""."SELECT DISTINCT i.name FROM Information i ";
+        $stmt = $em->getConnection()->prepare($sql);
+        $stmt->execute();
+        $alleInfoNamen = $stmt->fetchAll();
+
+
+        // Hole Vorschlaege für alle infoNamen aus der DB:
+        $vorschlaege = array();
+
+        // Freitext-Vorschlaege
+        $freitextAuswahlEscaped = array();
+
+        if( array_key_exists("Freitext", $auswahl) ) {
+
+            foreach ($auswahl["Freitext"] as $freitextAuswahlItem) {
+
+                $itemEscaped = MysqlEscapeHelper::escape($freitextAuswahlItem, false);;
+                array_push($freitextAuswahlEscaped, $itemEscaped);
+            }
+        }
+
+        $freitextVorschlaege = $this->vorschlaegeSuche("Freitext", null, $freitextAuswahlEscaped);
+        $vorschlaege["Freitext"] = $freitextVorschlaege;
+
+
+        // Restliche Vorschlaege
+        foreach($alleInfoNamen as $infoName) {
+            $infoName = $infoName["name"];
+
+            if($infoName != "Tags") {
+                $infoAuswahlEscaped = array();
+
+                if( array_key_exists($infoName, $auswahl) ) {
+
+                    foreach ($auswahl[$infoName] as $infoAuswahlItem) {
+
+                        $itemEscaped = MysqlEscapeHelper::escape($infoAuswahlItem, false);;
+                        array_push($infoAuswahlEscaped, $itemEscaped);
+                    }
+                }
+
+                $infoVorschlaege = $this->vorschlaegeSuche($infoName, null, $infoAuswahlEscaped);
+
+                $vorschlaege[$infoName] = $infoVorschlaege;
+            }
+        }
+
+
+        // Wenn keine Suchparameter angegeben, sofort alle Archivierungen zurückgeben
+        if( empty($allParams) ) {
+            $sql =
+                "SELECT a.* " .
+                "FROM Archivierung a " .
+                "ORDER BY a.erstelldatum DESC";
+            $query = $em->createNativeQuery($sql, $rsm);
+            $alleArchivierungen = $query->getResult();
+
+            return $this->createSuchResponse($alleArchivierungen, $minDBJahr, $maxDBJahr, $vorschlaege, $auswahl);
+        }
+
+
+        // SUCHE:::::::::
 
         // FREITEXT-SUCHE:
 
@@ -118,7 +204,7 @@ class DefaultController extends Controller
             if (empty($freitextWert))
                 continue;
 
-            $freitextWert = MysqlEscapeHelper::escape($freitextWert);
+            $freitextWert = MysqlEscapeHelper::escape($freitextWert, true);
 
             if ($isFirst) {
                 $freitextJahre = "LOWER('%$freitextWert%')";
@@ -140,14 +226,15 @@ class DefaultController extends Controller
                 "LEFT JOIN Archivierung_Jahr aj ON a.id = aj.archivierung_id " .
                 "LEFT JOIN Jahr j ON aj.jahr_id = j.id " .
                 "WHERE ( ( LOWER(i.wert) LIKE $freitextWerte ) AND i.name != 'Tags' ) " .
-                "   OR ( j.wert LIKE $freitextJahre )"
+                "   OR ( j.wert LIKE $freitextJahre ) " .
+                "ORDER BY a.erstelldatum DESC"
             ;
             $query = $em->createNativeQuery($sql, $rsm);
             $freitextErgebnis = $query->getResult();
 
             // wenn jetzt die Ergebnismenge schon leer ist, die anderen Filter ignorieren und Response mit leerer Menge returnen
             if(empty($freitextErgebnis))
-                return $this->createSuchResponse(array(), $minDBJahr, $maxDBJahr);
+                return $this->createSuchResponse(array(), $minDBJahr, $maxDBJahr, $vorschlaege, $auswahl);
 
             else
                 $gesamtErgebnis = $freitextErgebnis;
@@ -157,7 +244,8 @@ class DefaultController extends Controller
         else{
             $sql =
                 "SELECT a.* " .
-                "FROM Archivierung a ";
+                "FROM Archivierung a " .
+                "ORDER BY a.erstelldatum DESC";
             $query = $em->createNativeQuery($sql, $rsm);
             $gesamtErgebnis = $query->getResult();
         }
@@ -216,14 +304,15 @@ class DefaultController extends Controller
                 "LEFT JOIN Information i ON ai.information_id = i.id " .
                 "LEFT JOIN Archivierung_Jahr aj ON a.id = aj.archivierung_id " .
                 "LEFT JOIN Jahr j ON aj.jahr_id = j.id " .
-                "WHERE j.wert IN($jahrString)"
+                "WHERE j.wert IN($jahrString) " .
+                "ORDER BY a.erstelldatum DESC"
             ;
             $query = $em->createNativeQuery($sql, $rsm);
             $jahrErgebnis = $query->getResult();
 
             // wenn jetzt die Ergebnismenge schon leer ist, die anderen Filter ignorieren und Response mit leerer Menge returnen
             if(empty($jahrErgebnis))
-                return $this->createSuchResponse(array(), $minDBJahr, $maxDBJahr);
+                return $this->createSuchResponse(array(), $minDBJahr, $maxDBJahr, $vorschlaege, $auswahl);
 
             else
                 // Schnittmenge bilden
@@ -235,7 +324,7 @@ class DefaultController extends Controller
 
             // wenn jetzt die Ergebnismenge schon leer ist, die anderen Filter ignorieren und Response mit leerer Menge returnen
             if(empty($gesamtErgebnis))
-                return $this->createSuchResponse(array(), $minDBJahr, $maxDBJahr);
+                return $this->createSuchResponse(array(), $minDBJahr, $maxDBJahr, $vorschlaege, $auswahl);
         }
 
 
@@ -248,7 +337,7 @@ class DefaultController extends Controller
                 continue;
 
             $infoArray = explode(";", $infoParam);
-            $infoName = MysqlEscapeHelper::escape($infoName);
+            $infoName = MysqlEscapeHelper::escape($infoName, false);
 
             $infoWerte = "";
             $isFirst = true;
@@ -259,7 +348,7 @@ class DefaultController extends Controller
                 if(empty($infoWert))
                     continue;
 
-                $infoWert = MysqlEscapeHelper::escape($infoWert);
+                $infoWert = MysqlEscapeHelper::escape($infoWert, true);
 
                 if($isFirst) {
                     $infoWerte = "LOWER('%$infoWert%')";
@@ -278,14 +367,15 @@ class DefaultController extends Controller
                     "LEFT JOIN Information i ON ai.information_id = i.id " .
                     "LEFT JOIN Archivierung_Jahr aj ON a.id = aj.archivierung_id " .
                     "LEFT JOIN Jahr j ON aj.jahr_id = j.id " .
-                    "WHERE ( LOWER(i.wert) LIKE $infoWerte ) AND i.name = '$infoName'"
+                    "WHERE ( LOWER(i.wert) LIKE $infoWerte ) AND i.name = '$infoName' " .
+                    "ORDER BY a.erstelldatum DESC"
                 ;
                 $query = $em->createNativeQuery($sql, $rsm);
                 $infoErgebnis = $query->getResult();
 
                 // wenn jetzt die Ergebnismenge schon leer ist, die anderen Filter ignorieren und Response mit leerer Menge returnen
                 if(empty($infoErgebnis))
-                    return $this->createSuchResponse(array(), $minDBJahr, $maxDBJahr);
+                    return $this->createSuchResponse(array(), $minDBJahr, $maxDBJahr, $vorschlaege, $auswahl);
 
                 else
                     // Schnittmenge bilden
@@ -297,22 +387,18 @@ class DefaultController extends Controller
 
                 // wenn jetzt die Ergebnismenge schon leer ist, die anderen Filter ignorieren und Response mit leerer Menge returnen
                 if(empty($gesamtErgebnis))
-                    return $this->createSuchResponse(array(), $minDBJahr, $maxDBJahr);
+                    return $this->createSuchResponse(array(), $minDBJahr, $maxDBJahr, $vorschlaege, $auswahl);
             }
         }
 
 
         // Gesamtergebnis der Suche returnen:
-        return $this->createSuchResponse($gesamtErgebnis, $minDBJahr, $maxDBJahr);
+        return $this->createSuchResponse($gesamtErgebnis, $minDBJahr, $maxDBJahr, $vorschlaege, $auswahl);
     }
 
 
 
     /**
-     * Liefert passend zum InfoNamen und InfoWert passende Vorschaege zur Verfollstaendigung.
-     * Werte die bereits in InfoPicked stehen werden ignoriert und stattdessen andere zurückgesendet.
-     * maximal 5 Vorschlaege werden gesendet.
-     *
      * @Route("/ajaxVorschlaege/", name="_ajaxVorschlaege")
      */
     public function ajaxVorschlaegeAction(Request $request) {
@@ -324,64 +410,75 @@ class DefaultController extends Controller
 
             $pickedArray = explode(";", $infoPicked);
 
-            $pickedWerte = "";
-            $isFirst = true;
-
-            foreach($pickedArray as $pickedWert) {
-                $pickedWert = trim($pickedWert);
-
-                if(empty($pickedWert))
-                    continue;
-
-                $pickedWert = MysqlEscapeHelper::escape($pickedWert);
-
-                if($isFirst) {
-                    $pickedWerte = "'$pickedWert'";
-                    $isFirst = false;
-                }
-                else
-                    $pickedWerte .= ", '$pickedWert'";
-            }
-
-            $sqlPicked = "";
-            if( !empty($pickedWerte) ) {
-                $sqlPicked = "AND i.wert NOT IN($pickedWerte) ";
-            }
-
-            $sqlInfo = "";
-            if( !empty($infoWert) ) {
-
-                $infoWert = MysqlEscapeHelper::escape($infoWert);
-                $sqlInfo = "LOWER(i.wert) LIKE '%$infoWert%' AND ";
-            }
-
-            $sqlName = "i.name != 'Tags' ";
-            if($infoName != "Freitext") {
-
-                $infoName = MysqlEscapeHelper::escape($infoName);
-                $sqlName = "i.name = '$infoName' ";
-            }
-
-            $em = $this->getDoctrine()->getManager();
-
-            $sql =
-                "SELECT DISTINCT i.wert " .
-                "FROM Information i WHERE " .
-                $sqlInfo .
-                $sqlName .
-                $sqlPicked .
-                "ORDER BY i.wert LIMIT 5"
-            ;
-            $stmt = $em->getConnection()->prepare($sql);
-            $stmt->execute();
-            $ergebnis = $stmt->fetchAll();
+            $ergebnis = $this->vorschlaegeSuche($infoName, $infoWert, $pickedArray);
 
             return new JsonResponse([
                     'vorschlaege' => $ergebnis
                 ]);
         }
 
-        return $this->createNotFoundException();
+        return $this->redirectToRoute("_index");
+    }
+
+    /**
+     * Liefert passend zum InfoNamen und InfoWert passende Vorschaege zur Verfollstaendigung.
+     * Werte die bereits in $pickedArray stehen werden ignoriert und stattdessen andere zurückgegeben.
+     * maximal 5 Vorschlaege werden gesucht.
+      */
+    private function vorschlaegeSuche($infoName, $infoWert, $pickedArray) {
+        $pickedWerte = "";
+        $isFirst = true;
+
+        foreach($pickedArray as $pickedWert) {
+            $pickedWert = trim($pickedWert);
+
+            if(empty($pickedWert))
+                continue;
+
+            $pickedWert = MysqlEscapeHelper::escape($pickedWert, false);
+
+            if($isFirst) {
+                $pickedWerte = "'$pickedWert'";
+                $isFirst = false;
+            }
+            else
+                $pickedWerte .= ", '$pickedWert'";
+        }
+
+        $sqlPicked = "";
+        if( !empty($pickedWerte) ) {
+            $sqlPicked = "AND i.wert NOT IN($pickedWerte) ";
+        }
+
+        $sqlWert = "";
+        if( !empty($infoWert) ) {
+
+            $infoWert = MysqlEscapeHelper::escape($infoWert, true);
+            $sqlWert = "LOWER(i.wert) LIKE '%$infoWert%' AND ";
+        }
+
+        $sqlName = "i.name != 'Tags' ";
+        if($infoName != "Freitext") {
+
+            $infoName = MysqlEscapeHelper::escape($infoName, false);
+            $sqlName = "i.name = '$infoName' ";
+        }
+
+        $em = $this->getDoctrine()->getManager();
+
+        $sql =
+            "SELECT DISTINCT i.wert " .
+            "FROM Information i WHERE " .
+            $sqlWert .
+            $sqlName .
+            $sqlPicked .
+            "ORDER BY i.wert LIMIT 5"
+        ;
+        $stmt = $em->getConnection()->prepare($sql);
+        $stmt->execute();
+        $ergebnis = $stmt->fetchAll();
+
+        return $ergebnis;
     }
 
 
@@ -405,9 +502,11 @@ class DefaultController extends Controller
      * @param $archivierungen array mit Archivierungen
      * @param $minDBJahr int
      * @param $maxDBJahr int
+     * @param $vorschlaege array
+     * @param $auswahl array
      * @return Response
      */
-    private function createSuchResponse($archivierungen, $minDBJahr, $maxDBJahr) {
+    private function createSuchResponse($archivierungen, $minDBJahr, $maxDBJahr, $vorschlaege, $auswahl) {
 
         foreach($archivierungen as $key => $archivierung) {
             $dateiHash = $archivierung->getDateiHash();
@@ -419,7 +518,9 @@ class DefaultController extends Controller
         return $this->render('default/index.html.twig', [
             "archivierungen" => $archivierungen,
             "minDBJahr" => $minDBJahr,
-            "maxDBJahr" => $maxDBJahr
+            "maxDBJahr" => $maxDBJahr,
+            "vorschlaege" => $vorschlaege,
+            "auswahl" => $auswahl
         ]);
     }
 }

@@ -111,8 +111,13 @@ button::-moz-focus-inner {
 }
 
 .mini{
-    width: 0;
-    height: 0;
+    width: 0.1px!important;
+    height: 0.1px!important;
+    cursor: default;
+}
+.mini *{
+    width: 0.1px!important;
+    height: 0.1px!important;
 }
 
 * {
@@ -320,6 +325,7 @@ hr{
 /* index */
 #suche-overlay{
     position: absolute;
+    min-height: 70vh;
 }
 .suchfilter-btn{
     display: inline-block;
@@ -341,6 +347,15 @@ hr{
     font-style: italic;
     border: none;
     outline: none;
+    padding: 0;
+}
+.input-frame-spalte{
+    display: inline-block;
+    width: 48.7%;
+    vertical-align: top;
+}
+.input-frame-spalte-1{
+    margin-right: 2%;
 }
 .input-frame{
      margin: 0;
@@ -361,8 +376,14 @@ hr{
 }
 .input-frame .vorschlaege ul li, .input-frame .auswahl ul li{
     font-size: 13px;
+    max-width: 95%;
 }
-.input-frame .vorschlaege ul li span{
+.input-frame .vorschlaege ul li{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.input-frame .vorschlaege ul>li>span{
     cursor: pointer;
 }
 .auswahl button{
@@ -406,6 +427,7 @@ hr{
     right: 0;
     left: 0;
     padding-left: 2%;
+    padding-bottom: 40px;
 }
 .index .grid-item{
     margin-right: 2%;

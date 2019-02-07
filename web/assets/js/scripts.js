@@ -152,6 +152,16 @@ $(function() {
     });
 
 
+
+    // Klick auf ausgeblendete Archivierungen unterbinden:
+    $(document).on("click", ".mini, .mini a", function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+    });
+
+
+
     // Image Zoom (Desktop):
     $('.detail-zoom').each(function() {
         var $this = $(this);
@@ -347,6 +357,7 @@ $(function() {
     $(".js-range-slider").ionRangeSlider({
         skin: "square"
     });
+    var ionRangeSlider = $(".js-range-slider").data("ionRangeSlider");
 
 
 
@@ -404,25 +415,30 @@ $(function() {
     var $addInputs = $allInputs.filter(".add-input");
 
 
-    // Erst beim ersten Öffnen der Suche Jahrfilter inactive geben, damit ion-Range sich richtig initialisieren kann
-    var firstSucheButtonClick = true;
-    $sucheButton.on("click", function() {
-        if(firstSucheButtonClick) {
-            setTimeout(function() {
-                $inputFrames.filter(".jahr-frame").addClass(inactive);
-            } ,200);
-            firstSucheButtonClick = false;
-        }
-    });
+    // // Erst beim ersten Öffnen der Suche Jahrfilter inactive geben, damit ion-Range sich richtig initialisieren kann
+    // var firstSucheButtonClick = true;
+    // $sucheButton.on("click", function() {
+    //     if(firstSucheButtonClick) {
+    //         setTimeout(function() {
+    //             $inputFrames.filter(".jahr-frame").addClass(inactive);
+    //         } ,230);
+    //         firstSucheButtonClick = false;
+    //     }
+    // });
 
+
+    // öffnen des Frames bei Klick auf Label
     $inputFrames.find(".outer-label").on("click", function() {
         $inputFrames.removeClass(active).addClass(inactive);
         $(this).parent().addClass(active).removeClass(inactive);
     });
 
-    var addToAuswahl = function($input, $auswahlContainer, wert) {
+
+    // Fügt der Auswahlliste einen Eintrag hinzu
+    var addToAuswahl = function($input, $auswahlContainer, $vorschlaegeContainer, wert) {
 
         var stringAlreadyExistst = false;
+        $input.focus();
 
         $auswahlContainer.find("li span").each(function() {
 
@@ -433,16 +449,18 @@ $(function() {
 
         if( !stringAlreadyExistst ) {
 
-            var newItem = $auswahlBlaupause.clone();
-            newItem.data("wert", wert);
-            newItem.find("span").text(wert);
+            $vorschlaegeContainer.children().remove();
 
-            newItem.find("button").on("click", function () {
+            var $newItem = $auswahlBlaupause.clone();
+            $newItem.data("wert", wert);
+            $newItem.find("span").text(wert);
+
+            $newItem.find("button").on("click", function() {
                 var li = $(this).parent();
                 deleteFromAuswahl(li);
             });
 
-            newItem.appendTo($auswahlContainer);
+            $newItem.appendTo($auswahlContainer);
 
             $input.val(null); // input leerern
             sendAjaxRequest($input); // Neue Vorschlaege requesten
@@ -454,6 +472,24 @@ $(function() {
     };
 
 
+    // Funktion die aufgerufen wird, wenn ein Vorschlag-Span gedrückt wird
+    var fromVorschlaegeToAuswahl = function () {
+        var $this = $(this);
+        var $thisItem = $this.parent();
+        var thisWert = $thisItem.data("wert");
+
+        console.log(thisWert);
+
+        var $thisVorschlaegeContainer = $thisItem.parent();
+
+        var $thisInputFrame = $thisVorschlaegeContainer.parent().parent();
+        var $thisAddInput = $thisInputFrame.find(".add-input");
+        var $thisAuswahlContainer = $thisInputFrame.find(".auswahl ul");
+
+        addToAuswahl($thisAddInput, $thisAuswahlContainer, $thisVorschlaegeContainer, thisWert);
+    };
+
+
     // Bei SUBMIT vor dem Abschicken die Auswahlen in die hidden-inputs schreiben:
     $("#suche-form").on("submit", function() {
 
@@ -461,7 +497,7 @@ $(function() {
             var $this = $(this);
             var realWert = "";
 
-            $this.find(".auswahl li").each(function() {
+            $this.find(".auswahl .auswahl-item").each(function() {
                 var wert = $(this).data("wert");
 
                 if(wert) {
@@ -475,27 +511,38 @@ $(function() {
 
 
 
-    // Bei einer Texteingabe Vorschäge per AJAX updaten:
+    // Vorschäge per AJAX updaten:
 
     var route = $("#ajax-route").data("route");
 
+
+    // Updatet die Such-Vorschlaege:
     var updateVorschlaege = function(vorschlaegeArray, $inputFrame, thisAjaxCounter) {
 
         // Nur wenn Die Ajax-Antwort zum aktuellsten Ajax-Request passt, Vorschlaege updaten
         if(thisAjaxCounter == ajaxCounter) {
 
-            console.log($inputFrame);
-            console.log(vorschlaegeArray);
+            var $vorschlaegeContainer = $inputFrame.find(".vorschlaege ul");
+            $vorschlaegeContainer.children().remove();
 
-            
+            for(var i = 0; i < vorschlaegeArray.length; i++) {
+                var wert = vorschlaegeArray[i].wert;
 
+                var $newItem = $vorschlagBlaupause.clone();
+                $newItem.data("wert", wert);
 
+                var $newItemSpan = $newItem.find("span");
+                $newItemSpan.text(wert);
 
+                $newItemSpan.on("click", fromVorschlaegeToAuswahl);
 
-
+                $newItem.appendTo($vorschlaegeContainer);
+            }
         }
     };
 
+
+    // Sendet Ajax-Request an Server und wartet auf Antwort:
     var sendAjaxRequest = function($addInput) {
         var thisAjaxCounter = ++ajaxCounter;
 
@@ -518,21 +565,22 @@ $(function() {
             },
             async: true,
             success: function(data) {
-                updateVorschlaege(data, $inputFrame, thisAjaxCounter);
+                updateVorschlaege(data.vorschlaege, $inputFrame, thisAjaxCounter);
             }
         });
     };
 
-    var ajaxRequestTrigger = debounce(
 
+    // Funktion zum Starten/Neustarten des Countdowns:
+    var ajaxRequestTrigger = debounce(
         function($addInput) {
             sendAjaxRequest($addInput);
         },
-        2000
+        700
     );
 
 
-    // --- Wenn Eingabe erfolgt, countdown starten:
+    // --- Wenn Eingabe erfolgt, countdown starten/neustarten:
     $addInputs.on('input paste', function() {
         var $this = $(this);
         ajaxRequestTrigger($this);
@@ -550,21 +598,47 @@ $(function() {
             var wert = $this.val();
 
             if(wert) {
-                var $auswahlContainer = $this.parent().find(".auswahl ul");
+                var $inputFrame = $this.parent();
+                var $auswahlContainer = $inputFrame.find(".auswahl ul");
+                var $vorschlaegeContainer = $inputFrame.find(".vorschlaege ul");
 
-                addToAuswahl($this, $auswahlContainer, wert); // Eingabe zu Auswahl hinzufuegen
+                addToAuswahl($this, $auswahlContainer, $vorschlaegeContainer, wert); // Eingabe zu Auswahl hinzufuegen
             }
         }
+    });
+
+
+    // Auch auf Vorschlaege die Beim Laden der Seite vorhanden sind Click-Event binden:
+    $infoFrames.find(".vorschlag-item span").on("click", fromVorschlaegeToAuswahl);
+
+
+    // Auch auf AuswahlItems die Beim Laden der Seite vorhanden sind Click-Event binden:
+    $infoFrames.find(".auswahl-item button").on("click", function() {
+        var li = $(this).parent();
+        deleteFromAuswahl(li);
+    });
+
+
+    // Bei RESET Auswahl killen, ionRange reseten und neue Vorschlaege per AJAX Rrequesten:
+    $("#suche-form").on("reset", function() {
+
+        ionRangeSlider.reset();
+
+        $infoFrames.each(function() {
+            var $this = $(this);
+
+            $this.find(".auswahl .auswahl-item").remove();
+
+            var $addInput = $this.find(".add-input");
+            sendAjaxRequest($addInput);
+        });
     });
 
 
 
 
 
-
-
-
-
+    
 
 
 
