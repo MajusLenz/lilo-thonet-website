@@ -414,6 +414,17 @@ hr{
     visibility: visible!important;
 }
 
+.suche-form-buttons{
+    margin-top: 30px;
+    margin-bottom: 50px;
+    margin-right: 0;
+    width: 100%;
+}
+.suche-form-buttons button{
+    float: right;
+    margin-left: 50px;
+}
+
 
 
 

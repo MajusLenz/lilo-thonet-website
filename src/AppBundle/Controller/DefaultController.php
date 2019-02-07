@@ -467,12 +467,16 @@ class DefaultController extends Controller
         $em = $this->getDoctrine()->getManager();
 
         $sql =
-            "SELECT DISTINCT i.wert " .
-            "FROM Information i WHERE " .
+            "SELECT i.wert, COUNT(i.id) AS haeufigkeit " .
+            "FROM Information i " .
+            "INNER JOIN Archivierung_Information ai ON i.id = ai.information_id " .
+            "WHERE " .
             $sqlWert .
             $sqlName .
             $sqlPicked .
-            "ORDER BY i.wert LIMIT 5"
+            "GROUP BY i.wert " .
+            "ORDER BY haeufigkeit DESC " .
+            "LIMIT 5"
         ;
         $stmt = $em->getConnection()->prepare($sql);
         $stmt->execute();
