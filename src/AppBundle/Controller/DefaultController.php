@@ -467,7 +467,7 @@ class DefaultController extends Controller
         $em = $this->getDoctrine()->getManager();
 
         $sql =
-            "SELECT i.wert, COUNT(i.id) AS haeufigkeit " .
+            "SELECT i.wert, COUNT(*) AS haeufigkeit " .
             "FROM Information i " .
             "INNER JOIN Archivierung_Information ai ON i.id = ai.information_id " .
             "WHERE " .

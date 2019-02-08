@@ -58,6 +58,11 @@ class AdminController extends Controller
 
             $data = $this->csv_to_array($file, "~");
 
+
+            // Die Maximale Laufzeit des Scripts auf 3 min erhöhen
+            set_time_limit(180);
+
+
             // Jede Zeile der Tabelle bearbeiten
             foreach($data as $rowCount => $row) {
                 $zeilenNr = $rowCount + 2;

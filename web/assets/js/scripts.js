@@ -519,8 +519,8 @@ $(function() {
     // Updatet die Such-Vorschlaege:
     var updateVorschlaege = function(vorschlaegeArray, $inputFrame, thisAjaxCounter) {
 
-        // Nur wenn Die Ajax-Antwort zum aktuellsten Ajax-Request passt, Vorschlaege updaten
-        if(thisAjaxCounter == ajaxCounter) {
+        // Nur wenn die Ajax-Antwort nicht veraltert ist, Vorschlaege updaten
+        if(thisAjaxCounter >= ajaxCounter) {
 
             var $vorschlaegeContainer = $inputFrame.find(".vorschlaege ul");
             $vorschlaegeContainer.children().remove();
@@ -543,8 +543,13 @@ $(function() {
 
 
     // Sendet Ajax-Request an Server und wartet auf Antwort:
-    var sendAjaxRequest = function($addInput) {
+    var sendAjaxRequest = function($addInput, multi) {
         var thisAjaxCounter = ++ajaxCounter;
+
+        // wenn mehrere AJAX requests auf einmal losgeschickt werden, reihenfolge ignorieren
+        if(multi) {
+            thisAjaxCounter = Number.MAX_VALUE;
+        }
 
         var wert = $addInput.val();
         var $inputFrame = $addInput.parent();
@@ -630,7 +635,7 @@ $(function() {
             $this.find(".auswahl .auswahl-item").remove();
 
             var $addInput = $this.find(".add-input");
-            sendAjaxRequest($addInput);
+            sendAjaxRequest($addInput, true);
         });
     });
 
@@ -638,7 +643,7 @@ $(function() {
 
 
 
-    
+
 
 
 
