@@ -408,6 +408,11 @@ $(function() {
     var inactive = "inactive";
     var $inputFrames = $sucheMenu.find(".input-frame");
     var $infoFrames = $inputFrames.filter(".info-frame");
+    var $jahrFrame = $inputFrames.filter(".jahr-frame");
+    var $jahrRealInput = $jahrFrame.find(".real-input");
+    var $jahrAuswahl = $jahrFrame.find(".jahr-auswahl");
+    var jahrMin = $jahrRealInput.data("min");
+    var jahrMax = $jahrRealInput.data("max");
     var $blaupausen = $("#blaupausen");
     var $auswahlBlaupause = $blaupausen.find(".auswahl-item").first();
     var $vorschlagBlaupause = $blaupausen.find(".vorschlag-item").first();
@@ -468,7 +473,14 @@ $(function() {
     };
 
     var deleteFromAuswahl = function(auswahlItem) {
-        $(auswahlItem).remove();
+        var $this = $(auswahlItem);
+
+        var $infoFrame = $this.parent().parent().parent();
+
+        $this.remove();
+
+        var $addInput = $infoFrame.find(".add-input");
+        sendAjaxRequest($addInput);
     };
 
 
@@ -576,7 +588,7 @@ $(function() {
     };
 
 
-    // Funktion zum Starten/Neustarten des Countdowns:
+    // Funktion zum Starten/Neustarten des Countdowns für Ajax-Request:
     var ajaxRequestTrigger = debounce(
         function($addInput) {
             sendAjaxRequest($addInput);
@@ -624,10 +636,58 @@ $(function() {
     });
 
 
+
+    // Funktion zum prüfen ob Jahrslider aktuell auf minimal und maximalem Wert steht:
+    var jahrSliderIsMinMax = function() {
+        if( $jahrRealInput.data("from") == jahrMin && $jahrRealInput.data("to") == jahrMax ) {
+            return true;
+        }
+        return false;
+    };
+
+    // Funtion zum Reseten der Jahre:
+    var resetJahrSlider = function() {
+        $jahrAuswahl.fadeOut(0);
+
+        ionRangeSlider.update({
+            from: jahrMin,
+            to: jahrMax
+        });
+    };
+
+    // Beim Laden der Seite Jahr-Auswahl nur dann einblenden, falls Jahre nicht auf MIN und MAX sind:
+    if( !jahrSliderIsMinMax() ) {
+        $jahrAuswahl.fadeIn(0);
+    }
+
+
+    // Jahre reseten bei Knopfdruck:
+    $jahrAuswahl.find(".jahr-auswahl-button").on("click", function() {
+        resetJahrSlider();
+    });
+
+
+    // Jahr-Auswahl einblenden/ausbleden, wenn Jahr-Slider benutzt wird:
+    ionRangeSlider.update({
+        onChange: function() {
+            if ( jahrSliderIsMinMax() ) {
+                $jahrAuswahl.fadeOut(0);
+            }
+            else{
+                $jahrAuswahl.fadeIn(0);
+
+                var from = $jahrRealInput.data("from");
+                var to = $jahrRealInput.data("to");
+                $jahrAuswahl.find(".jahr-auswahl-text").text(from + "–" + to);
+            }
+        }
+    });
+
+
     // Bei RESET Auswahl killen, ionRange reseten und neue Vorschlaege per AJAX Rrequesten:
     $("#suche-form").on("reset", function() {
 
-        ionRangeSlider.reset();
+        resetJahrSlider();
 
         $infoFrames.each(function() {
             var $this = $(this);
@@ -638,6 +698,13 @@ $(function() {
             sendAjaxRequest($addInput, true);
         });
     });
+
+
+
+
+
+
+    // TODO visibility hidden heckmeck löschen bei ionRange
 
 
 

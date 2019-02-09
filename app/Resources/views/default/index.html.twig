@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ parent() }} | Suche{% endblock %}
+{% block title %}{{ parent() }}{% endblock %}
 
 {% block headerBalken2 %}
     <div class="col-5">
@@ -89,6 +89,12 @@
                         <label class="label outer-label img-button">Jahr</label>
                         <hr class="input-frame-hr-top" />
                         <label class="label inner-label img-button">Jahr</label>
+                        <div class="jahr-auswahl" style="display: none;">
+                            <span class="jahr-auswahl-text normal-text">{{ auswahl["Jahr"]["min"] }}–{{ auswahl["Jahr"]["max"] }}
+                            </span><button type="button" class="img-button jahr-auswahl-button" title="Suchbegriff entfernen">
+                                <img alt="X" src="{{ asset('assets/images/Archiv_Symbole_Mobil_Suchfilter_abwaehlen.svg') }}"/>
+                            </button>
+                        </div>
                         <input type="text" class="js-range-slider real-input" name="Jahr" value="{{ auswahl["Jahr"]["min"] }};{{ auswahl["Jahr"]["max"] }}"
                                data-type="double"
                                data-min="{{ minDBJahr }}"
