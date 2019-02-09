@@ -492,6 +492,9 @@ hr{
 }
 .suche-form-buttons button{
     float: right;
+    margin-left: 0;
+}
+.suche-form-buttons button[type=submit]{
     margin-left: 50px;
 }
 
@@ -562,12 +565,18 @@ hr{
 
 }
 @media (max-width: 768px) {
+    .suche-form-buttons button[type=submit]{
+        margin-left: 25px;
+    }
+
     .irs--square{
         width: 50%;
     }
 }
 @media (max-width: 576px) {
-
+    .suche-form-buttons button{
+        margin-bottom: 20px;
+    }
 }
 
 

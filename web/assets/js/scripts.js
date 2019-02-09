@@ -325,6 +325,7 @@ $(function() {
         Cookies.set(favCookieName, favCookieArray.join("-"), cookieExpire50Years);
     });
 
+
     // Alle Favoriten löschen Button:
     var $deleteAllFavsSection = $(".favorites-delete-all");
     var $deleteAllFavsButton = $deleteAllFavsSection.find(".favorites-delete-all-button");
@@ -353,7 +354,7 @@ $(function() {
 
 
 
-    // ionRangeSlider:
+    // ionRangeSlider initialisieren:
     $(".js-range-slider").ionRangeSlider({
         skin: "square"
     });
@@ -698,16 +699,6 @@ $(function() {
             sendAjaxRequest($addInput, true);
         });
     });
-
-
-
-
-
-
-    // TODO visibility hidden heckmeck löschen bei ionRange
-
-
-
 
 
 

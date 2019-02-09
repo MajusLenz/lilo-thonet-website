@@ -217,7 +217,11 @@
                             {{ archivierung.infosArray["Autor"] }}<br/>
                         {% endif %}
 
-                        <br/>
+
+                        {% if archivierung.infosArray["Gestaltung"] is defined or archivierung.infosArray["Fotografie"] is defined or archivierung.infosArray["Druckerei"] is defined or archivierung.infosArray["Autor"] is defined %}
+                            <br/>
+                        {% endif %}
+
 
                         {% if archivierung.infosArray["Masse"] is defined %}
                             <span class="detail-text-label">Maße:</span>
@@ -263,7 +267,11 @@
                             {{ archivierung.infosArray["Bilddarstellung"] }}<br/>
                         {% endif %}
 
-                        <br/>
+
+                        {% if archivierung.infosArray["Farbe"] is defined or archivierung.infosArray["Bilddarstellung"] is defined %}
+                            <br/>
+                        {% endif %}
+
 
                         {% if archivierung.infosArray["Hinweis"] is defined %}
                             <span class="detail-text-label">Hinweis:</span>
@@ -290,7 +298,11 @@
                             {{ archivierung.infosArray["Ereignisse"] }}<br/>
                         {% endif %}
 
-                        <br/>
+
+                        {% if archivierung.infosArray["Hinweis"] is defined or archivierung.infosArray["Produktkategorie"] is defined or archivierung.infosArray["Moebel"] is defined or archivierung.infosArray["Text"] is defined or archivierung.infosArray["Ereignisse"] is defined %}
+                            <br/>
+                        {% endif %}
+
 
                         {% if archivierung.infosArray["Archiv"] is defined %}
                             <span class="detail-text-label">Archiv:</span>
