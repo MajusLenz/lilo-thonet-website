@@ -669,10 +669,13 @@ $(function() {
     var resetJahrSlider = function() {
         $jahrAuswahl.fadeOut(0);
 
-        ionRangeSlider.update({
-            from: jahrMin,
-            to: jahrMax
-        });
+        setTimeout(function() {
+            ionRangeSlider.update({
+                from: jahrMin,
+                to: jahrMax
+            });
+            $jahrFrame.find("real-input").val(jahrMin + ";" + jahrMax);
+        }, 100);
     };
 
     // Beim Laden der Seite Jahr-Auswahl nur dann einblenden, falls Jahre nicht auf MIN und MAX sind:
@@ -697,9 +700,14 @@ $(function() {
                 else{
                     $jahrAuswahl.fadeIn(0);
 
+                    var $jahrAuswahlText = $jahrAuswahl.find(".jahr-auswahl-text");
                     var from = $jahrRealInput.data("from");
                     var to = $jahrRealInput.data("to");
-                    $jahrAuswahl.find(".jahr-auswahl-text").text(from + "–" + to);
+
+                    if(from == to)
+                        $jahrAuswahlText.text(from);
+                    else
+                        $jahrAuswahlText.text(from + "–" + to);
                 }
             }
         });
