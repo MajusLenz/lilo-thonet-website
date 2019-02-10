@@ -297,10 +297,36 @@ hr{
 .top .alle-fav-button{
     float: right;
     margin-right: 14vw;
+    position: relative;
 }
 .top .alle-fav-button img{
     width: 50px;
     margin-top: 3px;
+}
+.top .alle-fav-button-counter{
+    display: inline-block;
+    background-color: black;
+    border: 2px solid white;
+    border-radius: 100px;
+    text-align: center;
+    width: 30px;
+    height: 30px;
+    position: absolute;
+    left: 23px;
+    top: 7px;
+}
+.top .alle-fav-button-counter span{
+    color: white;
+    font-size: 21px;
+    position: relative;
+}
+.top .alle-fav-button-counter.two-digits span{
+    font-size: 19px;
+    top: 2px;
+}
+.top .alle-fav-button-counter.three-digits span{
+    font-size: 14px;
+    top: 4px;
 }
 
 .top .burger-button{
@@ -318,7 +344,7 @@ hr{
 
 
 .top .header-balken1 + hr{
-    margin-top: 0px;
+    margin-top: 0;
     margin-bottom: 0;
 }
 

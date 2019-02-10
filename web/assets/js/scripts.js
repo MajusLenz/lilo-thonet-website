@@ -268,14 +268,33 @@ $(function() {
     var $headerFavButton = $(".alle-fav-button");
     var $headerFavButtonVoll = $headerFavButton.find(".alle-fav-button-img-voll");
     var $headerFavButtonLeer = $headerFavButton.find(".alle-fav-button-img-leer");
+    var $headerFavButtonCounter = $headerFavButton.find(".alle-fav-button-counter");
 
     var updateHeaderFavButton = function() {
         if(favCookieArray.length > 0) {
             $headerFavButtonVoll.fadeIn(0);
+            $headerFavButtonCounter.fadeIn(0);
             $headerFavButtonLeer.fadeOut(0);
+
+            if(favCookieArray.length < 10) {
+                $headerFavButtonCounter.find("span").text(favCookieArray.length);
+                $headerFavButtonCounter.removeClass("two-digits","three-digits");
+            }
+            else if(favCookieArray.length < 100) {
+                $headerFavButtonCounter.find("span").text(favCookieArray.length);
+                $headerFavButtonCounter.removeClass("three-digits");
+                $headerFavButtonCounter.addClass("two-digits");
+            }
+            else{
+                $headerFavButtonCounter.find("span").text("99+");
+                $headerFavButtonCounter.removeClass("two-digits");
+                $headerFavButtonCounter.addClass("three-digits");
+            }
+
         }
         else{
             $headerFavButtonVoll.fadeOut(0);
+            $headerFavButtonCounter.fadeOut(0);
             $headerFavButtonLeer.fadeIn(0);
         }
     };
@@ -669,25 +688,25 @@ $(function() {
 
 
     // Jahr-Auswahl einblenden/ausbleden, wenn Jahr-Slider benutzt wird:
-    ionRangeSlider.update({
-        onChange: function() {
-            if ( jahrSliderIsMinMax() ) {
-                $jahrAuswahl.fadeOut(0);
+    if($sucheMenu.length)
+        ionRangeSlider.update({
+            onChange: function() {
+                if ( jahrSliderIsMinMax() ) {
+                    $jahrAuswahl.fadeOut(0);
+                }
+                else{
+                    $jahrAuswahl.fadeIn(0);
+
+                    var from = $jahrRealInput.data("from");
+                    var to = $jahrRealInput.data("to");
+                    $jahrAuswahl.find(".jahr-auswahl-text").text(from + "–" + to);
+                }
             }
-            else{
-                $jahrAuswahl.fadeIn(0);
-
-                var from = $jahrRealInput.data("from");
-                var to = $jahrRealInput.data("to");
-                $jahrAuswahl.find(".jahr-auswahl-text").text(from + "–" + to);
-            }
-        }
-    });
+        });
 
 
-    // Bei RESET Auswahl killen, ionRange reseten und neue Vorschlaege per AJAX Rrequesten:
+    // Bei RESET Auswahl killen, Jahr-Slider reseten und neue Vorschlaege per AJAX Requesten:
     $("#suche-form").on("reset", function() {
-
         resetJahrSlider();
 
         $infoFrames.each(function() {
@@ -699,7 +718,6 @@ $(function() {
             sendAjaxRequest($addInput, true);
         });
     });
-
 
 
 
