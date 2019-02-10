@@ -2,10 +2,14 @@
 # www.google.com/support/webmasters/bin/answer.py?hl=en&answer=156449
 
 User-agent: *
-Disallow: /
 Disallow: /*.jpg$
 Disallow: /*.png$
 Disallow: /*.svg$
-Allow: /Kontakt/
-Allow: /DasProjekt/
-Allow: /ArbeitenImKontext/
+Disallow: /admin/
+Disallow: /login/
+Disallow: /Detail/
+Disallow: /Favoriten/
+Disallow: /Suche/
+
+User-agent: Googlebot-Image
+Disallow: /
