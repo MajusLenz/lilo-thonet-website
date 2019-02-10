@@ -270,11 +270,10 @@ $(function() {
     var $headerFavButtonLeer = $headerFavButton.find(".alle-fav-button-img-leer");
     var $headerFavButtonCounter = $headerFavButton.find(".alle-fav-button-counter");
 
+    // Funktion um Zähler im Button zu aktualisieren:
     var updateHeaderFavButton = function() {
         if(favCookieArray.length > 0) {
-            $headerFavButtonVoll.fadeIn(0);
             $headerFavButtonCounter.fadeIn(0);
-            $headerFavButtonLeer.fadeOut(0);
 
             if(favCookieArray.length < 10) {
                 $headerFavButtonCounter.find("span").text(favCookieArray.length);
@@ -293,12 +292,19 @@ $(function() {
 
         }
         else{
-            $headerFavButtonVoll.fadeOut(0);
             $headerFavButtonCounter.fadeOut(0);
-            $headerFavButtonLeer.fadeIn(0);
         }
     };
     updateHeaderFavButton();
+
+
+    // Falls man sich auf der Favoritenseite befindet, Button schwarz färben, sonst weiss:
+    if( $(".favorites-overview").length ) {
+        $headerFavButton.addClass("opened");
+    }
+    else{
+        $headerFavButton.addClass("closed");
+    }
 
 
     // Favoriten hinzufügen/enfernen Buttons:

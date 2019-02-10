@@ -323,6 +323,14 @@ hr{
     width: 50px;
     margin-top: 3px;
 }
+
+.alle-fav-button.opened .alle-fav-button-img-leer, .top .alle-fav-button.closed .alle-fav-button-img-voll{
+    display: none!important;
+}
+.alle-fav-button.closed .alle-fav-button-img-leer, .top .alle-fav-button.opened .alle-fav-button-img-voll{
+    display: initial!important;
+}
+
 .top .alle-fav-button-counter{
     display: inline-block;
     background-color: black;
@@ -334,6 +342,9 @@ hr{
     position: absolute;
     left: 23px;
     top: 7px;
+}
+.alle-fav-button.closed .alle-fav-button-counter{
+    border-color: transparent;
 }
 .top .alle-fav-button-counter span{
     color: white;
@@ -420,7 +431,7 @@ hr{
         padding-right: 5%;
     }
     .top .header-balken1{
-        padding-top: 5%;
+        padding-top: 6%;
     }
 }
 
@@ -1055,6 +1066,7 @@ hr{
 /* TEST */
 
 .TEST{
+    display: inline-block;
     background-color: red;
     position: fixed;
     top: 0;
