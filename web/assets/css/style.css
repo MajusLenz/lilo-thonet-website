@@ -231,12 +231,32 @@ hr{
     .half-size-text{
         width: 100%;
     }
+
+    div.inhalt {
+        padding: 3%;
+    }
+    .overlay {
+        padding-left: 3%;
+        padding-right: 3%;
+    }
 }
 @media (max-width: 768px) {
-
+    div.inhalt {
+        padding: 4%;
+    }
+    .overlay {
+        padding-left: 4%;
+        padding-right: 4%;
+    }
 }
 @media (max-width: 576px) {
-
+    div.inhalt {
+        padding: 5%;
+    }
+    .overlay {
+        padding-left: 5%;
+        padding-right: 5%;
+    }
 }
 
 
@@ -284,7 +304,7 @@ hr{
 
 .top .header-balken1{
     padding-bottom: 28px;
-    padding-top: 30px;
+    padding-top: 2%;
 }
 
 .top .homepage-button{
@@ -377,15 +397,32 @@ hr{
 }
 
 @media (max-width: 992px) {
-
+    .top{
+        padding-left: 3%;
+        padding-right: 3%;
+    }
+    .top .header-balken1{
+        padding-top: 3%;
+    }
 }
 @media (max-width: 768px) {
-
+    .top{
+        padding-left: 4%;
+        padding-right: 4%;
+    }
+    .top .header-balken1{
+        padding-top: 4%;
+    }
 }
 @media (max-width: 576px) {
-
+    .top{
+        padding-left: 5%;
+        padding-right: 5%;
+    }
+    .top .header-balken1{
+        padding-top: 5%;
+    }
 }
-
 
 
 
@@ -394,6 +431,14 @@ hr{
 
 
 /* index */
+.index .images-overview{
+    position: absolute!important;
+    right: 0;
+    left: 0;
+    padding-left: 2%;
+    padding-bottom: 40px;
+}
+
 #suche-overlay{
     position: absolute;
     min-height: 70vh;
@@ -584,11 +629,20 @@ hr{
     .input-frame-spalte{
         width: 100%;
     }
+    .info-frame .label[for=Material-add] {
+        margin-top: 33px;
+    }
 }
 @media (max-width: 992px) {
-
+    .index .images-overview{
+        padding-left: 3%;
+    }
 }
 @media (max-width: 768px) {
+    .index .images-overview{
+        padding-left: 4%;
+    }
+
     .suche-form-buttons button[type=submit]{
         margin-left: 25px;
     }
@@ -598,6 +652,10 @@ hr{
     }
 }
 @media (max-width: 576px) {
+    .index .images-overview{
+        padding-left: 5%;
+    }
+
     .suche-form-buttons button{
         margin-bottom: 20px;
     }
@@ -611,13 +669,6 @@ hr{
 
 
 /* --- Grid generell */
-.index .images-overview{
-    position: absolute!important;
-    right: 0;
-    left: 0;
-    padding-left: 2%;
-    padding-bottom: 40px;
-}
 .index .grid-item{
     margin-right: 2%;
     margin-bottom: 2%;
@@ -654,13 +705,96 @@ hr{
 }
 
 @media (max-width: 992px) {
+    .index .grid-item{
+        margin-right: 2%;
+        margin-bottom: 2%;
+    }
 
+    /* --- Grid klein */
+    .index .grid-item-klein{
+        width: 14%;
+    }
+    .index .grid-item-klein img{
+        max-height: 14vw;
+    }
+
+    /* --- Grid mittel */
+    .index .grid-item-mittel {
+        width: 22%;
+    }
+    .index .grid-item-mittel img{
+        max-height: 22vw;
+    }
+
+    /* --- Grid gross */
+    .index .grid-item-gross {
+        width: 30%;
+    }
+    .index .grid-item-gross img{
+        max-height: 30vw;
+    }
 }
 @media (max-width: 768px) {
+    .index .grid-item{
+        margin-right: 3%;
+        margin-bottom: 3%;
+    }
 
+    /* --- Grid klein */
+    .index .grid-item-klein{
+        width: 20.75%;
+    }
+    .index .grid-item-klein img{
+        max-height: 20vw;
+    }
+
+    /* --- Grid mittel */
+    .index .grid-item-mittel {
+        width: 28.6666%;
+    }
+    .index .grid-item-mittel img{
+        max-height: 28vw;
+    }
+
+    /* --- Grid gross */
+    .index .grid-item-gross {
+        width: 44.5%;
+    }
+    .index .grid-item-gross img{
+        max-height: 44vw;
+    }
 }
 @media (max-width: 576px) {
+    .index .grid-item{
+        margin-right: 3%;
+        margin-bottom: 3%;
+    }
 
+    /* --- Grid klein */
+    .index .grid-item-klein{
+        width: 28%;
+    }
+    .index .grid-item-klein img{
+        max-height: 28vw;
+    }
+
+    /* --- Grid mittel */
+    .index .grid-item-mittel {
+        width: 43.5%;
+    }
+    .index .grid-item-mittel img{
+        max-height: 43vw;
+    }
+
+    /* --- Grid gross */
+    .index .grid-item-gross {
+        width: 90%;
+
+        margin-bottom: 4.5%;
+    }
+    .index .grid-item-gross img{
+        max-height: 90vw;
+    }
 }
 
 
@@ -847,13 +981,19 @@ hr{
 }
 
 @media (max-width: 992px) {
-
+    .favorites-overview .grid-item{
+        width: 25%;
+    }
 }
 @media (max-width: 768px) {
-
+    .favorites-overview .grid-item{
+        width: 33.3333%;
+    }
 }
 @media (max-width: 576px) {
-
+    .favorites-overview .grid-item{
+        width: 50%;
+    }
 }
 
 

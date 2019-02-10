@@ -90,7 +90,13 @@
                         <hr class="input-frame-hr-top" />
                         <label class="label inner-label img-button">Jahr</label>
                         <div class="jahr-auswahl" style="display: none;">
-                            <span class="jahr-auswahl-text normal-text">{{ auswahl["Jahr"]["min"] }}–{{ auswahl["Jahr"]["max"] }}
+
+                            <span class="jahr-auswahl-text normal-text">
+                                {% if auswahl["Jahr"]["min"] == auswahl["Jahr"]["max"] %}
+                                    {{ auswahl["Jahr"]["min"] }}
+                                {% else %}
+                                    {{ auswahl["Jahr"]["min"] }}–{{ auswahl["Jahr"]["max"] }}
+                                {% endif %}
                             </span><button type="button" class="img-button jahr-auswahl-button" title="Suchbegriff entfernen">
                                 <img alt="X" src="{{ asset('assets/images/Archiv_Symbole_Mobil_Suchfilter_abwaehlen.svg') }}"/>
                             </button>

@@ -62,16 +62,16 @@
                     </button>
                     <a class="alle-fav-button img-button" title="persönliche Favoriten anzeigen" href="{{ path('_favoriten') }}">
                         <img
-                            class="alle-fav-button-img-leer"
-                            alt="Favoriten"
-                            src="{{ asset('assets/images/Archiv_Symbole_Mobil_Auswahl_leer.svg') }}"
-                            style="display: none;"
+                                class="alle-fav-button-img-leer"
+                                alt="Favoriten"
+                                src="{{ asset('assets/images/Archiv_Symbole_Mobil_Auswahl_leer.svg') }}"
+                                style="display: none;"
                         />
                         <img
-                            class="alle-fav-button-img-voll"
-                            alt="Favoriten"
-                            src="{{ asset('assets/images/Archiv_Symbole_Mobil_Auswahl_voll.svg') }}"
-                            style="display: none;"
+                                class="alle-fav-button-img-voll"
+                                alt="Favoriten"
+                                src="{{ asset('assets/images/Archiv_Symbole_Mobil_Auswahl_voll.svg') }}"
+                                style="display: none;"
                         /><div class="alle-fav-button-counter" style="display:none;"><span></span></div>
                     </a>
                 </div>
@@ -108,17 +108,20 @@
                                 src="{{ asset('assets/images/Archiv_Symbole_Mobil_Menue_schliessen.svg') }}"
                         />
                     </button>
-                    <button class="alle-fav-button img-button" title="persönliche Favoriten anzeigen">
+                    <a class="alle-fav-button img-button" title="persönliche Favoriten anzeigen" href="{{ path('_favoriten') }}">
                         <img
+                                class="alle-fav-button-img-leer"
                                 alt="Favoriten"
                                 src="{{ asset('assets/images/Archiv_Symbole_Mobil_Auswahl_leer.svg') }}"
+                                style="display: none;"
                         />
                         <img
+                                class="alle-fav-button-img-voll"
                                 alt="Favoriten"
                                 src="{{ asset('assets/images/Archiv_Symbole_Mobil_Auswahl_voll.svg') }}"
                                 style="display: none;"
-                        />
-                    </button>
+                        /><div class="alle-fav-button-counter" style="display:none;"><span></span></div>
+                    </a>
                 </div>
             </div>
             <hr/>
