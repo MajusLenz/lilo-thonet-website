@@ -936,16 +936,16 @@ hr{
 
 
 /* Favoriten: */
+.favorites-overview .grid-item{
+    width: 16.6666%;
+    margin: 0;
+    margin-bottom: 25px;
+}
 .favorites-overview .grid-item img{
     max-width: 70%;
     height: auto;
     width:auto;
     max-height: 16vw;
-}
-.favorites-overview .grid-item{
-    width: 16.6666%;
-    margin: 0;
-    margin-bottom: 25px;
 }
 
 .favorites-overview .add-fav-side{
@@ -984,15 +984,24 @@ hr{
     .favorites-overview .grid-item{
         width: 25%;
     }
+    .favorites-overview .grid-item img{
+        max-height: 25vw;
+    }
 }
 @media (max-width: 768px) {
     .favorites-overview .grid-item{
         width: 33.3333%;
     }
+    .favorites-overview .grid-item img{
+        max-height: 33vw;
+    }
 }
 @media (max-width: 576px) {
     .favorites-overview .grid-item{
         width: 50%;
+    }
+    .favorites-overview .grid-item img{
+        max-height: 50vw;
     }
 }
 
