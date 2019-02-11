@@ -72,6 +72,7 @@ $(function() {
     $(".rightclick-alert").on("contextmenu", function(e) {
         alert("Diese Grafik ist kopiergeschützt! Wenn Sie etwas herunterladen möchten, kontaktieren Sie bitte den Administrator.");
         e.stopPropagation();
+        e.preventDefault();
         return false;
     });
 

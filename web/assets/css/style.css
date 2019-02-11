@@ -373,12 +373,10 @@ hr{
     margin-top: 11px;
 }
 
-
 .top .header-balken1 + hr{
     margin-top: 0;
     margin-bottom: 0;
 }
-
 
 .top .header-balken2 .header-titel{
     font-size: 23px;
@@ -407,7 +405,7 @@ hr{
     margin-bottom: 0;
 }
 
-@media (max-width: 992px) {
+@media (max-width: 992px) {  /* orange */
     .top{
         padding-left: 3%;
         padding-right: 3%;
@@ -416,22 +414,44 @@ hr{
         padding-top: 3%;
     }
 }
-@media (max-width: 768px) {
+@media (max-width: 768px) {  /* gelb */
     .top{
         padding-left: 4%;
         padding-right: 4%;
     }
     .top .header-balken1{
         padding-top: 4%;
+
+        padding-bottom: 17px;
     }
 }
-@media (max-width: 576px) {
+@media (max-width: 576px) { /* grün */
     .top{
         padding-left: 5%;
         padding-right: 5%;
     }
     .top .header-balken1{
         padding-top: 6%;
+    }
+}
+@media (max-width: 432px) {
+    .top .alle-fav-button {
+        margin-right: 10vw;
+    }
+}
+@media (max-width: 401px) {
+    .top .alle-fav-button {
+        margin-right: 6vw;
+    }
+}
+@media (max-width: 365px) {
+    .top .alle-fav-button {
+        margin-right: 3vw;
+    }
+}
+@media (max-width: 341px) {
+    .top .alle-fav-button {
+        margin-right: 1vw;
     }
 }
 
