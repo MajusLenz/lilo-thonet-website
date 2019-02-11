@@ -444,12 +444,12 @@ hr{
         margin-right: 6vw;
     }
 }
-@media (max-width: 365px) {
+@media (max-width: 380px) {
     .top .alle-fav-button {
         margin-right: 3vw;
     }
 }
-@media (max-width: 341px) {
+@media (max-width: 363px) {
     .top .alle-fav-button {
         margin-right: 1vw;
     }
