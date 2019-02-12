@@ -570,7 +570,7 @@ class DefaultController extends Controller
             }
 
             else{
-                $archivierung->sortJahr = 999999;
+                $archivierung->sortJahr = 0;
             }
         }
 

@@ -8,14 +8,47 @@
 
 {% block body %}
 
-    <p class="big-text half-size-text">
+    {# TEXT DER BEI GROSSER GRÖSSE 2-SEITIG ANGEZEIGT WIRD: #}
+    <p class="big-text two-pages-text desktop-text">
+        <span class="page">Die im Archiv verzeichneten Arbeiten sind von Thonet meist selbst
+        beauftragt oder erstellt worden. Es gibt jedoch zahlreiche Arbeiten von
+        Künstlern, Grafikern, Architekten und vielen mehr, welche Thonet zum
+        Anlass nahmen freie Arbeiten zu entwerfen,
+        </span><span class="page">oder sie dem
+        Traditionsunternehmen zu widmen. Diese Arbeiten werden hier separat
+        gesammelt und vorgestellt. Genau wie das Archiv ist dies eine stetig
+        wachsende Sammlung.</span>
+    </p>
+
+
+    {# TEXT DER BEI KLEINERER GRÖSSE UNTEREINANDER WEG ANGEZEIGT WIRD: #}
+    <p class="big-text mobile-text">
         Die im Archiv verzeichneten Arbeiten sind von Thonet meist selbst
         beauftragt oder erstellt worden. Es gibt jedoch zahlreiche Arbeiten von
         Künstlern, Grafikern, Architekten und vielen mehr, welche Thonet zum
-        Anlass nahmen freie Arbeiten zu entwerfen oder sie dem
+        Anlass nahmen freie Arbeiten zu entwerfen, oder sie dem
         Traditionsunternehmen zu widmen. Diese Arbeiten werden hier separat
         gesammelt und vorgestellt. Genau wie das Archiv ist dies eine stetig
         wachsende Sammlung.
     </p>
+
+
+    {# BILDER: #}
+    <section class="static-pics" style="display: none;">
+        <div class="static-pics-spalte">
+            <img
+                    src="{{ asset('assets/images/testbild.png') }}"
+                    width="100%"
+            />
+        </div>
+        <div class="static-pics-spalte">
+            <img
+                    src="{{ asset('assets/images/testbild.png') }}"
+                    width="100%"
+            />
+        </div>
+    </section>
+
+
 {% endblock %}
 

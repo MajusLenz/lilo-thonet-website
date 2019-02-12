@@ -459,10 +459,14 @@ $(function() {
     // });
 
 
-    // öffnen des Frames bei Klick auf Label
-    $inputFrames.find(".outer-label").on("click", function() {
+    // öffnen/Schliessen des Frames bei Klick auf Label
+    $inputFrames.find(".label").on("click", function() {
+        var $thisFrame = $(this).parent();
+        var isOpen = $thisFrame.hasClass(active);
+
         $inputFrames.removeClass(active).addClass(inactive);
-        $(this).parent().addClass(active).removeClass(inactive);
+        if( !isOpen )
+            $thisFrame.addClass(active).removeClass(inactive);
     });
 
 
