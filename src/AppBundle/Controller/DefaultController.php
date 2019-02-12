@@ -15,6 +15,17 @@ use Symfony\Component\HttpFoundation\Response;
 class DefaultController extends Controller
 {
     /**
+     * @Route("/Moebelarchiv/", name="_moebelarchivDummy")
+     */
+    public function moebelarchivDummyAction()
+    {
+        // replace this example code with whatever you need
+        return $this->render('default/moebelarchivDummy.html.twig', [
+            'base_dir' => realpath($this->getParameter('kernel.root_dir').'/..'),
+        ]);
+    }
+
+    /**
      * @Route("/DasProjekt/", name="_dasProjekt")
      */
     public function dasProjektAction()
@@ -90,7 +101,7 @@ class DefaultController extends Controller
 
         foreach($allParams as $infoName => $infoParam) {
 
-            if($infoName != "Tags" && $infoName != "Jahr") {
+            if($infoName != "Tags" && $infoName != "Markentags" && $infoName != "Jahr") {
                 $infoAuswahl = array();
                 $infoArray = explode(";", $infoParam);
 
@@ -153,7 +164,7 @@ class DefaultController extends Controller
         foreach($alleInfoNamen as $infoName) {
             $infoName = $infoName["name"];
 
-            if($infoName != "Tags") {
+            if($infoName != "Tags" && $infoName != "Markentags") {
                 $infoAuswahlEscaped = array();
 
                 if( array_key_exists($infoName, $auswahl) ) {
@@ -225,7 +236,7 @@ class DefaultController extends Controller
                 "LEFT JOIN Information i ON ai.information_id = i.id " .
                 "LEFT JOIN Archivierung_Jahr aj ON a.id = aj.archivierung_id " .
                 "LEFT JOIN Jahr j ON aj.jahr_id = j.id " .
-                "WHERE ( ( LOWER(i.wert) LIKE $freitextWerte ) AND i.name != 'Tags' ) " .
+                "WHERE ( ( LOWER(i.wert) LIKE $freitextWerte ) AND i.name != 'Tags' AND i.name != 'Markentags' ) " .
                 "   OR ( j.wert LIKE $freitextJahre ) " .
                 "ORDER BY a.erstelldatum DESC"
             ;
@@ -319,7 +330,7 @@ class DefaultController extends Controller
                 $gesamtErgebnis = array_uintersect(
                     $gesamtErgebnis,
                     $jahrErgebnis,
-                    [$this, 'archivierungsVergleich'] // Vergleichs-Callback
+                    [$this, 'archivierungsVergleichByID'] // Vergleichs-Callback
                 );
 
             // wenn jetzt die Ergebnismenge schon leer ist, die anderen Filter ignorieren und Response mit leerer Menge returnen
@@ -382,7 +393,7 @@ class DefaultController extends Controller
                     $gesamtErgebnis = array_uintersect(
                         $gesamtErgebnis,
                         $infoErgebnis,
-                        [$this, 'archivierungsVergleich'] // Vergleichs-Callback
+                        [$this, 'archivierungsVergleichByID'] // Vergleichs-Callback
                     );
 
                 // wenn jetzt die Ergebnismenge schon leer ist, die anderen Filter ignorieren und Response mit leerer Menge returnen
@@ -457,7 +468,7 @@ class DefaultController extends Controller
             $sqlWert = "LOWER(i.wert) LIKE '%$infoWert%' AND ";
         }
 
-        $sqlName = "i.name != 'Tags' ";
+        $sqlName = "i.name != 'Tags' AND i.name != 'Markentags' ";
         if($infoName != "Freitext") {
 
             $infoName = MysqlEscapeHelper::escape($infoName, false);
@@ -491,13 +502,32 @@ class DefaultController extends Controller
      * @param $a2 Archivierung
      * @return int 0 wenn die beiden Archivierungen die Gleiche ID haben. 1 oder -1 wenn die beiden Archivierungen nicht die gleiche ID haben.
      */
-    private function archivierungsVergleich($a1, $a2) {
+    private function archivierungsVergleichByID($a1, $a2) {
         $id1 = $a1->getId();
         $id2 = $a2->getId();
         if($id1 == $id2)
             return 0;
         elseif($id1 > $id2)
             return 1;
+        else
+            return -1;
+    }
+
+    /**
+     * @param $a1 Archivierung
+     * @param $a2 Archivierung
+     * @return int 0 wenn die beiden Archivierungen ein gleiches sortJahr haben. 1 bzw. -1 wenn die beiden Archivierungen nicht ein gleiches sortJahr haben.
+     */
+    private function archivierungsVergleichByJahr($a1, $a2) {
+        $sortJahr1 = $a1->sortJahr;
+        $sortJahr2 = $a2->sortJahr;
+
+        if($sortJahr1 == $sortJahr2)
+            return 0;
+
+        elseif($sortJahr1 > $sortJahr2)
+            return 1;
+
         else
             return -1;
     }
@@ -513,11 +543,40 @@ class DefaultController extends Controller
     private function createSuchResponse($archivierungen, $minDBJahr, $maxDBJahr, $vorschlaege, $auswahl) {
 
         foreach($archivierungen as $key => $archivierung) {
-            $dateiHash = $archivierung->getDateiHash();
 
-            $links = HashHelper::dateiHashToURL($dateiHash);    // Pfade zu Bildern
+            // Pfade zu Bildern:
+            $dateiHash = $archivierung->getDateiHash();
+            $links = HashHelper::dateiHashToURL($dateiHash);
             $archivierungen[$key]->links = $links;
+
+
+            // Kleinstes Jahr der Archivierung heraussuchen:
+            $jahre = $archivierung->getJahre();
+
+            if(count($jahre) === 1 ) {
+                $erstesJahr = $jahre[0]->getWert();
+                $archivierung->sortJahr = $erstesJahr;
+            }
+
+            else if( count($jahre) > 1 ) {
+                $jahreArray = array();
+                foreach ($jahre as $jahr) {
+                    $jahreArray[] = $jahr->getWert();
+                }
+
+                sort($jahreArray, SORT_NUMERIC);
+                $erstesJahr = $jahreArray[0];
+                $archivierung->sortJahr = $erstesJahr;
+            }
+
+            else{
+                $archivierung->sortJahr = 999999;
+            }
         }
+
+        // Archivierungen nach kleinstem Jahr sortieren:
+        usort($archivierungen, [$this, 'archivierungsVergleichByJahr']);
+
 
         return $this->render('default/index.html.twig', [
             "archivierungen" => $archivierungen,

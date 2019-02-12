@@ -152,7 +152,7 @@ class AdminController extends Controller
                     $archivierung->setDateiname($dateiname);
                 }
 
-                // vorhanden Dateinamen bearbeiten
+                // vorhandenen Dateinamen bearbeiten
                 else{
                     // wenn was drin steht
                     if( !empty($dateiname) ) {
@@ -179,11 +179,11 @@ class AdminController extends Controller
                 unset($row["Dateiname (alt)"]);
 
                 if($dateinameAlt) {
-                    // DateinamenAlt für neue Archivierung
+                    // DateinameAlt für neue Archivierung
                     if($isEdit === false) {
                         $archivierung->setDateinameAlt($dateinameAlt);
                     }
-                    // vorhanden DateinamenAlt bearbeiten
+                    // vorhandenen DateinameAlt bearbeiten
                     else{
                         if($dateinameAlt === $delete) {
                             $archivierung->setDateinameAlt(null);

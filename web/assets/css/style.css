@@ -380,8 +380,8 @@ hr{
 
 .top .header-balken2 .header-titel{
     font-size: 23px;
-    margin-top: 16px;
-    margin-bottom: 0;
+    margin-top: 12px;
+    margin-bottom: 5px;
 }
 .top .header-balken2 .resize-buttons > div{
     float: right;
@@ -585,17 +585,16 @@ hr{
 }
 
 .suche-form-buttons{
+    margin: 0;
     margin-top: 30px;
     margin-bottom: 50px;
-    margin-right: 0;
     width: 100%;
 }
 .suche-form-buttons button{
-    float: right;
-    margin-left: 0;
+    margin-right: 0;
 }
-.suche-form-buttons button[type=submit]{
-    margin-left: 50px;
+.suche-form-buttons button[type=reset]{
+    margin-right: 45px;
 }
 
 
@@ -674,8 +673,8 @@ hr{
         padding-left: 4%;
     }
 
-    .suche-form-buttons button[type=submit]{
-        margin-left: 25px;
+    .suche-form-buttons button[type=reset]{
+        margin-right: 25px;
     }
 
     .irs--square{
