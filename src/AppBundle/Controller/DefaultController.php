@@ -513,24 +513,6 @@ class DefaultController extends Controller
             return -1;
     }
 
-    /**
-     * @param $a1 Archivierung
-     * @param $a2 Archivierung
-     * @return int 0 wenn die beiden Archivierungen ein gleiches sortJahr haben. 1 bzw. -1 wenn die beiden Archivierungen nicht ein gleiches sortJahr haben.
-     */
-    private function archivierungsVergleichByJahr($a1, $a2) {
-        $sortJahr1 = $a1->sortJahr;
-        $sortJahr2 = $a2->sortJahr;
-
-        if($sortJahr1 == $sortJahr2)
-            return 0;
-
-        elseif($sortJahr1 > $sortJahr2)
-            return 1;
-
-        else
-            return -1;
-    }
 
     /**
      * @param $archivierungen array mit Archivierungen
@@ -574,7 +556,7 @@ class DefaultController extends Controller
             }
         }
 
-        // Archivierungen nach kleinstem Jahr sortieren:
+        // Archivierungen nach kleinstem Jahr der Archivierung sortieren:
         usort($archivierungen, [$this, 'archivierungsVergleichByJahr']);
 
 
@@ -585,5 +567,25 @@ class DefaultController extends Controller
             "vorschlaege" => $vorschlaege,
             "auswahl" => $auswahl
         ]);
+    }
+
+
+    /**
+     * @param $a1 Archivierung
+     * @param $a2 Archivierung
+     * @return int 0 wenn die beiden Archivierungen ein gleiches sortJahr haben. 1 bzw. -1 wenn die beiden Archivierungen nicht ein gleiches sortJahr haben.
+     */
+    private function archivierungsVergleichByJahr($a1, $a2) {
+        $sortJahr1 = $a1->sortJahr;
+        $sortJahr2 = $a2->sortJahr;
+
+        if($sortJahr1 == $sortJahr2)
+            return 0;
+
+        elseif($sortJahr1  >  $sortJahr2)
+            return 1;
+
+        else
+            return -1;
     }
 }
