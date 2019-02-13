@@ -1110,13 +1110,20 @@ hr{
     max-height: none;
 }
 @media (max-width: 992px) {
-
+    .images-overview.arbeiten-im-kontext-overview {
+        padding-left: 3%;
+    }
 }
 @media (max-width: 768px) {
-
+    .images-overview.arbeiten-im-kontext-overview {
+        padding-left: 4%;
+    }
 }
 @media (max-width: 576px) {
-    /* --- Grid gross */
+    .images-overview.arbeiten-im-kontext-overview {
+        padding-left: 5%;
+    }
+
     .arbeiten-im-kontext-overview .grid-item {
         width: 43.5%;
     }
