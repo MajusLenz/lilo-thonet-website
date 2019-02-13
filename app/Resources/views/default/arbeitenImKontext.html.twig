@@ -8,21 +8,9 @@
 
 {% block body %}
 
-    {# TEXT DER BEI GROSSER GRÖSSE 2-SEITIG ANGEZEIGT WIRD: #}
-    <p class="big-text two-pages-text desktop-text">
-        <span class="page">Die im Archiv verzeichneten Arbeiten sind von Thonet meist selbst
-        beauftragt oder erstellt worden. Es gibt jedoch zahlreiche Arbeiten von
-        Künstlern, Grafikern, Architekten und vielen mehr, welche Thonet zum
-        Anlass nahmen freie Arbeiten zu entwerfen,
-        </span><span class="page">oder sie dem
-        Traditionsunternehmen zu widmen. Diese Arbeiten werden hier separat
-        gesammelt und vorgestellt. Genau wie das Archiv ist dies eine stetig
-        wachsende Sammlung.</span>
-    </p>
 
-
-    {# TEXT DER BEI KLEINERER GRÖSSE UNTEREINANDER WEG ANGEZEIGT WIRD: #}
-    <p class="big-text mobile-text">
+    {# TEXT #}
+    <p class="big-text half-size-text">
         Die im Archiv verzeichneten Arbeiten sind von Thonet meist selbst
         beauftragt oder erstellt worden. Es gibt jedoch zahlreiche Arbeiten von
         Künstlern, Grafikern, Architekten und vielen mehr, welche Thonet zum
@@ -34,20 +22,46 @@
 
 
     {# BILDER: #}
-    <section class="static-pics" style="display: none;">
-        <div class="static-pics-spalte">
-            <img
-                    src="{{ asset('assets/images/testbild.png') }}"
-                    width="100%"
-            />
-        </div>
-        <div class="static-pics-spalte">
-            <img
-                    src="{{ asset('assets/images/testbild.png') }}"
-                    width="100%"
-            />
-        </div>
-    </section>
+    <div class="arbeiten-im-kontext">
+        <section class="grid grid-gross images-overview arbeiten-im-kontext-overview">
+            <div class="grid-sizer grid-item-gross" style="display: none;"></div>
+
+            <figure class="grid-item grid-item-gross">
+                <img alt="" src="{{ asset('assets/images/Geburtstagsgruss_Happy_200_Years_Fidel_Peugeot_2017.jpg') }}"/>
+                <figcaption>
+                    Geburtstagsgruß<br/>
+                    »Happy 200 Years«<br/>
+                    Fidel Peugeot, 2017
+                </figcaption>
+            </figure>
+
+            <figure class="grid-item grid-item-gross">
+                <img alt="" src="{{ asset('assets/images/Bugholzschriftzug_Lilo_Schaefer_2017.jpg') }}"/>
+                <figcaption>
+                    Bugholzschriftzug<br/>
+                    Lilo Schäfer, 2017
+                </figcaption>
+            </figure>
+
+            <figure class="grid-item grid-item-gross">
+                <img alt="" src="{{ asset('assets/images/testbild.png') }}"/>
+                <figcaption>
+                    Bildunterschrift
+                </figcaption>
+            </figure>
+
+            <figure class="grid-item grid-item-gross">
+                <img alt="" src="{{ asset('assets/images/testbild.png') }}"/>
+                <figcaption>
+                    Bildunterschrift 1.Zeile<br/>
+                    Bildunterschrift 2.Zeile
+                </figcaption>
+            </figure>
+        </section>
+
+    </div>
+
+
 
 
 {% endblock %}

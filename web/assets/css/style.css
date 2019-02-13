@@ -131,6 +131,11 @@ h1,h2,h3,h4,h5,h6,p,a{
     color: black!important;
 }
 
+figure figcaption{
+    line-height: 16px;
+    margin-top: 8px;
+}
+
 
 .big-text, .big-text *{
     font-size: 23px;
@@ -155,20 +160,6 @@ h1,h2,h3,h4,h5,h6,p,a{
 
 .mobile-text{
     display: none;
-}
-
-
-.static-pics .static-pics-spalte{
-    width: 48.5%;
-    display: inline-block;
-}
-.static-pics .static-pics-spalte:first-child{
-    margin-right: 2.5%;
-}
-
-.static-pics .static-pics-spalte img{
-    margin-right: 4%;
-    margin-bottom: 4%;
 }
 
 
@@ -721,130 +712,130 @@ hr{
 
 
 /* --- Grid generell */
-.index .grid-item{
+.grid-item{
     margin-right: 2%;
     margin-bottom: 2%;
     border: none;
 }
-.index .grid-item img{
+.grid-item img{
     max-width: 100%;
     height: auto;
     width:auto;
 }
 
 /* --- Grid klein */
-.index .grid-item-klein{
+.grid-item-klein{
     width: 10.25%;
 }
-.index .grid-item-klein img{
+.grid-item-klein img{
     max-height: 10vw;
 }
 
 /* --- Grid mittel */
-.index .grid-item-mittel {
+.grid-item-mittel {
     width: 14.3333%;
 }
-.index .grid-item-mittel img{
+.grid-item-mittel img{
     max-height: 14vw;
 }
 
 /* --- Grid gross */
-.index .grid-item-gross {
+.grid-item-gross {
     width: 22.5%;
 }
-.index .grid-item-gross img{
+.grid-item-gross img{
     max-height: 22vw;
 }
 
 @media (max-width: 992px) {
-    .index .grid-item{
+    .grid-item{
         margin-right: 2%;
         margin-bottom: 2%;
     }
 
     /* --- Grid klein */
-    .index .grid-item-klein{
+    .grid-item-klein{
         width: 14%;
     }
-    .index .grid-item-klein img{
+    .grid-item-klein img{
         max-height: 14vw;
     }
 
     /* --- Grid mittel */
-    .index .grid-item-mittel {
+    .grid-item-mittel {
         width: 22%;
     }
-    .index .grid-item-mittel img{
+    .grid-item-mittel img{
         max-height: 22vw;
     }
 
     /* --- Grid gross */
-    .index .grid-item-gross {
+    .grid-item-gross {
         width: 30%;
     }
-    .index .grid-item-gross img{
+    .grid-item-gross img{
         max-height: 30vw;
     }
 }
 @media (max-width: 768px) {
-    .index .grid-item{
+    .grid-item{
         margin-right: 3%;
         margin-bottom: 3%;
     }
 
     /* --- Grid klein */
-    .index .grid-item-klein{
+    .grid-item-klein{
         width: 20.75%;
     }
-    .index .grid-item-klein img{
+    .grid-item-klein img{
         max-height: 20vw;
     }
 
     /* --- Grid mittel */
-    .index .grid-item-mittel {
+    .grid-item-mittel {
         width: 28.6666%;
     }
-    .index .grid-item-mittel img{
+    .grid-item-mittel img{
         max-height: 28vw;
     }
 
     /* --- Grid gross */
-    .index .grid-item-gross {
+    .grid-item-gross {
         width: 44.5%;
     }
-    .index .grid-item-gross img{
+    .grid-item-gross img{
         max-height: 44vw;
     }
 }
 @media (max-width: 576px) {
-    .index .grid-item{
+    .grid-item{
         margin-right: 3%;
         margin-bottom: 3%;
     }
 
     /* --- Grid klein */
-    .index .grid-item-klein{
+    .grid-item-klein{
         width: 28%;
     }
-    .index .grid-item-klein img{
+    .grid-item-klein img{
         max-height: 28vw;
     }
 
     /* --- Grid mittel */
-    .index .grid-item-mittel {
+    .grid-item-mittel {
         width: 43.5%;
     }
-    .index .grid-item-mittel img{
+    .grid-item-mittel img{
         max-height: 43vw;
     }
 
     /* --- Grid gross */
-    .index .grid-item-gross {
+    .grid-item-gross {
         width: 90%;
 
         margin-bottom: 4.5%;
     }
-    .index .grid-item-gross img{
+    .grid-item-gross img{
         max-height: 90vw;
     }
 }
@@ -1099,6 +1090,37 @@ hr{
 }
 
 
+
+
+
+
+
+
+
+
+/* Arbeiten im Kontext */
+.images-overview.arbeiten-im-kontext-overview{
+    position: absolute!important;
+    right: 0;
+    left: 0;
+    padding-left: 2%;
+    padding-bottom: 40px;
+}
+.images-overview.arbeiten-im-kontext-overview .grid-item img{
+    max-height: none;
+}
+@media (max-width: 992px) {
+
+}
+@media (max-width: 768px) {
+
+}
+@media (max-width: 576px) {
+    /* --- Grid gross */
+    .arbeiten-im-kontext-overview .grid-item {
+        width: 43.5%;
+    }
+}
 
 
 
