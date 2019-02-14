@@ -1099,6 +1099,9 @@ hr{
 
 
 /* Arbeiten im Kontext */
+.arbeiten-im-kontext{
+    margin-top: 40px;
+}
 .images-overview.arbeiten-im-kontext-overview{
     position: absolute!important;
     right: 0;
