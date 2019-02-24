@@ -24,7 +24,7 @@ $(function() {
     };
 
     /** returnt eine Funktion, die "callback" nach "delay" milisekunden aufruft, wenn sie ausgeführt wird.
-     *  Wenn während des delays die returnte Funktion noch ein mal aufgerufen wird, wird der delay resetet.
+     *  Wenn während des delays die returnte Funktion noch ein mal ausgeführt wird, wird der delay resetet.
      */
     function debounce(callback, delay) {
         var timeout;
